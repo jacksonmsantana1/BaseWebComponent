@@ -1,11 +1,8 @@
-'use strict';
-
 import Monet from 'monet';
-import R from 'ramda';
 
 /*****************Helper Functions*********************/
+
 const IO = Monet.IO;
-const curry = R.curry;
 
 class DOM {
 
@@ -13,22 +10,23 @@ class DOM {
 
   // ioWindow :: IO(window)
   get ioWindow() {
-    return IO(() => { return window; });
+    return IO(() => (window));
   }
 
   // ioDocument :: IO(document)
   get ioDocument() {
-    return IO(() => { return window.document; });
+    return IO(() => (window.document));
   }
 
   // $ :: String -> IO [DOM]
   static _$(selector) {
-    return IO(() => { return document.querySelectorAll(selector); });
+    return IO(() => (document.querySelectorAll(selector)));
   }
 
   // setInnerHtml :: HtmlElement -> String -> IO
   static setInnerHtml(elem, str) {
     return IO(() => {
+      /*eslint no-param-reassign: 1*/
       elem.innerHTML = str;
       return elem;
     });
@@ -44,17 +42,17 @@ class DOM {
 
   // clone :: HtmlElement -> IO(HtmlElement)
   static clone(elem) {
-    return IO(() => { return document.importNode(elem, true); });
+    return IO(() => (document.importNode(elem, true)));
   }
 
   // createHtmlElement :: String -> IO(Html<String>Element)
   static createHtmlElement(str) {
-    return IO(() => { return document.createElement(str); });
+    return IO(() => (document.createElement(str)));
   }
 
   // createShadowDom :: HTMLElement -> IO(ShadowDom)
   static createShadowDom(elem) {
-    return IO(() => { return elem.createShadowRoot(); });
+    return IO(() => (elem.createShadowRoot()));
   }
 
 }

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * A component to greet users
  */
@@ -15,12 +13,8 @@ const compose = R.compose,
   get = R.prop,
   curry = R.curry,
   IO = M.IO,
-  map = R.curry((f, container) => {
-    return container.map(f);
-  }),
-  chain = R.curry((f, container) => {
-    return container.chain(f);
-  });
+  map = R.curry((f, container) => (container.map(f))),
+  chain = R.curry((f, container) => (container.chain(f)));
 
 // jscs:disable
 class Hello extends HTMLElement {
@@ -33,28 +27,24 @@ class Hello extends HTMLElement {
     /***********************Pure Functions*************************/
 
     // createAuxDiv :: [Node] -> IO(HTMLDivElement)
-    const createAuxDiv = function(arr) {
+    const createAuxDiv = function (arr) {
       return DOM.createHtmlElement('div')
-        .bind((div) => {
-          return DOM.setInnerHtml(div, (arr[0] + arr[1]));
-        });
+        .bind((div) => (DOM.setInnerHtml(div, (arr[0] + arr[1]))));
     };
 
     // getChildNodes :: HTMLDivElement -> [Node]
     const getChildNodes = get('childNodes');
 
     // copyDivChildsToTemplate :: [Node] -> IO(HTMLTemplateElement)
-    const copyDivChildsToTemplate = function(nodes) {
+    const copyDivChildsToTemplate = function copyDivChildsToTemplate(nodes) {
       const arrayNodes = Array.from(nodes);
       return DOM.createHtmlElement('template')
-        .bind((template) => {
-          return IO(() => {
-            arrayNodes.map((node) => {
-              return template.content.appendChild(node);
-            });
+        .bind((template) => (
+          IO(() => {
+            arrayNodes.map((node) => (template.content.appendChild(node)));
             return template;
-          });
-        });
+          })
+        ));
     };
 
     // getTemplateContent :: HTMLTemplateElement -> HTMLTemplateElement.content
@@ -64,10 +54,10 @@ class Hello extends HTMLElement {
     const cloneTemplateContent = DOM.clone;
 
     // appendContentToShadowDom :: (HTMLElement,  HTMLTemplateElement.content) -> IO(void)
-    const appendContentToShadowDom = curry((component, content) => {
-      return DOM.createShadowDom(component)
-        .bind((shadow) => { return DOM.append(shadow, content); });
-    });
+    const appendContentToShadowDom = curry((component, content) => (
+      DOM.createShadowDom(component)
+      .bind((shadow) => (DOM.append(shadow, content)))
+    ));
 
     /**********************Impure Functions*************************/
 
@@ -96,6 +86,7 @@ class Hello extends HTMLElement {
   /*
    * Function called when some attribute from the component is changed
    */
+  /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {}
 
   /*

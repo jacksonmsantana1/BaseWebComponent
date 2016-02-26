@@ -37,7 +37,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>25/25</span>
+        <span class='fraction'>18/18</span>
       </div>
       <div class='fl pad1y'>
         <span class="strong">30 statements, 3 functions, 20 branches</span>
@@ -192,18 +192,7 @@
 143
 144
 145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+146</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,10 +208,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,8 +224,6 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -251,10 +234,8 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -268,14 +249,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -283,6 +256,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -355,9 +337,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
-&nbsp;
-/**
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * A component to greet users
  */
 &nbsp;
@@ -372,12 +352,8 @@ const compose = R.compose,
   get = R.prop,
   curry = R.curry,
   IO = M.IO,
-  map = R.curry((f, container) =&gt; {
-    return container.map(f);
-  }),
-  chain = R.curry((f, container) =&gt; {
-    return container.chain(f);
-  });
+  map = R.curry((f, container) =&gt; (container.map(f))),
+  chain = R.curry((f, container) =&gt; (container.chain(f)));
 &nbsp;
 // jscs:disable
 class Hello extends HTMLElement {
@@ -390,28 +366,24 @@ class Hello extends HTMLElement {
     /***********************Pure Functions*************************/
 &nbsp;
     // createAuxDiv :: [Node] -&gt; IO(HTMLDivElement)
-    const createAuxDiv = function(arr) {
+    const createAuxDiv = function (arr) {
       return DOM.createHtmlElement('div')
-        .bind((div) =&gt; {
-          return DOM.setInnerHtml(div, (arr[0] + arr[1]));
-        });
+        .bind((div) =&gt; (DOM.setInnerHtml(div, (arr[0] + arr[1]))));
     };
 &nbsp;
     // getChildNodes :: HTMLDivElement -&gt; [Node]
     const getChildNodes = get('childNodes');
 &nbsp;
     // copyDivChildsToTemplate :: [Node] -&gt; IO(HTMLTemplateElement)
-    const copyDivChildsToTemplate = function(nodes) {
+    const copyDivChildsToTemplate = function copyDivChildsToTemplate(nodes) {
       const arrayNodes = Array.from(nodes);
       return DOM.createHtmlElement('template')
-        .bind((template) =&gt; {
-          return IO(() =&gt; {
-            arrayNodes.map((node) =&gt; {
-              return template.content.appendChild(node);
-            });
+        .bind((template) =&gt; (
+          IO(() =&gt; {
+            arrayNodes.map((node) =&gt; (template.content.appendChild(node)));
             return template;
-          });
-        });
+          })
+        ));
     };
 &nbsp;
     // getTemplateContent :: HTMLTemplateElement -&gt; HTMLTemplateElement.content
@@ -421,10 +393,10 @@ class Hello extends HTMLElement {
     const cloneTemplateContent = DOM.clone;
 &nbsp;
     // appendContentToShadowDom :: (HTMLElement,  HTMLTemplateElement.content) -&gt; IO(void)
-    const appendContentToShadowDom = curry((component, content) =&gt; {
-      return DOM.createShadowDom(component)
-        .bind((shadow) =&gt; { return DOM.append(shadow, content); });
-    });
+    const appendContentToShadowDom = curry((component, content) =&gt; (
+      DOM.createShadowDom(component)
+      .bind((shadow) =&gt; (DOM.append(shadow, content)))
+    ));
 &nbsp;
     /**********************Impure Functions*************************/
 &nbsp;
@@ -453,6 +425,7 @@ class Hello extends HTMLElement {
   /*
    * Function called when some attribute from the component is changed
    */
+  /*eslint no-unused-vars: 0*/
   attributeChangedCallback<span class="fstat-no" title="function not covered" >(attrName, oldValue, newValue) {</span>}
 &nbsp;
   /*
@@ -515,7 +488,7 @@ default Hello;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Feb 26 2016 17:20:51 GMT-0300 (BRT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Feb 26 2016 20:34:14 GMT-0300 (BRT)
 </div>
 </div>
 <script src="../../prettify.js"></script>
