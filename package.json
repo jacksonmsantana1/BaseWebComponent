@@ -1,0 +1,92 @@
+{
+  "name": "WebComponentBase",
+  "version": "1.0.0",
+  "description": "Reasonable starting point for building a web app based with Web Components",
+  "main": "./app/index.js",
+  "private": true,
+  "scripts": {
+    "build": "webpack --config webpack.build.js --bail -p",
+    "dev": "webpack-dev-server --history-api-fallback --hot --inline --progress",
+    "jscs": "jscs ./app --preset=airbnb",
+    "eslint": "eslint ./app --ext .js",
+    "lint": "npm run eslint && npm run jscs",
+    "test": "npm run lint && npm run test:unit",
+    "test:unit": "karma start",
+    "tdd": "karma start --auto-watch --no-single-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:jacksonmsantana1/WebComponentBase.git"
+  },
+  "keywords": [
+    "web",
+    "application"
+  ],
+  "author": "Jackson Martorano Sant'Ana",
+  "license": "MeuPau",
+  "bugs": {
+    "url": "https://github.com/jacksonmsantana1/WebComponentBase/issues"
+  },
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "babel": {
+    "stage": 0
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.5.0",
+    "bluebird": "^3.3.1",
+    "data.either": "^1.3.0",
+    "data.maybe": "^1.2.1",
+    "data.task": "^3.0.0",
+    "debug": "^2.2.0",
+    "immutable": "^3.7.6",
+    "lodash": "^4.5.0",
+    "monet": "^0.8.7",
+    "normalize.css": "^3.0.3",
+    "ramda": "^0.19.1",
+    "rx": "^4.0.8",
+    "stream.js": "git+https://github.com/dionyziz/stream.js.git",
+    "webcomponents.js": "^0.7.20"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.0.3",
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.25",
+    "babel-eslint": "^4.1.8",
+    "babel-loader": "^5.3.2",
+    "babel-runtime": "^5.8.25",
+    "chai": "^3.5.0",
+    "core-js": "^2.1.0",
+    "css-loader": "^0.19.0",
+    "eslint": "^2.0.0",
+    "eslint-config-standard": "^4.4.0",
+    "eslint-plugin-standard": "^1.3.1",
+    "expect.js": "^0.3.1",
+    "extract-text-webpack-plugin": "^0.8.2",
+    "file-loader": "^0.8.4",
+    "html-webpack-plugin": "^1.6.2",
+    "isparta-instrumenter-loader": "^0.2.1",
+    "jscs": "^2.10.1",
+    "karma": "^0.13.10",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-cli": "^0.1.2",
+    "karma-coverage": "^0.5.2",
+    "karma-mocha": "^0.2.0",
+    "karma-sinon": "^1.0.4",
+    "karma-sourcemap-loader": "^0.3.5",
+    "karma-spec-reporter": "0.0.20",
+    "karma-webpack": "^1.7.0",
+    "less": "^2.6.0",
+    "less-loader": "^2.2.2",
+    "less-plugin-clean-css": "^1.5.1",
+    "mocha": "^2.3.3",
+    "node-libs-browser": "^0.5.3",
+    "postcss-loader": "^0.6.0",
+    "sinon": "^1.17.3",
+    "style-loader": "^0.12.4",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.0"
+  }
+}
