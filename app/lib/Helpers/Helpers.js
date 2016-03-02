@@ -1,5 +1,12 @@
 import R from 'ramda';
 
+/**
+ *  Helpers Functions
+ *
+ *  ps: Don't need unit test.Functions already
+ *  tested in others projects
+ */
+
 // map :: (ObjectA -> ObjectB), M -> M[ObjectB]
 let map = R.curry(function(f, container) {
   return container.map(f);
@@ -11,8 +18,8 @@ let chain = R.curry(function(f, container) {
 });
 
 // join :: M -> M[M[ObjectA]] -> M[ObjectA]
-let join = function(mma) {
-  return mma.join();
+let join = function(container) {
+  return container.join();
 };
 
 // trace :: String -> Object -> Object
