@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">80.39% </span>
+        <span class="strong">94.12% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>41/51</span>
+        <span class='fraction'>48/51</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">93.75% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>15/16</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">68.42% </span>
+        <span class="strong">89.47% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>13/19</span>
+        <span class='fraction'>17/19</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">54.55% </span>
+        <span class="strong">86.36% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>12/22</span>
+        <span class='fraction'>19/22</span>
       </div>
       <div class='fl pad1y'>
         <span class="strong">1 statement, 5 branches</span>
@@ -119,19 +119,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-yes">53×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-yes">53×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">24×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -139,31 +135,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11×</span>
-<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -198,8 +198,8 @@ class IO {
 <span class="cstat-no" title="statement not covered" >    return io.runIO.apply(io, [].slice.call(arguments, 1));</span>
   }
 &nbsp;
-  static join<span class="fstat-no" title="function not covered" >(io) {</span>
-<span class="cstat-no" title="statement not covered" >    return io.effect();</span>
+  static join(io) {
+    return io.effect();
   }
 &nbsp;
   map(fn) {
@@ -207,27 +207,27 @@ class IO {
     return new IO(compose(fn, _this.effect));
   }
 &nbsp;
-  join() {
-    return this.effect();
-  }
-&nbsp;
-  chain<span class="fstat-no" title="function not covered" >(fn) {</span>
-<span class="cstat-no" title="statement not covered" >    let _this = this;</span>
-<span class="cstat-no" title="statement not covered" >    return new IO(<span class="fstat-no" title="function not covered" >function() {</span></span>
-<span class="cstat-no" title="statement not covered" >      var next = fn(_this.effect.apply(_this, arguments));</span>
-<span class="cstat-no" title="statement not covered" >      return next.effect.apply(next, arguments);</span>
+  chain(fn) {
+    let _this = this;
+    return new IO(function() {
+      var next = fn(_this.effect.apply(_this, arguments));
+      return next.effect.apply(next, arguments);
     });
   }
 &nbsp;
-  ap<span class="fstat-no" title="function not covered" >(thatIO) {</span>
-<span class="cstat-no" title="statement not covered" >    let _this = this;</span>
-<span class="cstat-no" title="statement not covered" >    return _this.chain(<span class="fstat-no" title="function not covered" >function(fn) {</span></span>
-<span class="cstat-no" title="statement not covered" >      return thatIO.map(fn);</span>
+  ap(thatIO) {
+    let _this = this;
+    return _this.chain(function(fn) {
+      return thatIO.map(fn);
     });
   }
 &nbsp;
   runIO() {
     return this.effect.apply(this, arguments);
+  }
+&nbsp;
+  join<span class="fstat-no" title="function not covered" >() {</span>
+<span class="cstat-no" title="statement not covered" >    return this.effect.apply(this, arguments);</span>
   }
 &nbsp;
   toString() {
@@ -245,7 +245,7 @@ default IO;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 02 2016 14:38:16 GMT-0300 (BRT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 02 2016 17:14:29 GMT-0300 (BRT)
 </div>
 </div>
 <script src="../../prettify.js"></script>

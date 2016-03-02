@@ -30,10 +30,6 @@ class IO {
     return new IO(compose(fn, _this.effect));
   }
 
-  join() {
-    return this.effect();
-  }
-
   chain(fn) {
     let _this = this;
     return new IO(function() {
@@ -50,6 +46,10 @@ class IO {
   }
 
   runIO() {
+    return this.effect.apply(this, arguments);
+  }
+
+  join() {
     return this.effect.apply(this, arguments);
   }
 

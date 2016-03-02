@@ -8,6 +8,7 @@ let compose = R.compose;
 let curry = R.curry;
 let map = Helpers.map;
 let join = Helpers.join;
+let chain = Helpers.chain;
 
 describe('IO => ', () => {
   it('of() -> 1', () => {
@@ -23,7 +24,7 @@ describe('IO => ', () => {
     expect(ioio.runIO()).to.be.equal('EU AMO MEU ANUS!!!');
   });
 
-  it('toString() && runIO()', () => {
+  it('toString()', () => {
     let io = IO.of('CU');
     let ioio = IO.of(io);
     let ioioio = IO.of(ioio);
@@ -85,15 +86,14 @@ describe('IO => ', () => {
     };
 
     //Impure
-    let impure = compose(join,
-      map(fixedName),
+    let impure = compose(map(fixedName),
       map(toUpperCase),
       map(getFirstLetterOfLastNames),
       map(separateFirstFromLastNames),
       map(getAllNames),
       IO.of);
 
-    expect(impure(completeName)).to.be.equal('Jackson M. S.');
+    expect(impure(completeName).runIO()).to.be.equal('Jackson M. S.');
 
   });
 
@@ -106,6 +106,31 @@ describe('IO => ', () => {
     let io = IO.of(window.document).map(createDiv).map(setInnerDiv('VAITOMARNOCU'));
 
     expect(io.runIO().innerHTML).to.be.equal('VAITOMARNOCU');
+  });
+
+  it('chain()', () => {
+    let io = (str) => (IO.of(str));
+    let fn = (str) => (IO.of(str + 'CU'));
+    let fn1 = (str) => (IO.of(str + 'CU'));
+    let fn2 = (str) => (IO.of(str + 'CU'));
+
+    let impure = compose(map(map(map(fn2))), map(map(fn1)), map(fn), io);
+    let impure2 = compose(IO.join, map(fn2), IO.join, map(fn1), IO.join, map(fn), io);
+    let impure3 = compose(chain(fn2), chain(fn1), chain(fn), io);
+    expect(impure('CU').runIO().runIO().runIO().runIO()).to.be.equal('CUCUCUCU');
+    expect(impure2('CU').runIO()).to.be.equal('CUCUCUCU');
+    expect(impure3('CU').runIO()).to.be.equal('CUCUCUCU');
+  });
+
+  it('ap()', () => {
+    let signin = curry((x, y, z) => (x + y + z));
+    let x = IO.of('A');
+    let y = IO.of('N');
+    let z = IO.of('US');
+
+    let impure = IO.of(signin).ap(x).ap(y).ap(z);
+    expect(impure.runIO()).to.be.equal('ANUS');
+
   });
 
 });

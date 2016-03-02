@@ -13,7 +13,13 @@ let chain = R.curry(function(f, container) {
 // join :: M -> M[M[ObjectA]] -> M[ObjectA]
 let join = function(mma) {
   return mma.join();
-}
+};
+
+// trace :: String -> Object -> Object
+let trace = R.curry(function(tag, x) {
+  console.log(tag, x);
+  return x;
+});
 
 let Helpers = function() {};
 
@@ -26,6 +32,8 @@ Helpers.map = Helpers.prototype.map;
 Helpers.prototype.join = join;
 Helpers.join = Helpers.prototype.join;
 
+Helpers.prototype.trace = trace;
+Helpers.trace = Helpers.prototype.trace;
 
 export
 default Helpers;
