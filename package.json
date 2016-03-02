@@ -46,8 +46,7 @@
     "normalize.css": "^3.0.3",
     "ramda": "^0.19.1",
     "rx": "^4.0.8",
-    "stream.js": "git+https://github.com/dionyziz/stream.js.git",
-    "webcomponents.js": "^0.7.20"
+    "stream.js": "git+https://github.com/dionyziz/stream.js.git"
   },
   "devDependencies": {
     "autoprefixer": "^6.0.3",

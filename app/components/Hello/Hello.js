@@ -2,9 +2,8 @@
  * A component to greet users
  */
 
-import DOM from '../../lib/DOM/DOM.js';
-import M from 'monet';
 import R from 'ramda';
+import Monet from 'monet';
 
 /**************************Helpers****************************/
 
@@ -12,9 +11,14 @@ import R from 'ramda';
 const compose = R.compose,
   get = R.prop,
   curry = R.curry,
-  IO = M.IO,
-  map = R.curry((f, container) => (container.map(f))),
-  chain = R.curry((f, container) => (container.chain(f)));
+  tap = R.tap,
+  IO = Monet.IO,
+  trace = (x) => {
+    console.log(x);
+    return x;
+  },
+  map = curry((f, container) => (container.map(f))),
+  chain = curry((f, container) => (container.chain(f)));
 
 // jscs:disable
 class Hello extends HTMLElement {
@@ -24,58 +28,56 @@ class Hello extends HTMLElement {
    */
   createdCallback() {
 
-    /***********************Pure Functions*************************/
+      /***********************Pure Functions*************************/
 
-    // createAuxDiv :: [Node] -> IO(HTMLDivElement)
-    const createAuxDiv = function (arr) {
-      return DOM.createHtmlElement('div')
-        .bind((div) => (DOM.setInnerHtml(div, (arr[0] + arr[1]))));
-    };
+      // createAuxDiv :: [String] -> IO(HTMLDivElement)
+      const createAuxDiv = function(arr) {
+        return IO(() => document.createElement('div')).chain((div) => {
+          div.innerHTML = arr[0] + arr[1];
+          console.log('createAuxDiv-> ' + div);
+          return div;
+        });
+      };
 
-    // getChildNodes :: HTMLDivElement -> [Node]
-    const getChildNodes = get('childNodes');
+      // getDivNodes :: HTMLDivElement -> [Node]
+      const getDivNodes = get('childNodes');
 
-    // copyDivChildsToTemplate :: [Node] -> IO(HTMLTemplateElement)
-    const copyDivChildsToTemplate = function copyDivChildsToTemplate(nodes) {
-      const arrayNodes = Array.from(nodes);
-      return DOM.createHtmlElement('template')
-        .bind((template) => (
-          IO(() => {
-            arrayNodes.map((node) => (template.content.appendChild(node)));
-            return template;
-          })
-        ));
-    };
+      // setContentTemplate :: [Node] -> IO(HTMLTemplateElement)
+      const setContentTemplate = function(nodes) {
+        return IO(() => document.createElement('template')).chain((template) => {
+          nodes.map((node) => {
+            template.content.appendChild(node);
+          });
+          console.log('setContentTemplate() -> ' + template);
+          return template;
+        });
+      }
 
-    // getTemplateContent :: HTMLTemplateElement -> HTMLTemplateElement.content
-    const getTemplateContent = get('content');
+      // getContentTemplate :: HTMLTemplateElement -> HTMLTemplateElement.content
+      const getContentTemplate = get('content');
 
-    // cloneTemplateContent :: HTMLTemplateElement.content -> HTLMTemplateElement.content
-    const cloneTemplateContent = DOM.clone;
+      // cloneContent ::  HTMLTemplateElement.content -> HTMLTemplateElement.content
+      const cloneContent = (content) => {
+          return () => {
+            return document.importNode(content, true);
+          }
+        }
+      // setShadowDom :: HTMLContentElement.content -> _
+      const setShadowDom = (content) => {
+        return IO(() => document.createShadowRoot()).chain((shadow) => {
+          shadow.appendChild(content);
+        });
+      }
 
-    // appendContentToShadowDom :: (HTMLElement,  HTMLTemplateElement.content) -> IO(void)
-    const appendContentToShadowDom = curry((component, content) => (
-      DOM.createShadowDom(component)
-      .bind((shadow) => (DOM.append(shadow, content)))
-    ));
+      /**********************Impure Functions*************************/
 
-    /**********************Impure Functions*************************/
+      let impure = compose(chain(setContentTemplate), map(get('childNodes')), createAuxDiv);
 
-    const createWebComponent = compose(chain(appendContentToShadowDom(this)),
-      chain(cloneTemplateContent),
-      map(getTemplateContent),
-      chain(copyDivChildsToTemplate),
-      map(getChildNodes),
-      createAuxDiv);
-
-    //Create Web Components
-    createWebComponent([this.getTemplateHtml(), this.getTemplateStyle()])
-      .run();
-  }
-
-  /*
-   * Function called when the component is attached to the DOM
-   */
+    }
+    /*teElement.content
+     *
+     * Function called when the component is attached to the DOM
+     */
   attachedCallback() {}
 
   /*
@@ -112,26 +114,26 @@ class Hello extends HTMLElement {
 
     return `<style>
               .outer {
-                            border: 2px solid brown;
-                            border-radius: 1em;
-                            background: red;
-                            font-size: 20pt;
-                            width: 12em;
-                            height: 7em;
-                            text-align: center;
-                          }
+                border: 2px solid brown;
+                border-radius: 1em;
+                background: red;
+                font-size: 20pt;
+                width: 12em;
+                height: 7em;
+                text-align: center;
+              }
               .boilerplate {
-                            color: white;
-                            font-family: sans-serif;
-                            padding: 0.5em;
-                          }
+                color: white;
+                font-family: sans-serif;
+                padding: 0.5em;
+              }
               .name {
-                            color: black;
-                            background: white;
-                            font-family: "Marker Felt", cursive;
-                            font-size: 45pt;
-                            padding-top: 0.2em;
-                          }
+                color: black;
+                background: white;
+                font-family: "Marker Felt", cursive;
+                font-size: 45pt;
+                padding-top: 0.2em;
+              }
           </style>`;
 
   }
@@ -141,4 +143,3 @@ document.registerElement('pw-hello', Hello);
 
 export
 default Hello;
-

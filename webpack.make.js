@@ -45,7 +45,7 @@ module.exports = function makeWebpackConfig(options) {
   } else {
     config.entry = {
       app: ['babel-polyfill', './app'],
-      webcomponent: './node_modules/webcomponents.js/webcomponents.js',
+      webcomponent: './node_modules/webcomponentsjs/dist/webcomponents.js',
     };
   }
 
