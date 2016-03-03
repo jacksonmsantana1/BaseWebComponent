@@ -10,11 +10,8 @@ import Helpers from '../../lib/Helpers/Helpers.js';
 
 // jscs:disable
 const compose = R.compose,
-  get = R.prop,
   curry = R.curry,
-  tap = R.tap,
-  map = Helpers.map,
-  chain = Helpers.chain;
+  map = Helpers.map;
 
 // jscs:disable
 class Base extends HTMLElement {
@@ -24,13 +21,20 @@ class Base extends HTMLElement {
    */
   createdCallback() {
 
-      /***********************Pure Functions*************************/
+    /***********************Pure Functions*************************/
 
-      /**********************Impure Functions*************************/
+    let shadow = (elem) => (IO.of(elem.createShadowRoot()));
+    let setInnerHtml = curry((strHtml, elem) => {
+      elem.innerHTML = strHtml;
+      return elem;
+    });
+    let strComponent = this.getTemplateHtml() + this.getTemplateStyle();
 
-      let impure = '//TODO';
+    /**********************Impure Functions*************************/
 
-    }
+    let impure = compose(map(setInnerHtml(strComponent)), shadow);
+    impure(this).runIO();
+  }
 
   /*
    * Function called when the component is attached to the DOM
@@ -55,7 +59,7 @@ class Base extends HTMLElement {
 
     return `<div class="outer">
               <div class="boilerplate">
-                Hi! My name is
+                O Nathan é um ...
               </div>
               <div class="name">
                 <content></content>
@@ -96,7 +100,5 @@ class Base extends HTMLElement {
   }
 }
 
-document.registerElement('pw-hello', Hello);
-
-export
-default Hello;
+document.registerElement('pw-base', Base);
+export default Base;

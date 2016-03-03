@@ -4,25 +4,18 @@
  */
 import 'normalize.css';
 import debug from 'debug';
+import Base from './components/Base/Base.js';
 
 const log = debug('app:bootstrap');
 const appNode = document.createElement('div');
-const helloComp = document.createElement('pw-hello');
-
-appNode.id = 'app';
-
-// Enable debug messages outside of production
-if (process.env.NODE_ENV !== 'production') {
-
-  debug.enable('app:*');
-
-}
+const helloComp = document.createElement('pw-base');
 
 log('creating app node');
+appNode.id = 'app';
 
 log('adding app node to body');
 document.body.appendChild(appNode);
 
 log('mounting app');
-helloComp.textContent = 'Jacko';
+helloComp.textContent = 'Viadinho';
 appNode.appendChild(helloComp);
