@@ -45,7 +45,7 @@ module.exports = function makeWebpackConfig(options) {
   } else {
     config.entry = {
       app: ['babel-polyfill', './app'],
-      webcomponent: './node_modules/webcomponentsjs/dist/webcomponents.js',
+      webcomponent: './node_modules/webcomponents.js/webcomponents.min.js',
     };
   }
 
@@ -146,6 +146,12 @@ module.exports = function makeWebpackConfig(options) {
   // Add jsLoader to the loader list
   config.module.loaders.push(jsLoader);
 
+  // LOCAL HTML LOADER
+  var localHtmlLoader = {
+    test: /\.html$/,
+    loader: "html-loader"
+  };
+
   // LOCAL CSS LOADER
 
   // Identifier name for local css modules
@@ -181,23 +187,8 @@ module.exports = function makeWebpackConfig(options) {
     loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss'),
   };
 
-  // LESS LOADER
-  var globalLessLoader = {
-    test: /\.less$/,
-    loader: ExtractTextPlugin.extract('style', 'css?sourceMap!less?sourceMap'),
-  };
-
-  var LessPluginCleanCSS = require('less-plugin-clean-css');
-  config.module.lessLoader = {
-    lessPlugins: [
-      new LessPluginCleanCSS({
-        advanced: true,
-      }),
-    ],
-  };
-
-  // Add localCssLoader, lessLoader and globalCssLoader to the loader list
-  config.module.loaders.push(localCssLoader, globalLessLoader, globalCssLoader);
+  // Add localCssLoader and globalCssLoader to the loader list
+  config.module.loaders.push(localHtmlLoader, localCssLoader, globalCssLoader);
 
   /**
    * PostCSS

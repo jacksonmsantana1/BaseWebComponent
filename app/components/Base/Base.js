@@ -34,6 +34,9 @@ class Base extends HTMLElement {
 
     let impure = compose(map(setInnerHtml(strComponent)), shadow);
     impure(this).runIO();
+
+    // content 
+    this.textContent = 'Viadinho';
   }
 
   /*
@@ -52,11 +55,7 @@ class Base extends HTMLElement {
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {}
 
-  /*
-   * Return the component string html
-   */
   getTemplateHtml() {
-
     return `<div class="outer">
               <div class="boilerplate">
                 O Nathan é um ...
@@ -64,15 +63,13 @@ class Base extends HTMLElement {
               <div class="name">
                 <content></content>
               </div>
-            </div>`;
-
+            </div>`
   }
 
   /*
    * Return the component string style
    */
   getTemplateStyle() {
-
     return `<style>
               .outer {
                 border: 2px solid brown;
@@ -96,9 +93,9 @@ class Base extends HTMLElement {
                 padding-top: 0.2em;
               }
           </style>`;
-
   }
 }
 
 document.registerElement('pw-base', Base);
-export default Base;
+export
+default Base;

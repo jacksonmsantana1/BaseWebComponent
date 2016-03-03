@@ -17,5 +17,4 @@ log('adding app node to body');
 document.body.appendChild(appNode);
 
 log('mounting app');
-helloComp.textContent = 'Viadinho';
 appNode.appendChild(helloComp);
