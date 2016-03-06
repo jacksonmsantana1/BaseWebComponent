@@ -4,6 +4,7 @@
  */
 import 'normalize.css';
 import debug from 'debug';
+/*eslint no-unused-vars:1*/
 import Base from './components/Base/Base.js';
 
 const log = debug('app:bootstrap');

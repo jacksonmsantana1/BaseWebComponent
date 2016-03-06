@@ -1,7 +1,7 @@
 import R from 'ramda';
 
-let compose = R.compose;
-let toString = R.toString;
+const compose = R.compose;
+const toString = R.toString;
 
 class IO {
 
@@ -11,12 +11,14 @@ class IO {
     }
 
     this.effect = fn;
+    return this;
   }
 
   static of(fn) {
     return new IO(() => (fn));
   }
 
+  /*eslint-disable prefer-rest-params */
   static runIO(io) {
     return io.runIO.apply(io, [].slice.call(arguments, 1));
   }
@@ -26,23 +28,21 @@ class IO {
   }
 
   map(fn) {
-    let _this = this;
+    const _this = this;
     return new IO(compose(fn, _this.effect));
   }
 
   chain(fn) {
-    let _this = this;
-    return new IO(function() {
-      var next = fn(_this.effect.apply(_this, arguments));
+    const _this = this;
+    return new IO(function () {
+      const next = fn(_this.effect.apply(_this, arguments));
       return next.effect.apply(next, arguments);
     });
   }
 
   ap(thatIO) {
-    let _this = this;
-    return _this.chain(function(fn) {
-      return thatIO.map(fn);
-    });
+    const _this = this;
+    return _this.chain((fn) => (thatIO.map(fn)));
   }
 
   runIO() {
@@ -52,12 +52,13 @@ class IO {
   join() {
     return this.effect.apply(this, arguments);
   }
+  /*eslint-disable prefer-rest-params */
 
   toString() {
-    return 'IO(' + toString(this.effect()) + ')';
-  };
+    return `IO(${toString(this.effect())})`;
+  }
 
-};
+}
 
 export
 default IO;

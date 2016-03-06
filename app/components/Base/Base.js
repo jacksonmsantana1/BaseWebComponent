@@ -23,19 +23,20 @@ class Base extends HTMLElement {
 
     /***********************Pure Functions*************************/
 
-    let shadow = (elem) => (IO.of(elem.createShadowRoot()));
-    let setInnerHtml = curry((strHtml, elem) => {
-      elem.innerHTML = strHtml;
-      return elem;
-    });
-    let strComponent = this.getTemplateHtml() + this.getTemplateStyle();
+    const shadow = (elem) => (IO.of(elem.createShadowRoot())),
+      /*eslint no-param-reassign:0*/
+      setInnerHtml = curry((strHtml, elem) => {
+        elem.innerHTML = strHtml;
+        return elem;
+      }),
+      strComponent = this.getTemplateHtml() + this.getTemplateStyle();
 
     /**********************Impure Functions*************************/
 
-    let impure = compose(map(setInnerHtml(strComponent)), shadow);
+    const impure = compose(map(setInnerHtml(strComponent)), shadow);
     impure(this).runIO();
 
-    // content 
+    // content
     this.textContent = 'Viadinho';
   }
 
@@ -63,7 +64,7 @@ class Base extends HTMLElement {
               <div class="name">
                 <content></content>
               </div>
-            </div>`
+            </div>`;
   }
 
   /*
