@@ -14,7 +14,7 @@ const map = R.curry((f, container) => (container.map(f)));
 const chain = R.curry((f, container) => (container.chain(f)));
 
 // join :: M -> M[M[ObjectA]] -> M[ObjectA]
-const join = function(container) {
+const join = function (container) {
   return container.join();
 };
 
@@ -24,7 +24,7 @@ const trace = R.curry((tag, x) => {
   return x;
 });
 
-const Helpers = function() {};
+const Helpers = function () {};
 
 Helpers.prototype.chain = chain;
 Helpers.chain = Helpers.prototype.chain;
