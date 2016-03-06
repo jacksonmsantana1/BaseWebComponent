@@ -6,7 +6,7 @@ const checkType = R.curry((typeDef, actualType) => {
   }
 
   throw new TypeError(`Type mismatch.Expected [${typeDef}]
-                        but found [${ typeof actualType}]`);
+                        but found [${typeof actualType}]`);
 
 });
 

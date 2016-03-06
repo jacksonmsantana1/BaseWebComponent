@@ -1,9 +1,9 @@
 import checkType from '../Type/Type.js';
 
-const Tuple = function(...args) {
-  const typeInfo = Array.prototype.slice.call(args);
-  const _T = function(...args) {
-    const values = Array.prototype.slice.call(args);
+const Tuple = function(...firstArgs) {
+  const typeInfo = Array.prototype.slice.call(firstArgs);
+  const _T = function(...secondArgs) {
+    const values = Array.prototype.slice.call(secondArgs);
     const anyValueNull = values.some((val) => (val === null || val === undefined));
 
     if (anyValueNull) {
