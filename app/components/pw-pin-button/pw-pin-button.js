@@ -5,13 +5,16 @@
 import R from 'ramda';
 import IO from '../../lib/IO/IO.js';
 import Helpers from '../../lib/Helpers/Helpers.js';
+import ClassList from '../../lib/CSSClassList/CSSClassList.js';
 
 /**************************Helpers****************************/
 
 // jscs:disable
 const compose = R.compose,
   curry = R.curry,
-  map = Helpers.map;
+  get = R.prop,
+  map = Helpers.map,
+  trace = Helpers.trace;
 
 class PwPinButton extends HTMLButtonElement {
 
@@ -41,7 +44,16 @@ class PwPinButton extends HTMLButtonElement {
   /*
    * Function called when the component is attached to the DOM
    */
-  attachedCallback() {}
+  attachedCallback() {
+    const eventObs = Helpers.event('click');
+    const checkElement = (elem) => (IO.of(this.toggleStatus()));
+    const impure = eventObs(this).map(get('target')).map(checkElement);
+
+    this.setAttribute('status', 'not-checked');
+    impure.subscribe((elem) => {
+      elem.runIO();
+    });
+  }
 
   /*
    * Function called when the component is detached from the DOM
@@ -52,64 +64,95 @@ class PwPinButton extends HTMLButtonElement {
    * Function called when some attribute from the component is changed
    */
   /*eslint no-unused-vars: 0*/
-  attributeChangedCallback(attrName, oldValue, newValue) {}
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'status') {
+      console.log('oldvalue: ' + oldValue + ' , newValue: ' + newValue);
+    }
+  }
+
+  toggleStatus() {
+    let status = this.getAttribute('status');
+    let div = this.shadowRoot.childNodes[0].childNodes[1];
+    console.log(div);
+    ClassList(div).toggle('active');
+    if (status === 'checked') {
+      this.setAttribute('status', 'not-checked');
+    } else {
+      this.setAttribute('status', 'checked');
+    }
+  }
 
   getTemplateHtml() {
-    return `<a class="button tick"></a>`;
+    return `<div class='like'>
+              <button class='like-toggle three'>❤</button>
+            </div>`;
   }
 
   getTemplateStyle() {
     return `<style>
-      .button{
-        background-image: -webkit-linear-gradient(top, #f4f1ee, #fff);
-        backgroundkground-image: linear-gradient(top, #f4f1ee, #fff);
-        border-radius: 50%;
-        box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .3),
-          inset 0px 4px 1px 1px white, 
-          inset 0px -3px 1px 1px rgba(204,198,197,.5);
-        float:left;
-        height: 70px;
-        margin: 0 30px 30px 0;
-        position: relative;
-        width: 70px;
-        -webkit-transition: all .1s linear;
-        transition: alignll .1s linear;
+      .like-toggle {
+        border: none;
+        outline: none;
       }
-      .button:after {
-        color:#e9e6e4;
-        content: "";
-        display:1s block;
-        font-size: 30px;
-        height: 30px;
-        text-decoration: none;
-        text-shadow: 0px -1px 1px #bdb5b4, 1px 1px 1px white;
-        position: absolute;
-        width: 30px;
-      }
-      .tick:after{
-        content: "✔";
-        left:23px;
-        top:20px;
-      }
-      .button:hover{
-        background-image: -webkit-linear-gradient(top, #fff, #f4f1ee);
-        background-image: linear-gradient(top, #fff, #f4f1ee);
-        color:#0088cc;
-      }
-      .tick:hover:after{
-        color:#83d244;
-        text-shadow:after0px 0px 6px #83d244;
-      }
-      .button:active{
-        background-image: -webkit-linear-gradient(top, #efedec, #topf7f4f4);
-        background-image: linear-gradient(top, #efedec, #f7f4f4);
-        box-shadow: 0 3px 5px 0 rgba(0,0,0,.4), inset 0px -3px 1px 1px rgba(20px04,198,197,.5);
-      }
-      .button:active:after{
-        color:#dbd2d2;
-        text-20px04shadow: 0px -1px 1px #bdb5b4, 0px 1px 1px white;
-      }
-    </style>`;
+
+    .meta {
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 24px;
+      margin: 0;
+      color: #111;
+    }
+
+    .meta.hidden {
+      margin-bottom: 28px;
+    }
+
+    .hidden {
+      font-size: 0;
+    }
+
+    .three {
+      width: 50px;
+      height: 50px;
+      border-radius: 100px;
+      background: #eee;
+      color: #666;
+      font-size: 25px;
+    }
+
+    .three.active {
+      width: 80px;
+      color: #F26D7D;
+      font-size: 30px;
+      animation: expand 0.7s ease;
+      -webkit-animation: expand 0.7s ease;
+    }
+
+    @keyframes beat {
+      0% {font-size: 25px;}
+        25% {font-size: 1px;}
+        50% {font-size: 25px;}
+      75% {font-size: 1px;}
+      100% {font-size: 25px;}
+    }
+
+    @-webkit-keyframes beat {
+      0% {font-size: 25px;}
+        25% {font-size: 1px;}
+        50% {font-size: 25px;}
+      75% {font-size: 1px;}
+      100% {font-size: 25px;}
+    }
+
+    @keyframes expand {
+      0% {width: 50px;}
+      100% {width: 80px;}
+    }
+
+    .like-toggle:hover {
+      background: #ddd;
+    }
+    `;
   }
 }
 
