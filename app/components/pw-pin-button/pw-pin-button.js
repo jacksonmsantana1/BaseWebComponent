@@ -91,15 +91,32 @@ class PwPinButton extends HTMLButtonElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'status') {
       ClassList(this.getLikeDiv().runIO()).toggle('active');
+    } else if(attrName === 'visible') {
+      this.style.display = !!newValue ? 'none' : '';
     }
   }
 
+  /**
+   * This function toggles the component attribute visible
+   */
+  toggleVisable() {
+    (getAttr(this, 'visible') === 'true') ?
+      setAttr(this, 'visible', 'false') :
+      setAttr(this, 'visible', 'true');
+  }
+
+  /**
+   * This function toggles the component attribute status
+   */
   toggleStatus() {
     (getAttr(this, 'status') === 'checked') ?
       setAttr(this, 'status', 'not-checked') :
       setAttr(this, 'status', 'checked');
   }
 
+  /**
+   * Return the div with class like that is in the ShadowRoot
+   */
   getLikeDiv() {
     let impure = compose(map(nth(1)),
       map(get('childNodes')),
@@ -109,12 +126,18 @@ class PwPinButton extends HTMLButtonElement {
     return impure(this.shadowRoot);
   }
 
+  /**
+   * Return the component Html in string
+   */
   getTemplateHtml() {
     return `<div class='like'>
               <button class='like-toggle three'>❤</button>
             </div>`;
   }
 
+  /**
+   * Return the component StyleSheet in String
+   */
   getTemplateStyle() {
     return `<style>
       .like {
