@@ -49,7 +49,6 @@ class PwPinButton extends HTMLButtonElement {
     const checkElement = (elem) => (IO.of(this.toggleStatus()));
     const impure = eventObs(this).map(get('target')).map(checkElement);
 
-    this.setAttribute('status', 'not-checked');
     impure.subscribe((elem) => {
       elem.runIO();
     });
@@ -73,7 +72,6 @@ class PwPinButton extends HTMLButtonElement {
   toggleStatus() {
     let status = this.getAttribute('status');
     let div = this.shadowRoot.childNodes[0].childNodes[1];
-    console.log(div);
     ClassList(div).toggle('active');
     if (status === 'checked') {
       this.setAttribute('status', 'not-checked');
@@ -90,6 +88,9 @@ class PwPinButton extends HTMLButtonElement {
 
   getTemplateStyle() {
     return `<style>
+      .like {
+        display: inline-block;
+      }
       .like-toggle {
         border: none;
         outline: none;
