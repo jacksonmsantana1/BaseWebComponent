@@ -27,4 +27,23 @@ describe('HTMLFunctional =>', () => {
       expect(div.getAttribute('checked')).to.be.equal('no');
     });
   });
+  describe('getAttr', () => {
+    it('Should get the element attribute', () => {
+      let fn = HTMLFunctional.getAttr;
+      let div = document.createElement('div');
+      div.setAttribute('checked', 'yes');
+
+      expect(fn(div, 'checked')).to.be.equal('yes');
+    });
+  });
+
+  describe('createShadowDom()', () => {
+    it('Should return the element ShadowRoot', () => {
+      let fn = HTMLFunctional.createShadowDom;
+      let elem = document.createElement('div');
+      let shadowRoot = fn(elem);
+
+      expect(shadowRoot).to.be.equal(elem.shadowRoot);
+    });
+  });
 });

@@ -14,13 +14,17 @@ import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
 const compose = R.compose,
   curry = R.curry,
   get = R.prop,
+  concat = R.concat,
   nth = R.nth;
 
 const map = Helpers.map,
-  trace = Helpers.trace;
+  trace = Helpers.trace,
+  event = Helpers.event;
 
 const setInnerHTML = HTMLFunctional.setInnerHTML,
- setAttr = HTMLFunctional.setAttr;
+ setAttr = HTMLFunctional.setAttr,
+ getAttr = HTMLFunctional.getAttr,
+ createShadowDom = HTMLFunctional.createShadowDom;
 
 class PwPinButton extends HTMLButtonElement {
 
@@ -30,14 +34,24 @@ class PwPinButton extends HTMLButtonElement {
   createdCallback() {
 
     /*********************Pure Functions**********************/
-
+    
+    // pinButton :: PwPinButton
     const pinButton = this;
-    const shadow = (elem) => (IO.of(elem.createShadowRoot())),
-      strComponent = this.getTemplateHtml() + this.getTemplateStyle();
+
+    // templateHtml :: String
+    const templateHtml = this.getTemplateHtml();
+
+    // templateStyle :: String
+    const templateStyle = this.getTemplateStyle();
+
+    // setInnerShadow :: (String, String) -> Function(ShadowRoot)
+    const setInnerShadow = compose(setInnerHTML, concat);
 
     /********************Impure Functions*********************/
 
-    const impure = compose(map(setInnerHTML(strComponent)), shadow);
+    const impure = compose(map(setInnerShadow(templateHtml, templateStyle)),
+                               IO.of,
+                               createShadowDom);
     impure(pinButton).runIO();
 
   }
@@ -46,13 +60,23 @@ class PwPinButton extends HTMLButtonElement {
    * Function called when the component is attached to the DOM
    */
   attachedCallback() {
-    const eventObs = Helpers.event('click');
-    const checkElement = (elem) => (IO.of(this.toggleStatus()));
-    const impure = eventObs(this).map(get('target')).map(checkElement);
 
+    /********************Pure Functions*********************/
+
+    // eventObs :: HTMLElement -> EventStream
+    const eventObs = event('click');
+
+    // checkElement :: HTMLElement -> IO(_)
+    const checkElement = (elem) => (IO.of(this.toggleStatus()));
+
+
+    /*********************Impure Functions**********************/
+
+    const impure = eventObs(this).map(get('target')).map(checkElement);
     impure.subscribe((elem) => {
       elem.runIO();
     });
+
   }
 
   /*
@@ -71,8 +95,7 @@ class PwPinButton extends HTMLButtonElement {
   }
 
   toggleStatus() {
-   
-    this.getAttribute('status') === 'checked' ?
+    (getAttr(this, 'status') === 'checked') ?
       setAttr(this, 'status', 'not-checked') :
       setAttr(this, 'status', 'checked');
   }
