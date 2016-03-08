@@ -6,6 +6,7 @@ import R from 'ramda';
 import IO from '../../lib/IO/IO.js';
 import Helpers from '../../lib/Helpers/Helpers.js';
 import ClassList from '../../lib/CSSClassList/CSSClassList.js';
+import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
 
 /**************************Helpers****************************/
 
@@ -13,8 +14,13 @@ import ClassList from '../../lib/CSSClassList/CSSClassList.js';
 const compose = R.compose,
   curry = R.curry,
   get = R.prop,
-  map = Helpers.map,
+  nth = R.nth;
+
+const map = Helpers.map,
   trace = Helpers.trace;
+
+const setInnerHTML = HTMLFunctional.setInnerHTML,
+ setAttr = HTMLFunctional.setAttr;
 
 class PwPinButton extends HTMLButtonElement {
 
@@ -27,16 +33,11 @@ class PwPinButton extends HTMLButtonElement {
 
     const pinButton = this;
     const shadow = (elem) => (IO.of(elem.createShadowRoot())),
-      /*eslint no-param-reassign:0*/
-      setInnerHtml = curry((strHtml, elem) => {
-        elem.innerHTML = strHtml;
-        return elem;
-      }),
       strComponent = this.getTemplateHtml() + this.getTemplateStyle();
 
     /********************Impure Functions*********************/
 
-    const impure = compose(map(setInnerHtml(strComponent)), shadow);
+    const impure = compose(map(setInnerHTML(strComponent)), shadow);
     impure(pinButton).runIO();
 
   }
@@ -65,19 +66,24 @@ class PwPinButton extends HTMLButtonElement {
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'status') {
-      console.log('oldvalue: ' + oldValue + ' , newValue: ' + newValue);
+      ClassList(this.getLikeDiv().runIO()).toggle('active');
     }
   }
 
   toggleStatus() {
-    let status = this.getAttribute('status');
-    let div = this.shadowRoot.childNodes[0].childNodes[1];
-    ClassList(div).toggle('active');
-    if (status === 'checked') {
-      this.setAttribute('status', 'not-checked');
-    } else {
-      this.setAttribute('status', 'checked');
-    }
+   
+    this.getAttribute('status') === 'checked' ?
+      setAttr(this, 'status', 'not-checked') :
+      setAttr(this, 'status', 'checked');
+  }
+
+  getLikeDiv() {
+    let impure = compose(map(nth(1)),
+      map(get('childNodes')),
+      map(nth(0)),
+      map(get('childNodes')),
+      IO.of);
+    return impure(this.shadowRoot);
   }
 
   getTemplateHtml() {
