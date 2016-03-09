@@ -22,9 +22,9 @@ const map = Helpers.map,
   event = Helpers.event;
 
 const setInnerHTML = HTMLFunctional.setInnerHTML,
- setAttr = HTMLFunctional.setAttr,
- getAttr = HTMLFunctional.getAttr,
- createShadowDom = HTMLFunctional.createShadowDom;
+  setAttr = HTMLFunctional.setAttr,
+  getAttr = HTMLFunctional.getAttr,
+  createShadowDom = HTMLFunctional.createShadowDom;
 
 class PwPinButton extends HTMLButtonElement {
 
@@ -34,7 +34,7 @@ class PwPinButton extends HTMLButtonElement {
   createdCallback() {
 
     /*********************Pure Functions**********************/
-    
+
     // pinButton :: PwPinButton
     const pinButton = this;
 
@@ -91,7 +91,7 @@ class PwPinButton extends HTMLButtonElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'status') {
       ClassList(this.getLikeDiv().runIO()).toggle('active');
-    } else if(attrName === 'visible') {
+    } else if (attrName === 'visible') {
       this.style.display = !!newValue ? 'none' : '';
     }
   }
@@ -118,7 +118,7 @@ class PwPinButton extends HTMLButtonElement {
    * Return the div with class like that is in the ShadowRoot
    */
   getLikeDiv() {
-    let impure = compose(map(nth(1)),
+    const impure = compose(map(nth(1)),
       map(get('childNodes')),
       map(nth(0)),
       map(get('childNodes')),

@@ -9,49 +9,73 @@
  * a true-array snapshot of the element's class names.
  */
 
-function classList(e) {
-  if (e.classList) return e.classList; // Return e.classList if it exists
-  else return new CSSClassList(e); // Otherwise try to fake it
-}
-
 // CSSClassList is a JavaScript class that simulates DOMTokenList
 function CSSClassList(e) {
   this.e = e;
 }
 
+function classList(e) {
+  if (e.classList) {
+    return e.classList;
+  }
+
+  return new CSSClassList(e);
+}
+
 // Return true if e.className contains the class c, false otherwise
 CSSClassList.prototype.contains = function (c) {
-  // Check that c is a valid class name
-  if (c.length === 0 || c.indexOf(' ') != -1)
-    throw new Error('Invalid class name: "' + c + '"');
-
   // Check common cases first
-  var classes = this.e.className;
-  if (!classes) return false; // e has no classes at all
-  if (classes === c) return true; // e has one class that matches exactly
+  const classes = this.e.className;
+
+  // Check that c is a valid class name
+  if (c.length === 0 || c.indexOf(' ') !== -1) {
+    /*eslint quotes:0 prefer-template:0*/
+    throw new Error(`Invalid class name: '` + c + `'`);
+  }
+
+  if (!classes) {
+    return false; // e has no classes at all
+  }
+
+  if (classes === c) {
+    return true; // e has one class that matches exactly
+  }
 
   // Otherwise, use a RegExp to search for c as a word by itself
   // \b in a regular expression requires a match at a word boundary.
-  return classes.search('\\b' + c + '\\b') != -1;
+  /*eslint quotes:0 prefer-template:0*/
+  return classes.search(`\\b` + c + `\\b`) !== -1;
 };
 
 // Add c to the e.className if it is not already present
 CSSClassList.prototype.add = function (c) {
-  if (this.contains(c)) return; // Do nothing if already present
-  var classes = this.e.className;
-  if (classes && classes[classes.length - 1] != ' ')
+
+  const classes = this.e.className;
+  if (this.contains(c)) {
+    return; // Do nothing if already present
+  }
+
+  if (classes && classes[classes.length - 1] !== ' ') {
+    /*eslint no-param-reassign:1*/
     c = ' ' + c; // Add a space if we need one
+  }
+
   this.e.className += c; // Add c to the className
 };
 
 // Remove all occurrences of c from e.className
 CSSClassList.prototype.remove = function (c) {
-  // Make sure c is a valid class name
-  if (c.length === 0 || c.indexOf(' ') != -1)
-    throw new Error('Invalid class name: "' + c + '"');
 
   // Remove all occurances of c as a word, plus any trailing space
-  var pattern = new RegExp('\\b' + c + '\\b\\s*', 'g');
+  /*eslint quotes:0 prefer-template:0*/
+  const pattern = new RegExp(`\\b` + c + `\\b\\s*`, 'g');
+
+  // Make sure c is a valid class name
+  if (c.length === 0 || c.indexOf(' ') !== -1) {
+    /*eslint quotes:0 prefer-template:0*/
+    throw new Error(`Invalid class name: '` + c + `'`);
+  }
+
   this.e.className = this.e.className.replace(pattern, '');
 };
 
@@ -61,10 +85,11 @@ CSSClassList.prototype.toggle = function (c) {
   if (this.contains(c)) { // If e.className contains c
     this.remove(c); // then remove it.
     return false;
-  } else { // Otherwise:
-    this.add(c); // add it.
-    return true;
   }
+
+  this.add(c); // add it.
+  return true;
+
 };
 
 // Return e.className itself
@@ -77,4 +102,5 @@ CSSClassList.prototype.toArray = function () {
   return this.e.className.match(/\b\w+\b/g) || [];
 };
 
-export default classList;
+export
+default classList;

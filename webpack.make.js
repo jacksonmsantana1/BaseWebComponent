@@ -97,9 +97,18 @@ module.exports = function makeWebpackConfig(options) {
    */
 
   // Initialize module
-  // jscs:disable
+  // jscs: true
+  // eslint: true
   config.module = {
-    preLoaders: [],
+    preLoaders: [{
+      test: /(\.jsx|\.js)$/,
+      loader: 'eslint-loader',
+      exclude: /node_modules/,
+    }, {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loader: 'jscs-loader',
+    }],
     loaders: [{
       // ASSET LOADER
       // Reference: https://github.com/webpack/file-loader
@@ -149,7 +158,7 @@ module.exports = function makeWebpackConfig(options) {
   // LOCAL HTML LOADER
   var localHtmlLoader = {
     test: /\.html$/,
-    loader: "html-loader"
+    loader: 'html-loader',
   };
 
   // LOCAL CSS LOADER
@@ -271,4 +280,3 @@ module.exports = function makeWebpackConfig(options) {
 };
 
 /*eslint-enable */
-
