@@ -2,24 +2,137 @@ import expect from 'expect.js';
 import Request from './Request.js';
 
 describe('Request =>', () => {
-  describe('getJSON()', () => {
-    it('Should return a Promise', () => {
-      let getJSON = Request.getJSON;
+  describe('getJSON() ->', () => {
+    var server;
+    var getJSON = Request.getJSON;
 
-      expect(getJSON('/test')).to.be.a(Promise);
+    beforeEach(function() {
+      server = sinon.fakeServer.create();
     });
 
-    it('Should make a request to the given url', (done) => {
-      let getJSON = Request.getJSON;
-      let xhr = sinon.useFakeXMLHttpRequest();
-      let requests = [];
-      xhr.onCreate = function (req) { requests.push(req); };
-
-      getJSON('/test');
-
-      expect(requests.length).to.be.equal(1);
-      expect(requests[0].url).to.be.equal('/test');
-      done();
+    afterEach(function() {
+      server.restore();
     });
+
+    it('GET 200', (done) => {
+      server.respondWith('GET', '/something', [200, {
+          'Content-Type': 'application/json',
+        },
+        '{ "CU": "ANUS", "ANUS": "CU" }',
+      ]);
+
+      getJSON('/something').then((data) => {
+        expect(data.body.CU).to.be.equal('ANUS');
+        expect(data.body.ANUS).to.be.equal('CU');
+
+        done();
+      }, (err) => {
+        done();
+      });
+
+      server.respond();
+
+    });
+
+    it('GET 500', () => {
+      server.respondWith('GET', '/something', [500, {
+          'Content-Type': 'application/json',
+        },
+        ' ',
+      ]);
+
+      getJSON('/something').then((data) => {
+        done();
+      }, (err) => {
+        expect(err.status).to.be.equal(500);
+        expect(err.message).to.be.equal('Internal Server Error');
+        expect(err.error).to.be.an(Error);
+        done();
+      });
+
+      server.respond();
+
+    });
+
+    it('GET 400', () => {
+      server.respondWith('GET', '/something', [400, {
+          'Content-Type': 'application/json',
+        },
+        ' ',
+      ]);
+
+      getJSON('/something').then((data) => {
+        done();
+      }, (err) => {
+        expect(data.status).to.be.equal(400);
+        expect(data.message).to.be.equal('Bad Request');
+        expect(data.error).to.be.an(Error);
+        done();
+      });
+
+      server.respond();
+
+    });
+
+    it('GET 401', () => {
+      server.respondWith('GET', '/something', [401, {
+          'Content-Type': 'application/json',
+        },
+        ' ',
+      ]);
+
+      getJSON('/something').then((data) => {
+        done();
+      }, (err) => {
+        expect(data.status).to.be.equal(401);
+        expect(data.message).to.be.equal('Unauthorized');
+        expect(data.error).to.be.an(Error);
+        done();
+      });
+
+      server.respond();
+
+    });
+
+    it('GET 403', () => {
+      server.respondWith('GET', '/something', [403, {
+          'Content-Type': 'application/json',
+        },
+        ' ',
+      ]);
+
+      getJSON('/something').then((data) => {
+        done();
+      }, (err) => {
+        expect(data.status).to.be.equal(403);
+        expect(data.message).to.be.equal('Unauthorized');
+        expect(data.error).to.be.an(Error);
+        done();
+      });
+
+      server.respond();
+
+    });
+
+    it('GET 404', () => {
+      server.respondWith('GET', '/something', [404, {
+          'Content-Type': 'application/json',
+        },
+        ' ',
+      ]);
+
+      getJSON('/something').then((data) => {
+        done();
+      }, (err) => {
+        expect(data.status).to.be.equal(404);
+        expect(data.message).to.be.equal('Not Found');
+        expect(data.error).to.be.an(Error);
+        done();
+      });
+
+      server.respond();
+
+    });
+
   });
 });

@@ -29,8 +29,7 @@ CSSClassList.prototype.contains = function (c) {
 
   // Check that c is a valid class name
   if (c.length === 0 || c.indexOf(' ') !== -1) {
-    /*eslint quotes:0 prefer-template:0*/
-    throw new Error(`Invalid class name: '` + c + `'`);
+    throw new Error('Invalid class name: "' + c + '"');
   }
 
   if (!classes) {
@@ -43,8 +42,7 @@ CSSClassList.prototype.contains = function (c) {
 
   // Otherwise, use a RegExp to search for c as a word by itself
   // \b in a regular expression requires a match at a word boundary.
-  /*eslint quotes:0 prefer-template:0*/
-  return classes.search(`\\b` + c + `\\b`) !== -1;
+  return classes.search('\\b' + c + '\\b') !== -1;
 };
 
 // Add c to the e.className if it is not already present
@@ -67,13 +65,11 @@ CSSClassList.prototype.add = function (c) {
 CSSClassList.prototype.remove = function (c) {
 
   // Remove all occurances of c as a word, plus any trailing space
-  /*eslint quotes:0 prefer-template:0*/
-  const pattern = new RegExp(`\\b` + c + `\\b\\s*`, 'g');
+  const pattern = new RegExp('\\b' + c + '\\b\\s*', 'g');
 
   // Make sure c is a valid class name
   if (c.length === 0 || c.indexOf(' ') !== -1) {
-    /*eslint quotes:0 prefer-template:0*/
-    throw new Error(`Invalid class name: '` + c + `'`);
+    throw new Error('Invalid class name: "' + c + '"');
   }
 
   this.e.className = this.e.className.replace(pattern, '');
