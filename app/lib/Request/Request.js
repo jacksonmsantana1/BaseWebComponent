@@ -47,6 +47,46 @@ class Request {
     });
   }
 
+  static sendJSON(url, data) {
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.open('POST', url);
+      request.onreadystatechange = () => {
+        if (request.readyState === 4 && resolve) {
+          resolve(request);
+        }
+      };
+
+      request.setRequestHeader('Content-Type',
+        'application/x-www-form-urlencoded');
+      request.send(this.encodeFormData(data));
+    });
+  }
+
+  encodeFormData(data) {
+    if (!data) {
+      return '';
+    }
+
+    let pairs = [];
+    for (var name in data) {
+      let value = data[name].toString();
+
+      if (!data.hasOwnProperty(name)) {
+        continue;
+      }
+
+      if (typeof data[name] === 'function') {
+        continue;
+      }
+
+      name = encodeURIComponent(name.replace(' ', '+'));
+      value = encodeURIComponent(value.replace(' ', '+'));
+      pairs.push(name + '=' + value); // Remember name=value
+    }
+
+    return pairs.join('&');
+  }
 }
 
 export

@@ -6,11 +6,11 @@ describe('Request =>', () => {
     var server;
     var getJSON = Request.getJSON;
 
-    beforeEach(function() {
+    beforeEach(function () {
       server = sinon.fakeServer.create();
     });
 
-    afterEach(function() {
+    afterEach(function () {
       server.restore();
     });
 
@@ -133,6 +133,12 @@ describe('Request =>', () => {
       server.respond();
 
     });
+  });
 
+  describe('postJSON() -> ', () => {
+    it('POST', () => {
+      //TODO
+      expect(true).to.be.equal(true);
+    });
   });
 });
