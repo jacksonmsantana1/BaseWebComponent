@@ -136,9 +136,22 @@ describe('Request =>', () => {
   });
 
   describe('postJSON() -> ', () => {
-    it('POST', () => {
-      //TODO
-      expect(true).to.be.equal(true);
+    it('Test should return a Promise', () => {
+      let sendJSON = Request.sendJSON;
+      let promise = sendJSON('/test', {});
+
+      expect(promise).to.be.a(Promise);
+    });
+
+    it('Test should throw an error when there s no reject()', () => {
+      let sendJSON = Request.sendJSON;
+      let promise = sendJSON('/test', {});
+
+      try {
+        promise.then(function () {});
+      } catch (e) {
+        expect(e.message).to.be.equal('Need add the resolve or the reject fn');
+      }
     });
   });
 });

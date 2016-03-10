@@ -49,17 +49,23 @@ class Request {
 
   static sendJSON(url, data) {
     return new Promise((resolve, reject) => {
-      const request = new XMLHttpRequest();
-      request.open('POST', url);
-      request.onreadystatechange = () => {
-        if (request.readyState === 4 && resolve) {
-          resolve(request);
-        }
-      };
+      if (!!resolve && !!reject) {
+        console.log('ANUS');
+      } else {
+        throw new Error('Need add the resolve or the reject fn');
+      }
 
-      request.setRequestHeader('Content-Type',
-        'application/x-www-form-urlencoded');
-      request.send(this.encodeFormData(data));
+      // const request = new XMLHttpRequest();
+      // request.open('POST', url);
+      // request.onreadystatechange = () => {
+      //   if (request.readyState === 4 && resolve) {
+      //     resolve(request);
+      //   }
+      // };
+
+      // request.setRequestHeader('Content-Type',
+      //   'application/x-www-form-urlencoded');
+      // request.send(this.encodeFormData(data));
     });
   }
 
