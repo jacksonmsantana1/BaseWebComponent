@@ -6,12 +6,33 @@ describe('Request =>', () => {
     var server;
     var getJSON = Request.getJSON;
 
-    beforeEach(function () {
+    beforeEach(function() {
       server = sinon.fakeServer.create();
     });
 
-    afterEach(function () {
+    afterEach(function() {
       server.restore();
+    });
+
+    it('Test should return an error if none url is given', (done) => {
+      getJSON().then(function() {
+          expect(true).to.be.equal(false);
+          done();
+        },
+        function(err) {
+          expect(err.message).to.be.equal('URL is not defined');
+          done();
+        });
+    });
+
+    it('Test should return an error if an empty url is given', (done) => {
+      getJSON('    ').then(function() {
+        expect(true).to.be.equal(false);
+        done();
+      }, function(err) {
+        expect(err.message).to.be.equal('URL is not defined');
+        done();
+      });
     });
 
     it('GET 200', (done) => {
@@ -27,6 +48,7 @@ describe('Request =>', () => {
 
         done();
       }, (err) => {
+        expect(true).to.be.equal(false);
         done();
       });
 
@@ -42,6 +64,7 @@ describe('Request =>', () => {
       ]);
 
       getJSON('/something').then((data) => {
+        expect(true).to.be.equal(false);
         done();
       }, (err) => {
         expect(err.status).to.be.equal(500);
@@ -62,6 +85,7 @@ describe('Request =>', () => {
       ]);
 
       getJSON('/something').then((data) => {
+        expect(false).to.be.equal(true);
         done();
       }, (err) => {
         expect(data.status).to.be.equal(400);
@@ -82,6 +106,7 @@ describe('Request =>', () => {
       ]);
 
       getJSON('/something').then((data) => {
+        expect(true).to.be.equal(false);
         done();
       }, (err) => {
         expect(data.status).to.be.equal(401);
@@ -102,6 +127,7 @@ describe('Request =>', () => {
       ]);
 
       getJSON('/something').then((data) => {
+        expect(true).to.be.equal(false);
         done();
       }, (err) => {
         expect(data.status).to.be.equal(403);
@@ -122,6 +148,7 @@ describe('Request =>', () => {
       ]);
 
       getJSON('/something').then((data) => {
+        expect(true).to.be.equal(false);
         done();
       }, (err) => {
         expect(data.status).to.be.equal(404);
@@ -136,22 +163,62 @@ describe('Request =>', () => {
   });
 
   describe('postJSON() -> ', () => {
+    var server;
+    var sendJSON = Request.sendJSON;
+
+    beforeEach(function() {
+      server = sinon.fakeServer.create();
+    });
+
+    afterEach(function() {
+      server.restore();
+    });
+
     it('Test should return a Promise', () => {
-      let sendJSON = Request.sendJSON;
       let promise = sendJSON('/test', {});
 
       expect(promise).to.be.a(Promise);
     });
 
-    it('Test should throw an error when there s no reject()', () => {
-      let sendJSON = Request.sendJSON;
-      let promise = sendJSON('/test', {});
+    it('Test should return an error when no url is given', (done) => {
+      sendJSON().then(function(res) {
+        expect(true).to.be.equal(false);
+        done();
+      }, function(err) {
+        expect(err.message).to.be.equal('URL is not defined');
+        done();
+      });
+    });
 
-      try {
-        promise.then(function () {});
-      } catch (e) {
-        expect(e.message).to.be.equal('Need add the resolve or the reject fn');
-      }
+    it('Test should return an error when no data is given', (done) => {
+      sendJSON('/test').then(function(res) {
+        expect(true).to.be.equal(false);
+        done();
+      }, function(err) {
+        expect(err.message).to.be.equal('Data is not defined');
+        done();
+      });
+    });
+
+    it('Test should return a 201 status when the request is OK', (done) => {
+      server.respondWith('POST', '/test', [201, {
+          'Content-Type': 'application/json',
+        },
+        'CU',
+      ]);
+
+      sendJSON('/test', 'CU').then((res) => {
+        expect(res).to.be.equal('OK');
+        done();
+      }, (err) => {
+        expect(false).to.be.equal(true);
+        done();
+      }).catch((e) => {
+        expect(false).to.be.equal(true);
+        done();
+      });
+
+      server.respond();
     });
   });
 });
