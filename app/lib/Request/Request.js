@@ -63,48 +63,28 @@ class Request {
         reject(new Error('URL is not defined'));
       }
 
-      if (!data || data.trim() === '') {
+      if (!data) {
         reject(new Error('Data is not defined'));
+      }
+
+      if (Object.keys(data).length === 0 && JSON.stringify(data) === JSON.stringify({})) {
+        reject(new Error('Data is an empty object'));
       }
 
       const req = new XMLHttpRequest();
       req.open('POST', url);
       req.onreadystatechange = function () {
-        if (req.readyState === 4 && req.status === 200) {
+        if (req.readyState === 4 && req.status === 201) {
           resolve({
-            status: 201,
+            status: req.status,
             message: 'OK 201',
-            body: req.response,
+            body: data,
           });
-        } else {
-          console.log('Status:' + req.status);
-          console.log('ReadyState: ' + req.readyState);
+        } else if (req.status === 500) {
           reject({
-            status: req.status,
-            message: req.responseText,
-            error: new Error('ERROR ' + req.status),
-          });
-        }
-      };
-
-      req.onerror = function () {
-        if (req.status === 404) {
-          reject({
-            status: 404,
-            message: 'Not Found',
-            error: new Error('ERROR 404'),
-          });
-        } else if (req.status === 401) {
-          reject({
-            status: 401,
-            message: 'Duplicated post',
-            error: new Error('ERROR 401'),
-          });
-        } else {
-          reject({
-            status: req.status,
-            message: req.responseText,
-            error: new Error('ERROR ' + req.status),
+            status: 500,
+            message: 'Internal Server Error',
+            error: new Error('ERROR 500'),
           });
         }
       };
@@ -112,33 +92,6 @@ class Request {
       req.setRequestHeader('Content-Type', 'application/json');
       req.send(JSON.stringify(data));
     });
-  }
-
-  encodeFormData(data) {
-    if (!data) {
-      return '';
-    }
-
-    const pairs = [];
-    for (let name in data) {
-      if (data.hasOwnProperty(name)) {
-        let value = data[name].toString();
-
-        if (!data.hasOwnProperty(name)) {
-          continue;
-        }
-
-        if (typeof data[name] === 'function') {
-          continue;
-        }
-
-        name = encodeURIComponent(name.replace(' ', '+'));
-        value = encodeURIComponent(value.replace(' ', '+'));
-        pairs.push(name + '=' + value); // Remember name=value
-      }
-    }
-
-    return pairs.join('&');
   }
 }
 

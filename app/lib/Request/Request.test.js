@@ -163,15 +163,20 @@ describe('Request =>', () => {
   });
 
   describe('postJSON() -> ', () => {
-    var server;
     var sendJSON = Request.sendJSON;
+    var xhr;
+    var requests;
 
-    beforeEach(function() {
-      server = sinon.fakeServer.create();
+    beforeEach(() => {
+      xhr = sinon.useFakeXMLHttpRequest();
+      requests = [];
+      xhr.onCreate = (xhr) => {
+        requests.push(xhr);
+      };
     });
 
     afterEach(function() {
-      server.restore();
+      xhr.restore();
     });
 
     it('Test should return a Promise', () => {
@@ -185,7 +190,7 @@ describe('Request =>', () => {
         expect(true).to.be.equal(false);
         done();
       }, function(err) {
-        expect(err.message).to.be.equal('URL is not defined');
+        expect(err.url).to.be.equal(undefined);
         done();
       });
     });
@@ -200,25 +205,68 @@ describe('Request =>', () => {
       });
     });
 
-    it('Test should return a 201 status when the request is OK', (done) => {
-      server.respondWith('POST', '/test', [201, {
-          'Content-Type': 'application/json',
-        },
-        'CU',
-      ]);
-
-      sendJSON('/test', 'CU').then((res) => {
-        expect(res).to.be.equal('OK');
+    it('Test should return an error when the data is an empty obejct', (done) => {
+      sendJSON('/test', {}).then(function() {
+        expect(true).to.be.equal(false);
         done();
-      }, (err) => {
-        expect(false).to.be.equal(true);
-        done();
-      }).catch((e) => {
-        expect(false).to.be.equal(true);
+      }, function(err) {
+        expect(err.message).to.be.equal('Data is an empty object');
         done();
       });
-
-      server.respond();
     });
+
+    it('Test should send given data as JSON body', () => {
+      var data = {
+        hello: 'world'
+      };
+      var dataJson = JSON.stringify(data);
+
+      sendJSON('/test', data).then(function() {});
+      expect(requests[0].requestBody).to.equal(dataJson);
+    });
+
+    it('Test should send send a status of 201 when completed ', (done) => {
+      var data = {
+        hello: 'world 201'
+      };
+      var dataJson = JSON.stringify(data);
+      var res = sendJSON('/test', data);
+
+      requests[0].respond(201, {
+        'Content-Type': 'text/json'
+      }, dataJson);
+      res.then((obj) => {
+        expect(obj.body).to.be.equal(data);
+        expect(obj.status).to.be.equal(201);
+        expect(obj.message).to.be.equal('OK 201');
+        done();
+      });
+    });
+
+    it('Test should return an error when 500 occurred', (done) => {
+      var data = {
+        hello: 'world 201'
+      };
+      var dataJson = JSON.stringify(data);
+
+      sendJSON('/test', data).then(() => {
+        expect(true).to.be.equal(false);
+        done();
+      }, (err) => {
+        expect(err.status).to.be.equal(500);
+        expect(err.message).to.be.equal('Internal Server Error');
+        done();
+      });
+      requests[0].respond(500);
+    });
+
+    it('Not found 404', () => {
+      //TODO
+    });
+
+    it('Not permitted 403', () => {
+      //TODO
+    });
+
   });
 });
