@@ -127,6 +127,29 @@ class PwPinButton extends HTMLButtonElement {
   }
 
   /**
+   * Warn the other components when it's 'pin' (clicked)
+   */
+  pin() {
+    //TODO
+  }
+
+  /**
+   * Warn the others components when it's 'des' pin
+   */
+  despin() {
+    //TODO
+  }
+
+  /**
+   * Check the component status
+   */
+  isPinned() {
+    //TODO
+    return getAttr(this, 'status') === 'checked' ?
+      true : false;
+  }
+
+  /**
    * Return the component Html in string
    */
   getTemplateHtml() {
