@@ -145,8 +145,7 @@ class PwPinButton extends HTMLButtonElement {
    */
   isPinned() {
     //TODO
-    return getAttr(this, 'status') === 'checked' ?
-      true : false;
+    return getAttr(this, 'status') === 'checked';
   }
 
   /**
