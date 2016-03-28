@@ -2,5 +2,5 @@
   "preset": "airbnb",
   "verbose": true,
   "esnext": true,
-  "excludeFiles": ["app/**/*.test.js", webpack.* * .js]
+  "excludeFiles": ["app/**/*.test.js", "./webpack.**.js"]
 }
