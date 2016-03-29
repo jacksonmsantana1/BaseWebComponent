@@ -5,7 +5,7 @@ module.exports = function karmaConfig(config) {
 
       // Reference: https://github.com/karma-runner/karma-mocha
       // Set framework to mocha
-      'mocha', 'chai', 'sinon',
+      'mocha', 'chai', 'sinon', 'sinon-chai',
     ],
 
     reporters: [
@@ -29,7 +29,7 @@ module.exports = function karmaConfig(config) {
       // Reference: http://webpack.github.io/docs/testing.html
       // Reference: https://github.com/webpack/karma-webpack
       // Convert files with webpack and load sourcemaps
-      'app/**/*.test.js': ['webpack', 'sourcemap'],
+      './app/**/*.test.js': ['webpack', 'sourcemap'],
     },
 
     browsers: [
@@ -58,6 +58,7 @@ module.exports = function karmaConfig(config) {
       require('karma-mocha'),
       require('karma-chai'),
       require('karma-sinon'),
+      require('karma-sinon-chai'),
       require('karma-webpack'),
       require('karma-chrome-launcher'),
       require('karma-coverage'),

@@ -1,4 +1,4 @@
-import expect from 'expect.js';
+import chai from 'expect.js';
 import Base from './Base.js';
 
 describe('Component: Base =>', () => {
@@ -12,10 +12,8 @@ describe('Component: Base =>', () => {
     let nodes = Array.from(shadow.childNodes);
     let mainDiv = nodes[0];
     let boilerplate = mainDiv.childNodes[1];
-    let content = mainDiv.childNodes[3].childNodes[1];
 
     expect(boilerplate.textContent.trim()).to.be.equal('O Nathan é um ...');
     expect(component.textContent).to.be.equal('Viadinho');
-    expect(content).to.be.ok();
   });
 });

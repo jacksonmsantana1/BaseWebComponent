@@ -14,261 +14,281 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
  * @returns {Object} Webpack configuration object
  */
 module.exports = function makeWebpackConfig(options) {
-  /**
-   * Environment type
-   * BUILD is for generating minified builds
-   * TEST is for generating test builds
-   */
-  var BUILD = !!options.BUILD;
-  var TEST = !!options.TEST;
+    /**
+     * Environment type
+     * BUILD is for generating minified builds
+     * TEST is for generating test builds
+     */
+    var BUILD = !!options.BUILD;
+    var TEST = !!options.TEST;
 
-  /**
-   * Environment values
-   */
-  var NODE_ENV = process.env.NODE_ENV || 'development';
+    /**
+     * Environment values
+     */
+    var NODE_ENV = process.env.NODE_ENV || 'development';
 
-  /**
-   * Config
-   * Reference: http://webpack.github.io/docs/configuration.html
-   * This is the object where all configuration gets set
-   */
-  var config = {};
+    /**
+     * Config
+     * Reference: http://webpack.github.io/docs/configuration.html
+     * This is the object where all configuration gets set
+     */
+    var config = {};
 
-  /**
-   * Entry
-   * Reference: http://webpack.github.io/docs/configuration.html#entry
-   * Should be an empty object if it's generating a test build
-   * Karma will set this when it's a test build
-   */
-  if (TEST) {
-    config.entry = {};
-  } else {
-    config.entry = {
-      app: ['babel-polyfill', './app'],
-      webcomponent: './node_modules/webcomponents.js/webcomponents.min.js',
+    /**
+     * Entry
+     * Reference: http://webpack.github.io/docs/configuration.html#entry
+     * Should be an empty object if it's generating a test build
+     * Karma will set this when it's a test build
+     */
+    if (TEST) {
+      config.entry = {};
+    } else {
+      config.entry = {
+        app: ['babel-polyfill', './app'],
+        webcomponent: './node_modules/webcomponents.js/webcomponents.min.js',
+      };
+    }
+
+    /**
+     * Output
+     * Reference: http://webpack.github.io/docs/configuration.html#output
+     * Should be an empty object if it's generating a test build
+     * Karma will handle setting it up for you when it's a test build
+     */
+    if (TEST) {
+      config.output = {};
+    } else {
+      config.output = {
+        // Absolute output directory
+        path: __dirname + '/public',
+
+        // Output path from the view of the page
+        // Uses webpack-dev-server in development
+        publicPath: BUILD ? '/' : 'http://localhost:8080/',
+
+        // Filename for entry points
+        // Only adds hash in build mode
+        filename: BUILD ? '[name].[hash].js' : '[name].bundle.js',
+
+        // Filename for non-entry points
+        // Only adds hash in build mode
+        chunkFilename: BUILD ? '[name].[hash].js' : '[name].bundle.js',
+      };
+    }
+
+    /**
+     * Devtool
+     * Reference: http://webpack.github.io/docs/configuration.html#devtool
+     * Type of sourcemap to use per build type
+     */
+    if (TEST) {
+      config.devtool = 'inline-source-map';
+    } else if (BUILD) {
+      config.devtool = 'source-map';
+    } else {
+      config.devtool = 'inline-source-map';
+    }
+
+    /**
+     * Loaders
+     * Reference: http://webpack.github.io/docs/configuration.html#module-loaders
+     * List: http://webpack.github.io/docs/list-of-loaders.html
+     * This handles most of the magic responsible for converting modules
+     */
+
+    // Initialize module
+    config.module = {
+      preLoaders: [],
+      loaders: [{
+        // ASSET LOADER
+        // Reference: https://github.com/webpack/file-loader
+        // Copy png, jpg, jpeg, gif, svg, woff, ttf, eot files to output
+        // Rename the file using the asset hash
+        // Pass along the updated reference to your code
+        // You can add here any file extension you want to get copied to your output
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
+        loader: 'file',
+      }],
     };
-  }
 
-  /**
-   * Output
-   * Reference: http://webpack.github.io/docs/configuration.html#output
-   * Should be an empty object if it's generating a test build
-   * Karma will handle setting it up for you when it's a test build
-   */
-  if (TEST) {
-    config.output = {};
-  } else {
-    config.output = {
-      // Absolute output directory
-      path: __dirname + '/public',
-
-      // Output path from the view of the page
-      // Uses webpack-dev-server in development
-      publicPath: BUILD ? '/' : 'http://localhost:8080/',
-
-      // Filename for entry points
-      // Only adds hash in build mode
-      filename: BUILD ? '[name].[hash].js' : '[name].bundle.js',
-
-      // Filename for non-entry points
-      // Only adds hash in build mode
-      chunkFilename: BUILD ? '[name].[hash].js' : '[name].bundle.js',
-    };
-  }
-
-  /**
-   * Devtool
-   * Reference: http://webpack.github.io/docs/configuration.html#devtool
-   * Type of sourcemap to use per build type
-   */
-  if (TEST) {
-    config.devtool = 'inline-source-map';
-  } else if (BUILD) {
-    config.devtool = 'source-map';
-  } else {
-    config.devtool = 'inline-source-map';
-  }
-
-  /**
-   * Loaders
-   * Reference: http://webpack.github.io/docs/configuration.html#module-loaders
-   * List: http://webpack.github.io/docs/list-of-loaders.html
-   * This handles most of the magic responsible for converting modules
-   */
-
-  // Initialize module
-  // jscs:disable
-  config.module = {
-    preLoaders: [],
-    loaders: [{
-      // ASSET LOADER
-      // Reference: https://github.com/webpack/file-loader
-      // Copy png, jpg, jpeg, gif, svg, woff, ttf, eot files to output
-      // Rename the file using the asset hash
-      // Pass along the updated reference to your code
-      // You can add here any file extension you want to get copied to your output
-      test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/,
-      loader: 'file',
-    }],
-  };
-
-  // ISPARTA LOADER
-  // Reference: https://github.com/ColCh/isparta-instrumenter-loader
-  // Instrument JS files with Isparta for subsequent code coverage reporting
-  // Skips node_modules and files that end with .test.js and .test.jsx
-  if (TEST) {
-    config.module.preLoaders.push({
+    // ESLint LOADER
+    var eslintLoader = {
       test: /\.js$/,
       exclude: [
         /node_modules/,
         /\.test\.js$/,
       ],
-      loader: 'isparta-instrumenter',
-    });
-  }
+      loader: 'eslint-loader',
+    };
 
-  // JS LOADER
-  // Reference: https://github.com/babel/babel-loader
-  // Transpile .js files using babel-loader
-  // Compiles ES6 and ES7 into ES5 code
-  var jsLoader = {
-    test: /\.js$/,
-    exclude: /node_modules/,
-    loader: 'babel',
+    // JSCSLoader
+    var jscsLoader = {
+      test: /\.js$/,
+      exclude: [
+        /node_modules/,
+        /\.test\.js$/,
+      ],
+      loader: 'jscs-loader',
+    };
 
-    query: {
-      extra: {},
-      plugins: [],
-      optional: ['runtime'],
-    },
-  };
+    // ISPARTA LOADER
+    // Reference: https://github.com/ColCh/isparta-instrumenter-loader
+    // Instrument JS files with Isparta for subsequent code coverage reporting
+    // Skips node_modules and files that end with .test.js and .test.jsx
+    if (TEST) {
+      config.module.preLoaders.push({
+        test: /\.js$/,
+        exclude: [
+          /node_modules/,
+          /\.test\.js$/,
+        ],
+        loader: 'isparta-instrumenter',
+      });
+    } else {
+      config.module.preLoaders.push(eslintLoader, jscsLoader);
+    }
 
-  // Add jsLoader to the loader list
-  config.module.loaders.push(jsLoader);
+      // JS LOADER
+      // Reference: https://github.com/babel/babel-loader
+      // Transpile .js files using babel-loader
+      // Compiles ES6 and ES7 into ES5 code
+      var jsLoader = {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel',
 
-  // LOCAL HTML LOADER
-  var localHtmlLoader = {
-    test: /\.html$/,
-    loader: "html-loader"
-  };
+        query: {
+          extra: {},
+          plugins: [],
+          optional: ['runtime'],
+        },
+      };
 
-  // LOCAL CSS LOADER
+      // Add jsLoader to the loader list
+      config.module.loaders.push(jsLoader);
 
-  // Identifier name for local css modules
-  // Reference: https://github.com/webpack/css-loader#local-scope
-  // More info: https://github.com/css-modules/css-modules
-  const localIdentName = BUILD ? '[hash:base64]' : '[path][name]---[local]---[hash:base64:5]';
+      // LOCAL HTML LOADER
+      var localHtmlLoader = {
+        test: /\.html$/,
+        loader: 'html-loader',
+      };
 
-  // Reference: https://github.com/webpack/css-loader
-  // Allow loading css through js and getting the className
-  var localCssLoader = {
-    test: /\.css$/,
-    include: __dirname + '/app',
+      // LOCAL CSS LOADER
 
-    // Reference: https://github.com/webpack/extract-text-webpack-plugin
-    // Extract css files in production builds
-    loader: ExtractTextPlugin.extract(
+      // Identifier name for local css modules
+      // Reference: https://github.com/webpack/css-loader#local-scope
+      // More info: https://github.com/css-modules/css-modules
+      const localIdentName = BUILD ? '[hash:base64]' : '[path][name]---[local]---[hash:base64:5]';
 
-      // Reference: https://github.com/webpack/style-loader
-      // Use style-loader in development for hot-loading
-      'style',
+      // Reference: https://github.com/webpack/css-loader
+      // Allow loading css through js and getting the className
+      var localCssLoader = {
+        test: /\.css$/,
+        include: __dirname + '/app',
 
-      // Reference: https://github.com/postcss/postcss-loader
-      // Postprocess your css with PostCSS plugins
-      'css?modules&sourceMap&localIdentName=' + localIdentName + '!postcss'
-    ),
-  };
+        // Reference: https://github.com/webpack/extract-text-webpack-plugin
+        // Extract css files in production builds
+        loader: ExtractTextPlugin.extract(
 
-  // GLOBAL CSS LOADER
-  // The same as localCssLoader, but imports are globals
-  var globalCssLoader = {
-    test: /\.css$/,
-    include: __dirname + '/node_modules',
-    loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss'),
-  };
+          // Reference: https://github.com/webpack/style-loader
+          // Use style-loader in development for hot-loading
+          'style',
 
-  // Add localCssLoader and globalCssLoader to the loader list
-  config.module.loaders.push(localHtmlLoader, localCssLoader, globalCssLoader);
+          // Reference: https://github.com/postcss/postcss-loader
+          // Postprocess your css with PostCSS plugins
+          'css?modules&sourceMap&localIdentName=' + localIdentName + '!postcss'
+        ),
+      };
 
-  /**
-   * PostCSS
-   * Reference: https://github.com/postcss/autoprefixer-core
-   * Add vendor prefixes to your css
-   */
-  config.postcss = [
-    autoprefixer({
-      browsers: ['last 2 versions'],
-    }),
-  ];
+      // GLOBAL CSS LOADER
+      // The same as localCssLoader, but imports are globals
+      var globalCssLoader = {
+        test: /\.css$/,
+        include: __dirname + '/node_modules',
+        loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss'),
+      };
 
-  /**
-   * Plugins
-   * Reference: http://webpack.github.io/docs/configuration.html#plugins
-   * List: http://webpack.github.io/docs/list-of-plugins.html
-   */
-  config.plugins = [
+      // Add localCssLoader and globalCssLoader to the loader list
+      config.module.loaders.push(localHtmlLoader, localCssLoader, globalCssLoader);
 
-    // Reference: https://github.com/webpack/extract-text-webpack-plugin
-    // Extract css files
-    // Disabled when in test mode or not in build mode
-    new ExtractTextPlugin('[name].[hash].css', {
-      disable: !BUILD || TEST,
-    }),
+      /**
+       * PostCSS
+       * Reference: https://github.com/postcss/autoprefixer-core
+       * Add vendor prefixes to your css
+       */
+      config.postcss = [
+        autoprefixer({
+          browsers: ['last 2 versions'],
+        }),
+      ];
 
-    // Reference: http://webpack.github.io/docs/list-of-plugins.html#defineplugin
-    // Replace process.env.NODE_ENV with NODE_ENV in code
-    // Can be used to replace other values as well
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
-    }),
-  ];
+      /**
+       * Plugins
+       * Reference: http://webpack.github.io/docs/configuration.html#plugins
+       * List: http://webpack.github.io/docs/list-of-plugins.html
+       */
+      config.plugins = [
 
-  // Skip rendering index.html in test mode
-  if (!TEST) {
-    // Reference: https://github.com/ampedandwired/html-webpack-plugin
-    // Render index.html
-    config.plugins.push(
-      new HtmlWebpackPlugin({
-        title: 'Web application',
-      })
-    );
-  }
+        // Reference: https://github.com/webpack/extract-text-webpack-plugin
+        // Extract css files
+        // Disabled when in test mode or not in build mode
+        new ExtractTextPlugin('[name].[hash].css', {
+          disable: !BUILD || TEST,
+        }),
 
-  // Add build specific plugins
-  if (BUILD) {
-    config.plugins.push(
+        // Reference: http://webpack.github.io/docs/list-of-plugins.html#defineplugin
+        // Replace process.env.NODE_ENV with NODE_ENV in code
+        // Can be used to replace other values as well
+        new webpack.DefinePlugin({
+          'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
+        }),
+      ];
 
-      // Reference: http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
-      // Only emit files when there are no errors
-      new webpack.NoErrorsPlugin(),
+      // Skip rendering index.html in test mode
+      if (!TEST) {
+        // Reference: https://github.com/ampedandwired/html-webpack-plugin
+        // Render index.html
+        config.plugins.push(
+          new HtmlWebpackPlugin({
+            title: 'Web application',
+          })
+        );
+      }
 
-      // Reference: http://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
-      // Dedupe modules in the output
-      new webpack.optimize.DedupePlugin(),
+      // Add build specific plugins
+      if (BUILD) {
+        config.plugins.push(
 
-      // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
-      // Minify all javascript, switch loaders to minimizing mode
-      new webpack.optimize.UglifyJsPlugin()
-    );
-  }
+          // Reference: http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
+          // Only emit files when there are no errors
+          new webpack.NoErrorsPlugin(),
 
-  /**
-   * Dev server configuration
-   * Reference: http://webpack.github.io/docs/configuration.html#devserver
-   * Reference: http://webpack.github.io/docs/webpack-dev-server.html
-   */
-  config.devServer = {
-    contentBase: './public',
-    stats: {
-      modules: false,
-      cached: false,
-      colors: true,
-      chunk: false,
-    },
-  };
+          // Reference: http://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
+          // Dedupe modules in the output
+          new webpack.optimize.DedupePlugin(),
 
-  return config;
-};
+          // Reference: http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
+          // Minify all javascript, switch loaders to minimizing mode
+          new webpack.optimize.UglifyJsPlugin()
+        );
+      }
 
-/*eslint-enable */
+      /**
+       * Dev server configuration
+       * Reference: http://webpack.github.io/docs/configuration.html#devserver
+       * Reference: http://webpack.github.io/docs/webpack-dev-server.html
+       */
+      config.devServer = {
+        contentBase: './public',
+        stats: {
+          modules: false,
+          cached: false,
+          colors: true,
+          chunk: false,
+        },
+      };
 
+      return config;
+    };
+
+    /*eslint-enable */

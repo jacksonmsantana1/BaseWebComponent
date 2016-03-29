@@ -1,4 +1,5 @@
 import R from 'ramda';
+import Rx from 'rx';
 
 /**
  *  Helpers Functions
@@ -24,6 +25,9 @@ const trace = R.curry((tag, x) => {
   return x;
 });
 
+// event :: String -> HTLMElement -> Observable
+const event = R.curry((evt, el) => (Rx.Observable.fromEvent(el, evt)));
+
 const Helpers = function () {};
 
 Helpers.prototype.chain = chain;
@@ -37,6 +41,9 @@ Helpers.join = Helpers.prototype.join;
 
 Helpers.prototype.trace = trace;
 Helpers.trace = Helpers.prototype.trace;
+
+Helpers.prototype.event = event;
+Helpers.event = Helpers.prototype.event;
 
 export
 default Helpers;
