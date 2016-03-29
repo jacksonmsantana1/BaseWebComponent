@@ -10,7 +10,7 @@ class PwInfoUser extends HTMLElement {
 
   attachedCallback() {}
 
-  attributeChangedCallback(attrName, oldValue, newValue) {}
+  attributeChangedCallback() {}
 }
 
 document.registerElement('pw-info-user', PwInfoUser);
