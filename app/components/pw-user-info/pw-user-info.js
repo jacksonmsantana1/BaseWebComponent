@@ -24,21 +24,27 @@ class PwInfoUser extends HTMLElement {
     this.validateUser(user)
       .then(this.getResponseToken)
       .catch(validationError)
-      .then(this.setUserToken);gt
+      .then(this.setUserToken);
   }
 
   validationError(err) {
     if (err.status === 401 || err.status === 403) {
-      this.emit('ValidationError', err.message);
+      console.log(err.message);
     } else if (err.status === 400) {
-      this.emit('ValidationError', err.message);
+      console.log(err.message);
     } else if (err.status === 500) {
-      this.emit('ValidationError', err.message);
+      console.log(err.message);
     }
   }
 
   validateUser(user) {
-    return Request.sendJSON('/user', user);
+    if (!!user && !user.password) {
+      return Promise.reject(new Error('Only the email is given'));
+    } else if (!!user && !user.email) {
+      return Promise.reject(new Error('Only the password is given'));
+    }
+
+    return Request.sendJSON('/validation', user);
   }
 
   getResponseToken(res) {
@@ -46,8 +52,12 @@ class PwInfoUser extends HTMLElement {
   }
 
   setUserToken(token) {
-    this.token = token;
-    return Promise.resolve(this);
+    window.localStorage.setItem('token', token);
+    return Promise.resolve(token);
+  }
+
+  getUserToken() {
+    return window.localStorage.getItem('token');
   }
 
   /****************Event Emitter*************************/

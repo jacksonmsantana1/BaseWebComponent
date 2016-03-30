@@ -12,7 +12,7 @@ describe('pw-user-info', () => {
     requests = [];
     component = document.createElement('pw-user-info');
 
-    xhr.onCreate = function(xhr) {
+    xhr.onCreate = function (xhr) {
       requests.push(xhr);
     };
   });
@@ -21,68 +21,81 @@ describe('pw-user-info', () => {
     sinon.restore();
   });
 
-  describe('Token Validation', () => {
-    it('validate() should validates user info', () => {
-      expect(component.validateUser).to.be.an(Function);
+  describe('Token Validation => ', () => {
+    it('validateUser() -> should return an Promise', () => {
+      expect(component.validateUser({})).to.be.an(Promise);
     });
 
-    it('validate() should validate the user info and return a valid token', (done) => {
+    it('validateUser() -> should receive the user s email and PASSWORD', (done) => {
       let user = {
-        email: 'jackson@email.com',
-        password: 'VAITOMARNOSEUCU',
-      };
-      let token = '123456789';
-
-      component.validateUser(user).then((res) => {
-        expect(JSON.parse(res.body).token).to.be.equal(token);
-        done();
-      }, (err) => {
-        expect(err).to.be.false;
-      });
-
-      requests[0].respond(200, {
-          'Content-Type': 'application/json'
-        },
-        '{"token": "123456789", "expires": 100, "user": {}}');
-    });
-
-    it('validate() should return an error when the user info is not valid', (done) => {
-      let user = {
-        email: 'jackson@email.com',
-        password: 'VAITOMARNOSEUCU',
+        email: 'jackson@gmail.com',
       };
 
-      component.validateUser(user).then((res) => {
-        expect(res).to.be.false;
-      }, (err) => {
-        expect(err.status).to.be.equal(401);
-        expect(err.message).to.be.equal('Access Forbidden');
-        expect(err.error).to.be.an(Error);
+      component.validateUser(user).catch((err) => {
+        expect(err.message).to.be.equal('Only the email is given');
         done();
       });
-
-      requests[0].respond(401);
     });
 
-    it('validate() should store the token when the validation is OK', (done) => {
+    it('validateUser() -> should receive the user s EMAIL and password', (done) => {
       let user = {
-        email: 'jackson@email.com',
-        password: 'VAITOMARNOSEUCU',
+        password: 'VAITOMARNOSEUANUS',
+      };
+
+      component.validateUser(user).catch((err) => {
+        expect(err.message).to.be.equal('Only the password is given');
+        done();
+      });
+    });
+
+    it('validateUser() -> should make an POST to /validation', () => {
+      let user = {
+        email: 'jackson@gmail.com',
+        password: 'VAITOMARNOCU',
+      };
+
+      component.validateUser(user);
+      expect(requests[0].url).to.be.equal('/validation');
+      expect(requests[0].method).to.be.equal('POST');
+    });
+
+    it('getResponseToken() -> will get from the token from response', (done) => {
+      let user = {
+        email: 'jackson@gmail.com',
+        password: 'VAITOMARNOCU',
       };
 
       component.validateUser(user)
         .then(component.getResponseToken)
-        .then(component.setUserToken.bind(component))
-        .then((comp) => {
-          expect(comp.token).to.be.equal('123456789');
+        .then((tk) => {
+          expect(tk).to.be.equal('1234567890');
           done();
         });
 
-      requests[0].respond(200, {
-          'Content-Type': 'application/json'
-        },
-        '{"token": "123456789", "expires": 100, "user": {}}');
+      requests[0].respond(200, {}, '{"token": "1234567890"}');
     });
+
+    it('setUserToken() -> will store the user token', () => {
+      let user = {
+        email: 'jackson@gmail.com',
+        password: 'VAITOMARNOCU',
+      };
+
+      component.validateUser(user)
+        .then(component.getResponseToken)
+        .then(component.setUserToken)
+        .then((tk) => {
+          expect(tk).to.be.equal(component.getUserToken());
+          done();
+        });
+
+      requests[0].respond(200, {}, '{"token": "1234567890"}');
+    });
+
+    it('validationError() -> will ...', () => {
+      //TODO
+    });
+
   });
 
   describe('EventEmitter Helper', () => {
@@ -131,8 +144,22 @@ describe('pw-user-info', () => {
         done();
       });
 
-      
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');
+    });
+
+    it('Component should log an error when the project s id don t exist', () => {
+      let data = {
+        token: '123456789',
+        projectId: 'dontExist',
+      };
+
+      component.token = data.token;
+      component.pinned(data.projecId).then((res) => {});
+
+    });
+
+    it('Component should log when the user already pinned the project', () => {
+
     });
   });
 });
