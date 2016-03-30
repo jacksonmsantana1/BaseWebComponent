@@ -8,7 +8,8 @@ import Request from '../../lib/Request/Request.js';
 class PwInfoUser extends HTMLElement {
   createdCallback() {
     this.eventEmitter = new EventEmitter();
-    this.addEventEmitter('pin', (obj) => (obj));
+    this.addEventEmitter('pin', this.pinned);
+    this.token = '';
   }
 
   detachedCallback() {}
@@ -17,9 +18,39 @@ class PwInfoUser extends HTMLElement {
 
   attributeChangedCallback() {}
 
+  /***************Token Validation**********************/
+
+  validate(user) {
+    this.validateUser(user)
+      .then(this.getResponseToken)
+      .catch(validationError)
+      .then(this.setUserToken);gt
+  }
+
+  validationError(err) {
+    if (err.status === 401 || err.status === 403) {
+      this.emit('ValidationError', err.message);
+    } else if (err.status === 400) {
+      this.emit('ValidationError', err.message);
+    } else if (err.status === 500) {
+      this.emit('ValidationError', err.message);
+    }
+  }
+
   validateUser(user) {
     return Request.sendJSON('/user', user);
   }
+
+  getResponseToken(res) {
+    return Promise.resolve(JSON.parse(res.body).token);
+  }
+
+  setUserToken(token) {
+    this.token = token;
+    return Promise.resolve(this);
+  }
+
+  /****************Event Emitter*************************/
 
   getEventEmitter() {
     return this.eventEmitter;
@@ -35,7 +66,17 @@ class PwInfoUser extends HTMLElement {
     return this.eventEmitter;
   }
 
+  /*****************Pin Event*****************************/
+
+  pinned(projectId) {
+    return Request.sendJSON('/user/projects/pinned', {
+      token: this.token,
+      projectId: projectId,
+    });
+  }
+
 }
 
 document.registerElement('pw-user-info', PwInfoUser);
-export default PwInfoUser;
+export
+default PwInfoUser;
