@@ -49,7 +49,7 @@ class Request {
         }
       };
 
-      req.send();
+      req.send(null);
     });
   }
 
@@ -74,7 +74,7 @@ class Request {
           resolve({
             status: req.status,
             message: 'OK 200',
-            body: data,
+            body: req.response,
           });
         } else if (req.status === 500) {
           reject({

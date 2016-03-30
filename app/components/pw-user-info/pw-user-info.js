@@ -3,14 +3,12 @@
  */
 
 import EventEmitter from 'wolfy87-eventemitter';
+import Request from '../../lib/Request/Request.js';
 
 class PwInfoUser extends HTMLElement {
   createdCallback() {
     this.eventEmitter = new EventEmitter();
-    this.addEventEmitter('pin', (obj) => {
-      console.log(obj);
-      return 1;
-    });
+    this.addEventEmitter('pin', (obj) => (obj));
   }
 
   detachedCallback() {}
@@ -18,6 +16,10 @@ class PwInfoUser extends HTMLElement {
   attachedCallback() {}
 
   attributeChangedCallback() {}
+
+  validateUser(user) {
+    return Request.sendJSON('/user', user);
+  }
 
   getEventEmitter() {
     return this.eventEmitter;
