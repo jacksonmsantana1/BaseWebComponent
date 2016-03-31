@@ -4,6 +4,7 @@
 
 import EventEmitter from 'wolfy87-eventemitter';
 import Request from '../../lib/Request/Request.js';
+import Logger from '../../lib/Logger/Logger.js';
 
 class PwInfoUser extends HTMLElement {
   createdCallback() {
@@ -24,7 +25,7 @@ class PwInfoUser extends HTMLElement {
     return this.validateUser(user)
       .then(this.getResponseToken)
       .then(this.setUserToken)
-      .catch(this.logError('validate()', '/validation'));
+      .catch(Logger.error('validate()', '/validation'));
   }
 
   validateUser(user) {
@@ -72,20 +73,7 @@ class PwInfoUser extends HTMLElement {
     return Request.sendJSON('/user/projects/pinned', {
       token: this.token,
       projectId: id,
-    });
-  }
-
-  /****************LOGGER*********************************/
-
-  logError(fn, urlRequest) {
-    return function (err) {
-      console.log('/****************ERROR******************/\n');
-      console.log('-> Function: ' + fn + '\n');
-      console.log('-> -> Url Request: ' + urlRequest + '\n');
-      console.log('-> -> -> Request Status: ' + err.status + '\n');
-      console.log('-> -> -> Message: ' + err.message);
-      return Promise.reject(err);
-    };
+    }).catch(Logger.error('pinned()', '/user/projects/pinned'));
   }
 
 }

@@ -1,6 +1,7 @@
 import expect from 'expect.js';
 import EventEmitter from 'wolfy87-eventemitter';
 import PwUserInfo from './pw-user-info.js';
+import Logger from '../../lib/Logger/Logger.js';
 
 describe('pw-user-info', () => {
   let component;
@@ -101,7 +102,7 @@ describe('pw-user-info', () => {
       component.validateUser(user)
         .then(component.getResponseToken)
         .then(component.setUserToken)
-        .catch(component.logError('validate()', '/validation'))
+        .catch(Logger.error('validate()', '/validation'))
         .catch((err) => {
           console.log(err);
           expect(err.status).to.be.equal(400);
