@@ -21,20 +21,10 @@ class PwInfoUser extends HTMLElement {
   /***************Token Validation**********************/
 
   validate(user) {
-    this.validateUser(user)
+    return this.validateUser(user)
       .then(this.getResponseToken)
-      .catch(validationError)
-      .then(this.setUserToken);
-  }
-
-  validationError(err) {
-    if (err.status === 401 || err.status === 403) {
-      console.log(err.message);
-    } else if (err.status === 400) {
-      console.log(err.message);
-    } else if (err.status === 500) {
-      console.log(err.message);
-    }
+      .then(this.setUserToken)
+      .catch(this.logError('validate()', '/validation'));
   }
 
   validateUser(user) {
@@ -78,11 +68,24 @@ class PwInfoUser extends HTMLElement {
 
   /*****************Pin Event*****************************/
 
-  pinned(projectId) {
+  pinned(id) {
     return Request.sendJSON('/user/projects/pinned', {
       token: this.token,
-      projectId: projectId,
+      projectId: id,
     });
+  }
+
+  /****************LOGGER*********************************/
+
+  logError(fn, urlRequest) {
+    return function (err) {
+      console.log('/****************ERROR******************/\n');
+      console.log('-> Function: ' + fn + '\n');
+      console.log('-> -> Url Request: ' + urlRequest + '\n');
+      console.log('-> -> -> Request Status: ' + err.status + '\n');
+      console.log('-> -> -> Message: ' + err.message);
+      return Promise.reject(err);
+    };
   }
 
 }

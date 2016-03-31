@@ -92,8 +92,52 @@ describe('pw-user-info', () => {
       requests[0].respond(200, {}, '{"token": "1234567890"}');
     });
 
-    it('validationError() -> will ...', () => {
-      //TODO
+    it('logError() -> will be called if any http error occur', (done) => {
+      let user = {
+        email: 'jackson@gmail.com',
+        password: 'VAITOMARNOCU',
+      };
+
+      component.validateUser(user)
+        .then(component.getResponseToken)
+        .then(component.setUserToken)
+        .catch(component.logError('validate()', '/validation'))
+        .catch((err) => {
+          console.log(err);
+          expect(err.status).to.be.equal(400);
+          expect(err.message).to.be.equal('Bad Request');
+          done();
+        });
+
+      requests[0].respond(400);
+    });
+
+    it('validate() -> ERROR', (done) => {
+      let user = {
+        email: 'jackson@gmail.com',
+        password: 'VAITOMARNOCU',
+      };
+
+      component.validate(user).catch((res) => {
+        expect(res.status).to.be.equal(500);
+        done();
+      });
+
+      requests[0].respond(500);
+    });
+
+    it('validate() -> OK', (done) => {
+      let user = {
+        email: 'jackson@gmail.com',
+        password: 'VAITOMARNOCU',
+      };
+
+      component.validate(user).then((token) => {
+        expect(token).to.be.equal('1234567890');
+        done();
+      });
+
+      requests[0].respond(200, {}, '{"token": "1234567890"}');
     });
 
   });

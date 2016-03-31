@@ -213,6 +213,22 @@ describe('Request =>', () => {
       });
     });
 
+    it('Test should return an error when is a bad request', () => {
+      var data = {
+        hello: 'world 400',
+      };
+
+      sendJSON('/test', data).then(() => {}, (err) => {
+        expect(err.status).to.be.equal(400);
+        expect(err.message).to.be.equal('Bad Request');
+        expect(err.error.message).to.be.equal('ERROR 400');
+        done();
+      });
+
+      requests[0].respond(400);
+
+    });
+
     it('Test shold return an error when the url is not found', (done) => {
       var data = {
         hello: 'world 404',

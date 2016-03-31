@@ -94,6 +94,12 @@ class Request {
             message: 'Access Forbidden',
             error: new Error('ERROR ' + req.status),
           });
+        } else if (reject && req.status === 400) {
+          reject({
+            status: 400,
+            message: 'Bad Request',
+            error: new Error('ERROR ' + req.status),
+          });
         } else {
           reject({
             status: 0,
