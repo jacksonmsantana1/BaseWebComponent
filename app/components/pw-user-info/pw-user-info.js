@@ -71,7 +71,7 @@ class PwInfoUser extends HTMLElement {
 
   pinned(id) {
     return Request.sendJSON('/user/projects/pinned', {
-      token: this.token,
+      token: this.getUserToken,
       projectId: id,
     }).catch(Logger.error('pinned()', '/user/projects/pinned'));
   }

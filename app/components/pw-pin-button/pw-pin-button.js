@@ -50,10 +50,10 @@ class PwPinButton extends HTMLButtonElement {
     /********************Impure Functions*********************/
 
     const impure = compose(map(setInnerShadow(templateHtml, templateStyle)),
-                               IO.of,
-                               createShadowDom);
+      IO.of,
+      createShadowDom);
     impure(pinButton).runIO();
-
+    setAttr(this, 'projectId', '');
   }
 
   /*
@@ -89,9 +89,14 @@ class PwPinButton extends HTMLButtonElement {
    */
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === 'status') {
+    if (attrName === 'status' && newValue === 'not-checked') {
       ClassList(this.getLikeDiv().runIO()).toggle('active');
-    } else if (attrName === 'visible') {
+      this.despin();
+    } else if (attrName === 'status' && newValue === 'checked') {
+      ClassList(this.getLikeDiv().runIO()).toggle('active');
+      this.pin();
+    }
+    if (attrName === 'visible') {
       this.style.display = !!newValue ? 'none' : '';
     }
   }
@@ -130,7 +135,7 @@ class PwPinButton extends HTMLButtonElement {
    * Warn the other components when it's 'pin' (clicked)
    */
   pin() {
-    //TODO
+    this.getUserInfoComponent().pinned(getAttr(this, 'projectId'));
   }
 
   /**
@@ -148,11 +153,16 @@ class PwPinButton extends HTMLButtonElement {
     return getAttr(this, 'status') === 'checked';
   }
 
+  getUserInfoComponent() {
+    //TODO Make a fn in HTMLFunctional to getElementByTagName
+    return document.getElementsByTagName('pw-user-info')[0];
+  }
+
   /**
    * Return the component Html in string
    */
   getTemplateHtml() {
-    return `<div class='like'>
+    return `<div class='like' >
               <button class='like-toggle three'>❤</button>
             </div>`;
   }
