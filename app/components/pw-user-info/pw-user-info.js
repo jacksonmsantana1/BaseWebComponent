@@ -76,6 +76,17 @@ class PwInfoUser extends HTMLElement {
     }).catch(Logger.error('pinned()', '/user/projects/pinned'));
   }
 
+  desPinned(id) {
+    return Request.sendJSON('/user/projects/desPinned', {
+      token: this.getUserToken,
+      projectId: id,
+    }).catch(Logger.error('pinned()', '/user/projects/desPinned'));
+  }
+
+  isPinned(projectId) {
+    //TODO Falta fazer as  funcoes de desTokenizacao
+  }
+
 }
 
 document.registerElement('pw-user-info', PwInfoUser);
