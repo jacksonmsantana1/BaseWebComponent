@@ -2,7 +2,7 @@ class Token {
   static getPayload(token) {
     let payload = {};
     if (token) {
-      let encoded = token.split('.')[1];
+      const encoded = token.split('.')[1];
       payload = JSON.parse(Token.urlBase64Decode(encoded));
     }
 
@@ -21,7 +21,7 @@ class Token {
         output += '=';
         break;
       default:
-        throw 'Illegal base64url string!';
+        throw new Error('Illegal base64url string!');
     }
     return window.atob(output);
   }

@@ -6,16 +6,20 @@ describe('pw-pin-button => ', () => {
   let pwPinButton;
   let pinCalled;
   let despinCalled;
+  let aux;
 
   beforeEach(() => {
+    aux = [];
     component = document.createElement('pw-pin-button');
     document.body.appendChild(component);
-
     pwPinButton = document.body.getElementsByTagName('pw-pin-button')[0];
+
+    aux.push(pwPinButton.pin);
     pwPinButton.pin = () => {
       pinCalled = true;
     };
 
+    aux.push(pwPinButton.despin);
     pwPinButton.despin = () => {
       despinCalled = true;
     };
@@ -27,7 +31,11 @@ describe('pw-pin-button => ', () => {
 
   afterEach(() => {
     document.body.removeChild(pwPinButton);
+
+    pwPinButton.pin = aux[0];
     pinCalled = false;
+
+    pwPinButton.despin = aux[1];
     despinCalled = false;
   });
 
@@ -51,7 +59,7 @@ describe('pw-pin-button => ', () => {
     expect(pwPinButton.getAttribute('status')).to.be.equal('not-checked');
   });
 
-  it('Component must have a property status: not-checked', () => {
+  it('Component must have a property status: checked', () => {
     pwPinButton.toggleStatus();
 
     expect(pwPinButton.getAttribute('status')).to.be.equal('checked');

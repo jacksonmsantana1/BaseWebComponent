@@ -106,7 +106,7 @@ class PwPinButton extends HTMLButtonElement {
    */
   toggleVisable() {
     (getAttr(this, 'visible') === 'true') ?
-    setAttr(this, 'visible', 'false'):
+      setAttr(this, 'visible', 'false') :
       setAttr(this, 'visible', 'true');
   }
 
@@ -115,7 +115,7 @@ class PwPinButton extends HTMLButtonElement {
    */
   toggleStatus() {
     (getAttr(this, 'status') === 'checked') ?
-    setAttr(this, 'status', 'not-checked'):
+      setAttr(this, 'status', 'not-checked') :
       setAttr(this, 'status', 'checked');
   }
 
@@ -135,14 +135,14 @@ class PwPinButton extends HTMLButtonElement {
    * Warn the other components when it's 'pin' (clicked)
    */
   pin() {
-    getElementByTagName(document, 'pw-user-info').pinned(getAttr(this, 'projectId'));
+    return getElementByTagName(document, 'pw-user-info').pinned(getAttr(this, 'projectId'));
   }
 
   /**
    * Warn the others components when it's 'des' pin
    */
   despin() {
-    getElementByTagName(document, 'pw-user-info').desPinned(getAttr(this, 'projectId'));
+    return getElementByTagName(document, 'pw-user-info').desPinned(getAttr(this, 'projectId'));
   }
 
   /**

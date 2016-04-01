@@ -86,7 +86,7 @@ class PwInfoUser extends HTMLElement {
   }
 
   isPinned(token, projectId) {
-    let fn = R.compose(R.indexOf(projectId), R.prop('pinned'), Token.getPayload);
+    const fn = R.compose(R.indexOf(projectId), R.prop('pinned'), Token.getPayload);
     return fn(token) !== -1;
   }
 
