@@ -24,6 +24,7 @@ const map = Helpers.map,
 const setInnerHTML = HTMLFunctional.setInnerHTML,
   setAttr = HTMLFunctional.setAttr,
   getAttr = HTMLFunctional.getAttr,
+  getElementByTagName = HTMLFunctional.getElementByTagName,
   createShadowDom = HTMLFunctional.createShadowDom;
 
 class PwPinButton extends HTMLButtonElement {
@@ -69,7 +70,6 @@ class PwPinButton extends HTMLButtonElement {
     // checkElement :: HTMLElement -> IO(_)
     const checkElement = (elem) => (IO.of(this.toggleStatus()));
 
-
     /*********************Impure Functions**********************/
 
     const impure = eventObs(this).map(get('target')).map(checkElement);
@@ -106,7 +106,7 @@ class PwPinButton extends HTMLButtonElement {
    */
   toggleVisable() {
     (getAttr(this, 'visible') === 'true') ?
-      setAttr(this, 'visible', 'false') :
+    setAttr(this, 'visible', 'false'):
       setAttr(this, 'visible', 'true');
   }
 
@@ -115,7 +115,7 @@ class PwPinButton extends HTMLButtonElement {
    */
   toggleStatus() {
     (getAttr(this, 'status') === 'checked') ?
-      setAttr(this, 'status', 'not-checked') :
+    setAttr(this, 'status', 'not-checked'):
       setAttr(this, 'status', 'checked');
   }
 
@@ -135,27 +135,21 @@ class PwPinButton extends HTMLButtonElement {
    * Warn the other components when it's 'pin' (clicked)
    */
   pin() {
-    this.getUserInfoComponent().pinned(getAttr(this, 'projectId'));
+    getElementByTagName(document, 'pw-user-info').pinned(getAttr(this, 'projectId'));
   }
 
   /**
    * Warn the others components when it's 'des' pin
    */
   despin() {
-    //TODO
+    getElementByTagName(document, 'pw-user-info').desPinned(getAttr(this, 'projectId'));
   }
 
   /**
    * Check the component status
    */
   isPinned() {
-    //TODO
-    return getAttr(this, 'status') === 'checked';
-  }
-
-  getUserInfoComponent() {
-    //TODO Make a fn in HTMLFunctional to getElementByTagName
-    return document.getElementsByTagName('pw-user-info')[0];
+    return getElementByTagName(document, 'pw-user-info').isPinned(getAttr(this, 'projectId'));
   }
 
   /**

@@ -24,5 +24,9 @@ HTMLFunctional.getAttr = HTMLFunctional.prototype.getAttr;
 HTMLFunctional.prototype.createShadowDom = (elem) => (elem.createShadowRoot());
 HTMLFunctional.createShadowDom = HTMLFunctional.prototype.createShadowDom;
 
+// getElementByTagName :: Document -> String -> HTMLElement
+HTMLFunctional.prototype.getElementByTagName = curry((doc, tag) =>
+                                                      (doc.getElementsByTagName(tag)[0]));
+HTMLFunctional.getElementByTagName = HTMLFunctional.prototype.getElementByTagName;
 export
 default HTMLFunctional;

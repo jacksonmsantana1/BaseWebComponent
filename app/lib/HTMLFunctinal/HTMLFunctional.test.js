@@ -27,6 +27,7 @@ describe('HTMLFunctional =>', () => {
       expect(div.getAttribute('checked')).to.be.equal('no');
     });
   });
+
   describe('getAttr', () => {
     it('Should get the element attribute', () => {
       let fn = HTMLFunctional.getAttr;
@@ -44,6 +45,16 @@ describe('HTMLFunctional =>', () => {
       let shadowRoot = fn(elem);
 
       expect(shadowRoot).to.be.equal(elem.shadowRoot);
+    });
+  });
+
+  describe('getElementByTagName()', () => {
+    it('Should return the first element with the same tag given', () => {
+      let fn = HTMLFunctional.getElementByTagName;
+      let div = document.createElement('div');
+      document.body.appendChild(div);
+
+      expect(fn(document, 'div')).to.be.equal(div);
     });
   });
 });
