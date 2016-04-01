@@ -5,6 +5,8 @@
 import EventEmitter from 'wolfy87-eventemitter';
 import Request from '../../lib/Request/Request.js';
 import Logger from '../../lib/Logger/Logger.js';
+import R from 'ramda';
+import Token from '../../lib/Token/Token.js';
 
 class PwInfoUser extends HTMLElement {
   createdCallback() {
@@ -83,8 +85,9 @@ class PwInfoUser extends HTMLElement {
     }).catch(Logger.error('pinned()', '/user/projects/desPinned'));
   }
 
-  isPinned(projectId) {
-    //TODO Falta fazer as  funcoes de desTokenizacao
+  isPinned(token, projectId) {
+    let fn = R.compose(R.indexOf(projectId), R.prop('pinned'), Token.getPayload);
+    return fn(token) !== -1;
   }
 
 }

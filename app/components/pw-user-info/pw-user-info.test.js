@@ -177,7 +177,7 @@ describe('pw-user-info', () => {
   });
 
   describe('Pin Event', () => {
-    it('Component should send the project pinned by the author', (done) => {
+    it('pinned() -> Component should save the project s id pinned by the user', (done) => {
       let data = {
         token: '123456789',
         projectId: '1234097435',
@@ -189,22 +189,62 @@ describe('pw-user-info', () => {
         done();
       });
 
+      expect(requests[0].url).to.be.equal('/user/projects/pinned');
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');
     });
 
-    it('Component should log an error when the project s id don t exist', () => {
+    it('pinned() -> Component should warn if any error occured', (done) => {
       let data = {
         token: '123456789',
         projectId: 'dontExist',
       };
 
-      component.token = data.token;
-      component.pinned(data.projecId).then((res) => {});
+      component.pinned(data.projecId).catch((err) => {
+        expect(err.status).to.be.equal(500);
+        done();
+      });
 
+      requests[0].respond(500);
     });
 
-    it('Component should log when the user already pinned the project', () => {
+    it('desPinned() -> Oposite effect of the pin() fn', () => {
+      let data = {
+        token: '123456789',
+        projectId: '1234097435',
+      };
 
+      component.token = data.token;
+      component.desPinned(data.projecId).then((res) => {
+        expect(JSON.parse(res.body).projectId).to.be.equal(data.projectId);
+        done();
+      });
+
+      expect(requests[0].url).to.be.equal('/user/projects/desPinned');
+      requests[0].respond(200, {}, '{"projectId": "1234097435"}');
+    });
+
+    it('desPinned() -> Component should warn if any error occured', () => {
+      let data = {
+        token: '123456789',
+        projectId: 'dontExist',
+      };
+
+      component.pinned(data.projecId).catch((err) => {
+        expect(err.status).to.be.equal(500);
+        done();
+      });
+
+      requests[0].respond(500);
+    });
+
+    it('isPinned() ->', () => {
+      let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
+        'eyJwaW5uZWQiOlsiMTIzIiwiMzQ1IiwiNjc4IiwiMTIzNDU2Nzg5MCJdfQ.' +
+        'KX7MpEDAVTxo80HvIq7vDZrrgM0CRNPrCj19jT1B-N4';
+
+      expect(component.isPinned(token, '1234567890')).to.be.equal(true);
+      expect(component.isPinned(token, '345')).to.be.equal(true);
+      expect(component.isPinned(token, '678')).to.be.equal(true);
     });
   });
 });

@@ -3,7 +3,7 @@ class Token {
     let payload = {};
     if (token) {
       let encoded = token.split('.')[1];
-      payload = JSON.parse(this.urlBase64Decode(encoded));
+      payload = JSON.parse(Token.urlBase64Decode(encoded));
     }
 
     return payload;
