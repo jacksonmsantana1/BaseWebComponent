@@ -17,7 +17,7 @@ HTMLFunctional.prototype.setAttr = curry((obj, attr, val) => (obj.setAttribute(a
 HTMLFunctional.setAttr = HTMLFunctional.prototype.setAttr;
 
 // getAttr :: HTMLElement -> String ->  String
-HTMLFunctional.prototype.getAttr = curry((obj, attr) => (obj.getAttribute(attr)));
+HTMLFunctional.prototype.getAttr = curry((attr, obj) => (obj.getAttribute(attr)));
 HTMLFunctional.getAttr = HTMLFunctional.prototype.getAttr;
 
 // createShadowDom :: HTMLElement -> ShadowRoot
@@ -25,7 +25,7 @@ HTMLFunctional.prototype.createShadowDom = (elem) => (elem.createShadowRoot());
 HTMLFunctional.createShadowDom = HTMLFunctional.prototype.createShadowDom;
 
 // getElementByTagName :: Document -> String -> HTMLElement
-HTMLFunctional.prototype.getElementByTagName = curry((doc, tag) =>
+HTMLFunctional.prototype.getElementByTagName = curry((tag, doc) =>
                                                       (doc.getElementsByTagName(tag)[0]));
 HTMLFunctional.getElementByTagName = HTMLFunctional.prototype.getElementByTagName;
 export

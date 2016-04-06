@@ -14,8 +14,10 @@ import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
 const compose = R.compose,
   curry = R.curry,
   get = R.prop,
+  tap = R.tap,
   concat = R.concat,
-  nth = R.nth;
+  nth = R.nth,
+  equals = R.equals;
 
 const map = Helpers.map,
   trace = Helpers.trace,
@@ -26,6 +28,15 @@ const setInnerHTML = HTMLFunctional.setInnerHTML,
   getAttr = HTMLFunctional.getAttr,
   getElementByTagName = HTMLFunctional.getElementByTagName,
   createShadowDom = HTMLFunctional.createShadowDom;
+
+// getProjectId :: HTMLElement -> IO(String)
+const getProjectId = compose(map(getAttr('projectId')),
+  IO.of);
+
+// getPwUserInfo :: Document -> IO(HTMLElement)
+const getPwUserInfo =
+  compose(map(getElementByTagName('pw-user-info')),
+    IO.of);
 
 class PwPinButton extends HTMLButtonElement {
 
@@ -39,6 +50,12 @@ class PwPinButton extends HTMLButtonElement {
     // pinButton :: PwPinButton
     const pinButton = this;
 
+    // set :: HTMLElement -> _
+    const set = setAttr(pinButton);
+
+    // setProjectId :: HTMLElement -> _
+    const setProjectId = compose(set('projectId'), getAttr('projectId'));
+
     // templateHtml :: String
     const templateHtml = this.getTemplateHtml();
 
@@ -51,10 +68,11 @@ class PwPinButton extends HTMLButtonElement {
     /********************Impure Functions*********************/
 
     const impure = compose(map(setInnerShadow(templateHtml, templateStyle)),
-      IO.of,
-      createShadowDom);
+      map(createShadowDom),
+      map(tap(setProjectId)),
+      IO.of);
+
     impure(pinButton).runIO();
-    setAttr(this, 'projectId', '');
   }
 
   /*
@@ -90,13 +108,12 @@ class PwPinButton extends HTMLButtonElement {
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'status' && newValue === 'not-checked') {
-      ClassList(this.getLikeDiv().runIO()).toggle('active');
+      this.toggleActive();
       this.despin();
     } else if (attrName === 'status' && newValue === 'checked') {
-      ClassList(this.getLikeDiv().runIO()).toggle('active');
+      this.toggleActive();
       this.pin();
-    }
-    if (attrName === 'visible') {
+    } else if (attrName === 'visible') {
       this.style.display = !!newValue ? 'none' : '';
     }
   }
@@ -105,51 +122,141 @@ class PwPinButton extends HTMLButtonElement {
    * This function toggles the component attribute visible
    */
   toggleVisable() {
-    (getAttr(this, 'visible') === 'true') ?
-      setAttr(this, 'visible', 'false') :
-      setAttr(this, 'visible', 'true');
+
+    /********************Pure Functions************************/
+
+    const attrVisible = getAttr('visible');
+    const equalToTrue = equals('true');
+    const checkVisible = compose(equalToTrue, attrVisible);
+
+    /*********************Impure Function**********************/
+
+    const impure = (component) => {
+      (checkVisible(component)) ? setAttr(component, 'visible', 'false') :
+        setAttr(component, 'visible', 'true');
+    };
+
+    impure(this);
   }
 
   /**
    * This function toggles the component attribute status
    */
   toggleStatus() {
-    (getAttr(this, 'status') === 'checked') ?
-      setAttr(this, 'status', 'not-checked') :
-      setAttr(this, 'status', 'checked');
+
+    /********************Pure Functions************************/
+
+    const attrStatus = getAttr('status');
+    const equalToChecked = equals('checked');
+    const checkStatus = compose(equalToChecked, attrStatus);
+
+    /*********************Impure Function**********************/
+
+    const impure = (component) => {
+      (checkStatus(component) ?
+        setAttr(component, 'status', 'not-checked') :
+        setAttr(component, 'status', 'checked'));
+    };
+
+    impure(this);
+  }
+
+  toggleActive() {
+
+    /**************************Pure Functions***********************/
+
+    // component :: HTMLElement
+    const component = this;
+
+    // getShadowRoot :: HTMLElement -> ShadowRoot
+    const getShadowRoot = get('shadowRoot');
+
+    // getDivLike :: ShadowRoot -> HTMLDivElement
+    const getDivLike = component.getDivLike;
+
+    // getDivStyleClass :: HTMLDivElement -> StyleClass
+    const getDivStyleClass = ClassList;
+
+    //toggleStyleClassProp :: String -> StyleClass -> _
+    const toggleStyleClassProp = R.curry((str, styleClass) => {
+      styleClass.toggle(str);
+    });
+
+    /**************************Impure Functions**********************/
+
+    const impure = R.compose(map(toggleStyleClassProp('active')),
+      map(getDivStyleClass),
+      map(getDivLike),
+      map(getShadowRoot),
+      IO.of);
+
+    impure(component).runIO();
   }
 
   /**
    * Return the div with class like that is in the ShadowRoot
    */
-  getLikeDiv() {
-    const impure = compose(map(nth(1)),
-      map(get('childNodes')),
-      map(nth(0)),
-      map(get('childNodes')),
-      IO.of);
-    return impure(this.shadowRoot);
+  getDivLike(shadowRoot) {
+
+    /**********************Pure Function**************************/
+
+    const pure = compose(nth(1),
+      get('childNodes'),
+      nth(0),
+      get('childNodes'));
+
+    return pure(shadowRoot);
   }
 
   /**
    * Warn the other components when it's 'pin' (clicked)
    */
   pin() {
-    return getElementByTagName(document, 'pw-user-info').pinned(getAttr(this, 'projectId'));
+
+    /***********************Pure Functions***********************/
+
+    // pinned :: HTMLElement -> String -> _
+    const pinned = curry((obj, projectId) => {
+      obj.pinned(projectId);
+    });
+
+    /***********************Impure Functions********************/
+
+    IO.of(pinned).ap(getPwUserInfo(document)).ap(getProjectId(this)).runIO();
   }
 
   /**
    * Warn the others components when it's 'des' pin
    */
   despin() {
-    return getElementByTagName(document, 'pw-user-info').desPinned(getAttr(this, 'projectId'));
+
+    /***********************Pure Functions***********************/
+
+    // desPinned :: HTMLElement -> String -> _
+    const desPinned = curry((obj, projectId) => {
+      obj.desPinned(projectId);
+    });
+
+    /***********************Impure Functions********************/
+
+    IO.of(desPinned).ap(getPwUserInfo(document)).ap(getProjectId(this)).runIO();
   }
 
   /**
    * Check the component status
    */
   isPinned() {
-    return getElementByTagName(document, 'pw-user-info').isPinned(getAttr(this, 'projectId'));
+
+    /***********************Pure Functions***********************/
+
+    // desPinned :: HTMLElement -> String -> _
+    const isPinned = curry((obj, projectId) => {
+      obj.isPinned(projectId);
+    });
+
+    /***********************Impure Functions********************/
+
+    IO.of(isPinned).ap(getPwUserInfo(document)).ap(getProjectId(this)).runIO();
   }
 
   /**

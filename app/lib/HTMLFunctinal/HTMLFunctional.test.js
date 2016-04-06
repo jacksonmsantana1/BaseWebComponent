@@ -34,7 +34,7 @@ describe('HTMLFunctional =>', () => {
       let div = document.createElement('div');
       div.setAttribute('checked', 'yes');
 
-      expect(fn(div, 'checked')).to.be.equal('yes');
+      expect(fn('checked', div)).to.be.equal('yes');
     });
   });
 
@@ -54,7 +54,7 @@ describe('HTMLFunctional =>', () => {
       let div = document.createElement('div');
       document.body.appendChild(div);
 
-      expect(fn(document, 'div')).to.be.equal(div);
+      expect(fn('div', document)).to.be.equal(div);
     });
   });
 });
