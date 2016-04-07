@@ -12,6 +12,8 @@ class PwInfoUser extends HTMLElement {
   createdCallback() {
     this.eventEmitter = new EventEmitter();
     this.addEventEmitter('pin', this.pinned);
+    this.addEventEmitter('despin', this.desPinned);
+    this.addEventEmitter('isPinned', this.isPinned);
     this.token = '';
   }
 
@@ -82,7 +84,7 @@ class PwInfoUser extends HTMLElement {
     return Request.sendJSON('/user/projects/desPinned', {
       token: this.getUserToken,
       projectId: id,
-    }).catch(Logger.error('pinned()', '/user/projects/desPinned'));
+    }).catch(Logger.error('desPinned()', '/user/projects/desPinned'));
   }
 
   isPinned(token, projectId) {

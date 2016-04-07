@@ -13,7 +13,7 @@ describe('pw-user-info', () => {
     requests = [];
     component = document.createElement('pw-user-info');
 
-    xhr.onCreate = function (xhr) {
+    xhr.onCreate = (xhr) => {
       requests.push(xhr);
     };
   });
@@ -168,6 +168,32 @@ describe('pw-user-info', () => {
 
       listeners[0].listener = spy;
       component.emit('pin', {
+        test: 'SPY',
+      });
+
+      expect(spy.called).to.be.equal(true);
+      expect(spy.args[0][0].test).to.be.equal('SPY');
+    });
+
+    it('Component should listening to the "despin" event', () => {
+      let spy = sinon.spy();
+      let listeners = component.getEventEmitter().getListeners('despin');
+
+      listeners[0].listener = spy;
+      component.emit('despin', {
+        test: 'SPY',
+      });
+
+      expect(spy.called).to.be.equal(true);
+      expect(spy.args[0][0].test).to.be.equal('SPY');
+    });
+
+    it('Component should listening to the "isPinned" event', () => {
+      let spy = sinon.spy();
+      let listeners = component.getEventEmitter().getListeners('isPinned');
+
+      listeners[0].listener = spy;
+      component.emit('isPinned', {
         test: 'SPY',
       });
 
