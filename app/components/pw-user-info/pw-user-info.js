@@ -8,13 +8,15 @@ import Logger from '../../lib/Logger/Logger.js';
 import R from 'ramda';
 import Token from '../../lib/Token/Token.js';
 
+const contain = R.indexOf;
+const get = R.prop;
+
 class PwInfoUser extends HTMLElement {
   createdCallback() {
     this.eventEmitter = new EventEmitter();
     this.addEventEmitter('pin', this.pinned);
     this.addEventEmitter('despin', this.desPinned);
     this.addEventEmitter('isPinned', this.isPinned);
-    this.token = '';
   }
 
   detachedCallback() {}
@@ -28,7 +30,7 @@ class PwInfoUser extends HTMLElement {
   validate(user) {
     return this.validateUser(user)
       .then(this.getResponseToken)
-      .then(this.setUserToken)
+      .then(Token.setUserToken)
       .catch(Logger.error('validate()', '/validation'));
   }
 
@@ -44,15 +46,6 @@ class PwInfoUser extends HTMLElement {
 
   getResponseToken(res) {
     return Promise.resolve(JSON.parse(res.body).token);
-  }
-
-  setUserToken(token) {
-    window.localStorage.setItem('token', token);
-    return Promise.resolve(token);
-  }
-
-  getUserToken() {
-    return window.localStorage.getItem('token');
   }
 
   /****************Event Emitter*************************/
@@ -73,23 +66,48 @@ class PwInfoUser extends HTMLElement {
 
   /*****************Pin Event*****************************/
 
-  pinned(id) {
+  // pinned :: (Token, String) -> Promise(String, Error)
+  pinned(token, id) {
     return Request.sendJSON('/user/projects/pinned', {
-      token: this.getUserToken,
+      [token]: token,
       projectId: id,
     }).catch(Logger.error('pinned()', '/user/projects/pinned'));
   }
 
-  desPinned(id) {
+  // desPinned :: (Token, String) -> Promise(String, Error)
+  desPinned(token, id) {
     return Request.sendJSON('/user/projects/desPinned', {
-      token: this.getUserToken,
+      [token]: token,
       projectId: id,
     }).catch(Logger.error('desPinned()', '/user/projects/desPinned'));
   }
 
+  // isPinned :: (Token, String) -> Boolean
   isPinned(token, projectId) {
-    const fn = R.compose(R.indexOf(projectId), R.prop('pinned'), Token.getPayload);
-    return fn(token) !== -1;
+
+    /************************Pure Functions**********************/
+
+    // getUserProjects :: Token -> Promise(Object, Error)
+    const getUserProjects = () => Request.sendJSON('/user/projects', { [token]: token });
+
+    // getPinnedProjects :: Object -> Promise(Array)
+    const getPinnedProjects = (obj) => Promise.resolve(get('pinned', JSON.parse(obj.body)));
+
+    // containProject :: Array -> Promise(Number)
+    const containProject = R.curry((id, arr) => (Promise.resolve(contain(id, arr))));
+
+    // result :: Number -> Promise(Boolean)
+    const result = (n) => (Promise.resolve(n !== -1));
+
+    /************************Impure Functions*********************/
+
+    const impure = getUserProjects()
+      .then(getPinnedProjects)
+      .then(containProject(projectId))
+      .then(result)
+      .catch(Logger.error('isPinned()', '/user/projects'));
+
+    return impure;
   }
 
 }

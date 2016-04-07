@@ -9,6 +9,15 @@ class Token {
     return payload;
   }
 
+  static setUserToken(token) {
+    window.localStorage.setItem('token', token);
+    return Promise.resolve(token);
+  }
+
+  static getUserToken() {
+    return window.localStorage.getItem('token');
+  }
+
   static urlBase64Decode(str) {
     let output = str.replace('-', '+').replace('_', '/');
     switch (output.length % 4) {
@@ -27,4 +36,5 @@ class Token {
   }
 }
 
-export default Token;
+export
+default Token;
