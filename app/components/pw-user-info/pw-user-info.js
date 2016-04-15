@@ -88,10 +88,10 @@ class PwInfoUser extends HTMLElement {
     /************************Pure Functions**********************/
 
     // getUserProjects :: Token -> Promise(Object, Error)
-    const getUserProjects = () => Request.sendJSON('/user/projects', { [token]: token });
+    const getUserProjects = (tk) => Request.getJSON('/user/projects', tk);
 
     // getPinnedProjects :: Object -> Promise(Array)
-    const getPinnedProjects = (obj) => Promise.resolve(get('pinned', JSON.parse(obj.body)));
+    const getPinnedProjects = (obj) => Promise.resolve(get('pinned', obj.body));
 
     // containProject :: Array -> Promise(Number)
     const containProject = R.curry((id, arr) => (Promise.resolve(contain(id, arr))));
@@ -101,7 +101,7 @@ class PwInfoUser extends HTMLElement {
 
     /************************Impure Functions*********************/
 
-    const impure = getUserProjects()
+    const impure = getUserProjects(token)
       .then(getPinnedProjects)
       .then(containProject(projectId))
       .then(result)

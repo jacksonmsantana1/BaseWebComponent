@@ -253,9 +253,12 @@ describe('pw-user-info', () => {
       component.isPinned(token, '1234097435').then((result) => {
         expect(result).to.be.equal(true);
         done();
+      }, (err) => {
+        done(err);
       });
 
       expect(requests[0].url).to.be.equal('/user/projects');
+      expect(requests[0].requestHeaders.authorization).to.be.equal(token);
       requests[0].respond(200, {}, '{"pinned": ["1234097435", "345", "678"]}');
     });
 

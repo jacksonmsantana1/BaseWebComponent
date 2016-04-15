@@ -1,13 +1,17 @@
 class Request {
-  static getJSON(url) {
+  static getJSON(url, token) {
     return new Promise((resolve, reject) => {
       if (!!!url || url.trim() === '') {
         reject(new Error('URL is not defined'));
       }
 
       const req = new XMLHttpRequest();
+
       req.responseType = 'json';
       req.open('GET', url);
+      if (token) {
+        req.setRequestHeader('authorization', token);
+      }
 
       req.onload = function () {
         if (resolve && req.status === 200) {
@@ -53,7 +57,7 @@ class Request {
     });
   }
 
-  static sendJSON(url, data) {
+  static sendJSON(url, data, token) {
     return new Promise((resolve, reject) => {
       if (!url || url.trim() === '') {
         reject(new Error('URL is not defined'));
@@ -68,7 +72,12 @@ class Request {
       }
 
       const req = new XMLHttpRequest();
+
       req.open('POST', url);
+      if (token) {
+        req.setRequestHeader('authorization', token);
+      };
+
       req.onload = function () {
         if (req.status === 200) {
           resolve({

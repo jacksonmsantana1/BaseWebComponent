@@ -103,6 +103,18 @@ describe('Request =>', () => {
       requests[0].respond(404);
     });
 
+    it('Test should send a request with an autorization header if a toke is provided', (done) => {
+      getJSON('/test', 'token')
+      .then((res) => {
+        done();
+      }, (err) => {
+        done(err);
+      });
+
+      expect(requests[0].requestHeaders.authorization).to.be.equal('token');
+      requests[0].respond(200);
+    });
+
     it('Unknown Error', () => {
       getJSON('/test').then(() => {}, (err) => {
         expect(err.message).to.be.equal('Unknown Error');
@@ -271,6 +283,17 @@ describe('Request =>', () => {
         done();
       });
       requests[0].respond(402);
+    });
+
+    it('Test should send a request with an autorization header if a token is given', (done) => {
+      sendJSON('/test', { cu: 'ANUS' }, 'token').then((res) => {
+        done();
+      }, (err) => {
+        done(err);
+      });
+
+      requests[0].respond(200);
+      expect(requests[0].requestHeaders.authorization).to.be.equal('token');
     });
 
   });
