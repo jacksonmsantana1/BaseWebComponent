@@ -1,3 +1,5 @@
+const local = 'http://localhost:3000';
+
 class Request {
   static getJSON(url, token) {
     return new Promise((resolve, reject) => {
@@ -8,7 +10,7 @@ class Request {
       const req = new XMLHttpRequest();
 
       req.responseType = 'json';
-      req.open('GET', url);
+      req.open('GET', local + url);
       if (token) {
         req.setRequestHeader('authorization', token);
       }
@@ -73,10 +75,10 @@ class Request {
 
       const req = new XMLHttpRequest();
 
-      req.open('POST', url);
+      req.open('POST', local + url);
       if (token) {
         req.setRequestHeader('authorization', token);
-      };
+      }
 
       req.onload = function () {
         if (req.status === 200) {

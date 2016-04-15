@@ -69,17 +69,15 @@ class PwInfoUser extends HTMLElement {
   // pinned :: (Token, String) -> Promise(String, Error)
   pinned(token, id) {
     return Request.sendJSON('/user/projects/pinned', {
-      [token]: token,
       projectId: id,
-    }).catch(Logger.error('pinned()', '/user/projects/pinned'));
+    }, token).catch(Logger.error('pinned()', '/user/projects/pinned'));
   }
 
   // desPinned :: (Token, String) -> Promise(String, Error)
   desPinned(token, id) {
     return Request.sendJSON('/user/projects/desPinned', {
-      [token]: token,
       projectId: id,
-    }).catch(Logger.error('desPinned()', '/user/projects/desPinned'));
+    }, token).catch(Logger.error('desPinned()', '/user/projects/desPinned'));
   }
 
   // isPinned :: (Token, String) -> Boolean
