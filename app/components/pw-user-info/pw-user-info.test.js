@@ -6,13 +6,20 @@ import Logger from '../../lib/Logger/Logger.js';
 
 describe('pw-user-info', () => {
   let component;
+  let pwUserInfo;
   let xhr;
   let requests;
+  let token;
 
   beforeEach(() => {
     xhr = sinon.useFakeXMLHttpRequest();
     requests = [];
+    token = 'TOKEN';
+
     component = document.createElement('pw-user-info');
+    document.body.appendChild(component);
+    pwUserInfo = document.getElementsByTagName('pw-user-info')[0];
+    Token.setUserToken(token);
 
     xhr.onCreate = (xhr) => {
       requests.push(xhr);
@@ -124,92 +131,38 @@ describe('pw-user-info', () => {
 
       requests[0].respond(200, {}, '{"token": "1234567890"}');
     });
-
-  });
-
-  describe('EventEmitter Helper', () => {
-    it('Component should contain an EventEmitter object', () => {
-      expect(component.getEventEmitter()).to.be.an(EventEmitter);
-    });
-
-    it('Component can add EventEmitters to itself', () => {
-      let spy = sinon.spy();
-      let obj = {
-        test: 'SPY',
-      };
-
-      component.addEventEmitter('pin', spy);
-      component.emit('pin', obj);
-
-      expect(spy.called).to.be.equal(true);
-      expect(spy.args[0][0]).to.be.equal(obj);
-      expect(spy.args[0][0].test).to.be.equal('SPY');
-    });
-
-    it('Component should listening to the "pin" event', () => {
-      let spy = sinon.spy();
-      let listeners = component.getEventEmitter().getListeners('pin');
-
-      listeners[0].listener = spy;
-      component.emit('pin', {
-        test: 'SPY',
-      });
-
-      expect(spy.called).to.be.equal(true);
-      expect(spy.args[0][0].test).to.be.equal('SPY');
-    });
-
-    it('Component should listening to the "despin" event', () => {
-      let spy = sinon.spy();
-      let listeners = component.getEventEmitter().getListeners('despin');
-
-      listeners[0].listener = spy;
-      component.emit('despin', {
-        test: 'SPY',
-      });
-
-      expect(spy.called).to.be.equal(true);
-      expect(spy.args[0][0].test).to.be.equal('SPY');
-    });
-
-    it('Component should listening to the "isPinned" event', () => {
-      let spy = sinon.spy();
-      let listeners = component.getEventEmitter().getListeners('isPinned');
-
-      listeners[0].listener = spy;
-      component.emit('isPinned', {
-        test: 'SPY',
-      });
-
-      expect(spy.called).to.be.equal(true);
-      expect(spy.args[0][0].test).to.be.equal('SPY');
-    });
   });
 
   describe('Pin Event', () => {
     it('pinned() -> Component should save the project s id pinned by the user', (done) => {
-      let data = {
-        token: '123456789',
-        projectId: '1234097435',
-      };
+      const evt = new CustomEvent('pin', {
+        detail: {
+          projectId: '1234097435',
+        },
+        bubbles: false,
+        cancelable: true,
+      });
 
-      component.pinned(data.token, data.projecId).then((res) => {
-        expect(JSON.parse(res.body).projectId).to.be.equal(data.projectId);
+      pwUserInfo.pinned(evt).then((res) => {
+        expect(JSON.parse(res.body).projectId).to.be.equal('1234097435');
         done();
       });
 
       expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/pinned');
-      expect(requests[0].requestHeaders.authorization).to.be.equal(data.token);
+      expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');
     });
 
     it('pinned() -> Component should warn if any error occured', (done) => {
-      let data = {
-        token: '123456789',
-        projectId: 'dontExist',
-      };
+      const evt = new CustomEvent('pin', {
+        detail: {
+          projectId: '1234097435',
+        },
+        bubbles: false,
+        cancelable: true,
+      });
 
-      component.pinned(data.token, data.projecId).catch((err) => {
+      pwUserInfo.pinned(evt).catch((err) => {
         expect(err.status).to.be.equal(500);
         done();
       });
@@ -218,28 +171,35 @@ describe('pw-user-info', () => {
     });
 
     it('desPinned() -> Oposite effect of the pin() fn', (done) => {
-      let data = {
-        token: '123456789',
-        projectId: '1234097435',
-      };
+      const evt = new CustomEvent('despin', {
+        detail: {
+          projectId: '1234097435',
+        },
+        bubbles: false,
+        cancelable: true,
+      });
 
-      component.desPinned(data.token, data.projecId).then((res) => {
-        expect(JSON.parse(res.body).projectId).to.be.equal(data.projectId);
+      pwUserInfo.desPinned(evt).then((res) => {
+        expect(res.status).to.be.equal(200);
+        expect(JSON.parse(res.body).projectId).to.be.equal('1234097435');
         done();
       });
 
       expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/desPinned');
-      expect(requests[0].requestHeaders.authorization).to.be.equal(data.token);
+      expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');
     });
 
     it('desPinned() -> Component should warn if any error occured', (done) => {
-      let data = {
-        token: '123456789',
-        projectId: 'dontExist',
-      };
+      const evt = new CustomEvent('despin', {
+        detail: {
+          projectId: '1234097435',
+        },
+        bubbles: false,
+        cancelable: true,
+      });
 
-      component.pinned(data.token, data.projecId).catch((err) => {
+      pwUserInfo.desPinned(evt).catch((err) => {
         expect(err.status).to.be.equal(500);
         done();
       });
@@ -248,11 +208,15 @@ describe('pw-user-info', () => {
     });
 
     it('isPinned() ->', (done) => {
-      let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
-        'eyJwaW5uZWQiOlsiMTIzIiwiMzQ1IiwiNjc4IiwiMTIzNDU2Nzg5MCJdfQ.' +
-        'KX7MpEDAVTxo80HvIq7vDZrrgM0CRNPrCj19jT1B-N4';
+      const evt = new CustomEvent('isPinned', {
+        detail: {
+          projectId: '345',
+        },
+        bubbles: false,
+        cancelable: true,
+      });
 
-      component.isPinned(token, '1234097435').then((result) => {
+      pwUserInfo.isPinned(evt).then((result) => {
         expect(result).to.be.equal(true);
         done();
       }, (err) => {
@@ -260,17 +224,20 @@ describe('pw-user-info', () => {
       });
 
       expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects');
-      expect(requests[0].requestHeaders.authorization).to.be.equal(token);
+      expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       requests[0].respond(200, {}, '{"pinned": ["1234097435", "345", "678"]}');
     });
 
     it('isPinned() -> Component should warn if any error occured', (done) => {
-      let data = {
-        token: '123456789',
-        projectId: 'dontExist',
-      };
+      const evt = new CustomEvent('isPinned', {
+        detail: {
+          projectId: '1234097435',
+        },
+        bubbles: false,
+        cancelable: true,
+      });
 
-      component.isPinned(data.token, data.projecId).catch((err) => {
+      pwUserInfo.isPinned(evt).catch((err) => {
         expect(err.status).to.be.equal(500);
         done();
       });

@@ -216,8 +216,15 @@ class PwPinButton extends HTMLButtonElement {
     /***********************Pure Functions***********************/
 
     // pinned :: HTMLElement -> String -> _
-    const pinned = curry((obj, projectId) => {
-      obj.pinned(projectId);
+    const pinned = curry((obj, pId) => {
+      const evt = new CustomEvent('pin', {
+        detail: {
+          projectId: pId,
+        },
+        bubbles: false,
+        cancelable: true,
+      });
+      obj.dispatchEvent(evt);
     });
 
     /***********************Impure Functions********************/
@@ -233,8 +240,15 @@ class PwPinButton extends HTMLButtonElement {
     /***********************Pure Functions***********************/
 
     // desPinned :: HTMLElement -> String -> _
-    const desPinned = curry((obj, projectId) => {
-      obj.desPinned(projectId);
+    const desPinned = curry((obj, pId) => {
+      const evt = new CustomEvent('despin', {
+        detail: {
+          projectId: pId,
+        },
+        bubbles: false,
+        cancelable: true,
+      });
+      obj.dispatchEvent(evt);
     });
 
     /***********************Impure Functions********************/
@@ -250,8 +264,16 @@ class PwPinButton extends HTMLButtonElement {
     /***********************Pure Functions***********************/
 
     // desPinned :: HTMLElement -> String -> _
-    const isPinned = curry((obj, projectId) => {
-      obj.isPinned(projectId);
+    const isPinned = curry((obj, pId) => {
+      const evt = new CustomEvent('isPin', {
+        detail: {
+          projectId: pId,
+        },
+        bubbles: false,
+        cancelable: true,
+      });
+
+      obj.dispatchEvent(evt);
     });
 
     /***********************Impure Functions********************/

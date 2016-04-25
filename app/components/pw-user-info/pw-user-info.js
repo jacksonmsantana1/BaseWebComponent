@@ -2,7 +2,6 @@
  * Component that will be the interface between the front and the backend
  */
 
-import EventEmitter from 'wolfy87-eventemitter';
 import Request from '../../lib/Request/Request.js';
 import Logger from '../../lib/Logger/Logger.js';
 import R from 'ramda';
@@ -13,10 +12,9 @@ const get = R.prop;
 
 class PwInfoUser extends HTMLElement {
   createdCallback() {
-    this.eventEmitter = new EventEmitter();
-    this.addEventEmitter('pin', this.pinned);
-    this.addEventEmitter('despin', this.desPinned);
-    this.addEventEmitter('isPinned', this.isPinned);
+    this.addEventListener('despin', this.desPinned);
+    this.addEventListener('pin', this.pinned);
+    this.addEventListener('isPinned', this.isPinned);
   }
 
   detachedCallback() {}
@@ -48,40 +46,31 @@ class PwInfoUser extends HTMLElement {
     return Promise.resolve(JSON.parse(res.body).token);
   }
 
-  /****************Event Emitter*************************/
-
-  getEventEmitter() {
-    return this.eventEmitter;
-  }
-
-  addEventEmitter(name, handler) {
-    this.eventEmitter.addListener(name, handler);
-    return this.eventEmitter;
-  }
-
-  emit(name, obj) {
-    this.eventEmitter.emit(name, obj);
-    return this.eventEmitter;
-  }
+  /****************Custom Event*************************/
 
   /*****************Pin Event*****************************/
 
-  // pinned :: (Token, String) -> Promise(String, Error)
-  pinned(token, id) {
+  // pinned :: Event -> Promise(String, Error)
+  pinned(evt) {
     return Request.sendJSON('/user/projects/pinned', {
-      projectId: id,
-    }, token).catch(Logger.error('pinned()', '/user/projects/pinned'));
+      projectId: evt.detail.projectId,
+    }, Token.getUserToken()).catch(Logger.error('pinned()', '/user/projects/pinned'));
   }
 
-  // desPinned :: (Token, String) -> Promise(String, Error)
-  desPinned(token, id) {
+  // desPinned :: Event -> Promise(String, Error)
+  desPinned(evt) {
+    evt.preventDefault();
+
     return Request.sendJSON('/user/projects/desPinned', {
-      projectId: id,
-    }, token).catch(Logger.error('desPinned()', '/user/projects/desPinned'));
+      projectId: evt.detail.projectId,
+    }, Token.getUserToken()).catch(Logger.error('desPinned()', '/user/projects/desPinned'));
   }
 
   // isPinned :: (Token, String) -> Boolean
-  isPinned(token, projectId) {
+  isPinned(evt) {
+
+    const token = Token.getUserToken();
+    const projectId = evt.detail.projectId;
 
     /************************Pure Functions**********************/
 
