@@ -20,7 +20,6 @@ const compose = R.compose,
   equals = R.equals;
 
 const map = Helpers.map,
-  trace = Helpers.trace,
   event = Helpers.event;
 
 const setInnerHTML = HTMLFunctional.setInnerHTML,
@@ -115,6 +114,8 @@ class PwPinButton extends HTMLButtonElement {
       this.pin();
     } else if (attrName === 'visible') {
       this.style.display = !!newValue ? 'none' : '';
+    } else if (attrName === 'projectId') {
+      this.setProjectId(newValue);
     }
   }
 
@@ -281,6 +282,23 @@ class PwPinButton extends HTMLButtonElement {
     IO.of(isPinned).ap(getPwUserInfo(document)).ap(getProjectId(this)).runIO();
   }
 
+  /**
+   * Set the projectId attribute
+   */
+  setProjectId(pid) {
+    // pinButton :: PwPinButton
+    const pinButton = this;
+
+    // set :: HTMLElement -> _
+    const set = setAttr(pinButton);
+
+    // setProjectId :: HTMLElement -> _
+    const _setProjectId = compose(set('projectId'), getAttr('projectId'));
+
+    const fn = compose(map(_setProjectId), IO.of);
+
+    fn(pinButton).runIO();
+  }
   /**
    * Return the component Html in string
    */

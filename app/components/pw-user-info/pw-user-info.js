@@ -52,7 +52,7 @@ class PwInfoUser extends HTMLElement {
 
   // pinned :: Event -> Promise(String, Error)
   pinned(evt) {
-    return Request.sendJSON('/user/projects/pinned', {
+    return Request.putJSON('/user/projects/pinned', {
       projectId: evt.detail.projectId,
     }, Token.getUserToken()).catch(Logger.error('pinned()', '/user/projects/pinned'));
   }
@@ -61,7 +61,7 @@ class PwInfoUser extends HTMLElement {
   desPinned(evt) {
     evt.preventDefault();
 
-    return Request.sendJSON('/user/projects/desPinned', {
+    return Request.putJSON('/user/projects/desPinned', {
       projectId: evt.detail.projectId,
     }, Token.getUserToken()).catch(Logger.error('desPinned()', '/user/projects/desPinned'));
   }
