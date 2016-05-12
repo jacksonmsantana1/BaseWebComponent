@@ -13,7 +13,7 @@
     "test": "npm run lint && npm run test:unit",
     "test:unit": "karma start",
     "tdd": "karma start --auto-watch --no-single-run",
-    "fix-sinon": "npm install --save-dev sinon@1.17.3"
+    "fix-sinon": "npm install sinon@1.17.3"
   },
   "repository": {
     "type": "git",
@@ -89,7 +89,7 @@
     "mocha": "^2.3.3",
     "node-libs-browser": "^0.5.3",
     "postcss-loader": "^0.6.0",
-    "sinon": "^1.17.4",
+    "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.12.4",
     "webpack": "^1.12.2",
