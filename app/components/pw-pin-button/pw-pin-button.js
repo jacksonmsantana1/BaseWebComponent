@@ -1,3 +1,4 @@
+// jscs:disable
 /**
  * A Component like a Pinterest 'Pin' button
  */
@@ -162,6 +163,9 @@ class PwPinButton extends HTMLButtonElement {
     impure(this);
   }
 
+  /**
+   * This function toggles the component attribute active
+   */
   toggleActive() {
 
     /**************************Pure Functions***********************/
@@ -326,7 +330,6 @@ class PwPinButton extends HTMLButtonElement {
       font-family: 'Open Sans', sans-serif;
       font-size: 24px;
       margin: 0;
-      color: #111;
     }
 
     .meta.hidden {
