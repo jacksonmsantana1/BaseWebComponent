@@ -1,2 +1,2 @@
-export default from './pw-pin-button';
-
+export default from
+  './pw-pin-button';
