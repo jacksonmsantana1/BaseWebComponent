@@ -26,4 +26,8 @@ describe('pw-like-button => ', () => {
   it('Should have an attribute named liked', () => {
     expect(pwLikeButton.liked).to.be.equal(false);
   });
+
+  it('Should have an attribute named numberOfLikes', () => {
+    expect(pwLikeButton.numberOfLikes).to.be.equal(0);
+  });
 });

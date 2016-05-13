@@ -76,6 +76,7 @@ class PwLikeButton extends HTMLButtonElement {
     this._projectId = 'VAITOMARNOCU';
     this._isActive = true;
     this._liked = false;
+    this._numberOfLikes = 0;
   }
 
   /*
@@ -185,6 +186,20 @@ class PwLikeButton extends HTMLButtonElement {
    */
   set liked(isLiked) {
     this.setAttribute('liked', isLiked);
+  }
+
+  /**
+   * Return the liked attribute
+   */
+  get numberOfLikes() {
+    return this._numberOfLikes;
+  }
+
+  /**
+   * Set the liked attribute
+   */
+  set numberOfLikes(n) {
+    this.setAttribute('numberOfLikes', n);
   }
 }
 
