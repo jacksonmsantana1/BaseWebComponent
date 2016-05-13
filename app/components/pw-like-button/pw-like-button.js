@@ -94,9 +94,9 @@ class PwLikeButton extends HTMLButtonElement {
    * Return the component Html in string
    */
   getTemplateHtml() {
-    return `<div class='like'>
-              <button class='like-toggle basic'>❤</button>
-              <span class='hidden'>I like this</span>
+    return `<div class="like">
+              <button class="like-toggle basic">❤</button>
+              <span class="hidden">CU</span>
             </div>`;
   }
 
@@ -107,15 +107,18 @@ class PwLikeButton extends HTMLButtonElement {
     return `<style>
       *{transition: all 0.3s linear;}
 
-      .hidden{
+      .hidden {
         font-size: 0;
+        position: relative;
+        left: -40px;
       }
 
-      .like,p{
+      .like {
         font-family: 'Open Sans';
+        display:inline-block;
       }
 
-      .like-toggle{
+      .like-toggle {
         outline:none;
         box-shadow:none;
         border: none;
@@ -125,7 +128,7 @@ class PwLikeButton extends HTMLButtonElement {
         border-radius: 100px;
       }
 
-      .like-toggle.basic{
+      .like-toggle.basic {
         border: none;
         width: 50px;
         height: 50px;
@@ -135,13 +138,16 @@ class PwLikeButton extends HTMLButtonElement {
         color: #666;
       }
 
-      .like-active.basic{
-        background: #F06EA9;
+      .like-active {
+        background: #438CCA;
+        width: 80px;
+        font-size: 1.7em;
+        color: #F26D7D;
       }
 
-      .like-toggle.basic:not(.like-active):hover{
-        background: #438CCA;
-        width: 60px;
+      .like-toggle.basic:not(.like-active):hover {
+        background: #ddd;
+        font-size: 0;
       }
     </style>`;
   }
