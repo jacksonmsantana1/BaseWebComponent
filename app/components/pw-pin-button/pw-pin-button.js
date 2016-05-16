@@ -40,6 +40,8 @@ const getPwUserInfo =
 
 class PwPinButton extends HTMLButtonElement {
 
+  /*********************Inherited Methods****************************/
+
   /*
    * Initial function called when the component is created
    */
@@ -49,12 +51,6 @@ class PwPinButton extends HTMLButtonElement {
 
     // pinButton :: PwPinButton
     const pinButton = this;
-
-    // set :: HTMLElement -> _
-    const set = setAttr(pinButton);
-
-    // setProjectId :: HTMLElement -> _
-    const setProjectId = compose(set('projectId'), getAttr('projectId'));
 
     // templateHtml :: String
     const templateHtml = this.getTemplateHtml();
@@ -69,10 +65,13 @@ class PwPinButton extends HTMLButtonElement {
 
     const impure = compose(map(setInnerShadow(templateHtml, templateStyle)),
       map(createShadowDom),
-      map(tap(setProjectId)),
       IO.of);
 
     impure(pinButton).runIO();
+
+    // Attributes declaration
+    this._projectId = 'VAITOMARNOCU';
+    this._visible = true;
   }
 
   /*
@@ -80,7 +79,20 @@ class PwPinButton extends HTMLButtonElement {
    */
   attachedCallback() {
 
+
     /********************Pure Functions*********************/
+
+    // pinButton :: PwPinButton
+    const pinButton = this;
+
+    // set :: HTMLElement -> _
+    const set = setAttr(pinButton);
+
+    // setProjectId :: HTMLElement -> _
+    const setProjectId = compose(set('projectId'), getAttr('projectId'));
+
+    // setVisible :: HTMLElement -> _
+    const setVisible = compose(set('visible'), getAttr('visible'));
 
     // eventObs :: HTMLElement -> EventStream
     const eventObs = event('click');
@@ -90,11 +102,17 @@ class PwPinButton extends HTMLButtonElement {
 
     /*********************Impure Functions**********************/
 
-    const impure = eventObs(this).map(get('target')).map(checkElement);
+    const impure = eventObs(this)
+      .map(get('target'))
+      .map(checkElement);
+
     impure.subscribe((elem) => {
       elem.runIO();
     });
 
+    // Setting attributes
+    setProjectId(pinButton);
+    setVisible(pinButton);
   }
 
   /*
@@ -114,11 +132,13 @@ class PwPinButton extends HTMLButtonElement {
       this.toggleActive();
       this.pin();
     } else if (attrName === 'visible') {
-      this.style.display = !!newValue ? 'none' : '';
+      this.style.display = (newValue === 'false') ? 'none' : '';
     } else if (attrName === 'projectId') {
-      this.setProjectId(newValue);
+      setAttr(this, 'projectId', newValue);
     }
   }
+
+  /*****************************Methods*******************************/
 
   /**
    * This function toggles the component attribute visible
@@ -286,23 +306,8 @@ class PwPinButton extends HTMLButtonElement {
     IO.of(isPinned).ap(getPwUserInfo(document)).ap(getProjectId(this)).runIO();
   }
 
-  /**
-   * Set the projectId attribute
-   */
-  setProjectId(pid) {
-    // pinButton :: PwPinButton
-    const pinButton = this;
+  /*************************Html and CSS*************************/
 
-    // set :: HTMLElement -> _
-    const set = setAttr(pinButton);
-
-    // setProjectId :: HTMLElement -> _
-    const _setProjectId = compose(set('projectId'), getAttr('projectId'));
-
-    const fn = compose(map(_setProjectId), IO.of);
-
-    fn(pinButton).runIO();
-  }
   /**
    * Return the component Html in string
    */
@@ -382,6 +387,53 @@ class PwPinButton extends HTMLButtonElement {
       background: #ddd;
     }
     `;
+  }
+
+  /*************************Getters and Setters*************************/
+
+  /**
+   * Return the propertyId attribute
+   */
+  get projectId() {
+    return this._projectId;
+  }
+
+  /**
+   * Set the propertyId attribute
+   */
+  set projectId(pId) {
+    this._projectId = pId;
+    this.setAttribute('projectId', pId);
+  }
+
+  /**
+   * Return the visible attribute
+   */
+  get visible() {
+    return this._visible;
+  }
+
+  /**
+   * Set the visible attribute
+   */
+  set visible(visible) {
+    this._visible = visible;
+    this.setAttribute('visible', visible);
+  }
+
+  /**
+   * Return the status attribute
+   */
+  get status() {
+    return this._status;
+  }
+
+  /**
+   * Set the status attribute
+   */
+  set status(status) {
+    this._status = status;
+    this.setAttribute('status', status);
   }
 }
 

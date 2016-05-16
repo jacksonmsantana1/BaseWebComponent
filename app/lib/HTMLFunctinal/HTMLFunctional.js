@@ -13,11 +13,11 @@ HTMLFunctional.prototype.setInnerHTML = curry((strHtml, elem) => {
 HTMLFunctional.setInnerHTML = HTMLFunctional.prototype.setInnerHTML;
 
 // setAttr :: HTMLElement -> String -> String -> _
-HTMLFunctional.prototype.setAttr = curry((obj, attr, val) => (obj.setAttribute(attr, val)));
+HTMLFunctional.prototype.setAttr = curry((obj, attr, val) => { obj[attr] = val; });
 HTMLFunctional.setAttr = HTMLFunctional.prototype.setAttr;
 
 // getAttr :: HTMLElement -> String ->  String
-HTMLFunctional.prototype.getAttr = curry((attr, obj) => (obj.getAttribute(attr)));
+HTMLFunctional.prototype.getAttr = curry((attr, obj) => obj[attr]);
 HTMLFunctional.getAttr = HTMLFunctional.prototype.getAttr;
 
 // createShadowDom :: HTMLElement -> ShadowRoot

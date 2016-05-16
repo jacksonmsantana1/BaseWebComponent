@@ -1,6 +1,7 @@
 import expect from 'expect.js';
 import IO from '../IO/IO.js';
 import HTMLFunctional from './HTMLFunctional.js';
+import MockHtmlElement from './MockHtmlElement';
 
 describe('HTMLFunctional =>', () => {
   describe('setInnerHtml() ->', () => {
@@ -19,22 +20,22 @@ describe('HTMLFunctional =>', () => {
   describe('setAttr', () => {
     it('Should set the element attribute with the given value', () => {
       let fn = HTMLFunctional.setAttr;
-      let div = document.createElement('div');
-      div.setAttribute('checked', 'yes');
+      let component = document.createElement('mock-element');
+      document.body.appendChild(component);
 
-      expect(div.getAttribute('checked')).to.be.equal('yes');
-      fn(div)('checked')('no');
-      expect(div.getAttribute('checked')).to.be.equal('no');
+      expect(component.visible).to.be.equal(false);
+      fn(component)('visible')(true);
+      expect(component.visible).to.be.equal(true);
     });
   });
 
   describe('getAttr', () => {
     it('Should get the element attribute', () => {
       let fn = HTMLFunctional.getAttr;
-      let div = document.createElement('div');
-      div.setAttribute('checked', 'yes');
+      let component = document.createElement('mock-element');
+      document.body.appendChild(component);
 
-      expect(fn('checked', div)).to.be.equal('yes');
+      expect(fn('visible', component)).to.be.equal(false);
     });
   });
 

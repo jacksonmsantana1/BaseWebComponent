@@ -39,6 +39,9 @@ const getPwProjectInfo =
     IO.of);
 
 class PwLikeButton extends HTMLButtonElement {
+
+  /*********************Inherited Methods****************************/
+
   /*
    * Initial function called when the component is created
    */
@@ -55,6 +58,9 @@ class PwLikeButton extends HTMLButtonElement {
     // setProjectId :: HTMLElement -> _
     const setProjectId = compose(set('projectId'), getAttr('projectId'));
 
+    // setActive :: HTMLElement -> _
+    const setActive = compose(set('active'), getAttr('active'));
+
     // templateHtml :: String
     const templateHtml = this.getTemplateHtml();
 
@@ -68,6 +74,7 @@ class PwLikeButton extends HTMLButtonElement {
 
     const impure = compose(map(setInnerShadow(templateHtml, templateStyle)),
       map(createShadowDom),
+      map(tap(setActive)),
       map(tap(setProjectId)),
       IO.of);
 
@@ -82,6 +89,7 @@ class PwLikeButton extends HTMLButtonElement {
     this._isActive = true;
     this._liked = false;
     this._numberOfLikes = 0;
+    this._visible = true;
   }
 
   /*
@@ -93,7 +101,24 @@ class PwLikeButton extends HTMLButtonElement {
    * Function called when some attribute from the component is changed
    */
   /*eslint no-unused-vars: 0*/
-  attributeChangedCallback(attrName, oldValue, newValue) {}
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'visible') {
+      this.style.display = newValue ? 'none' : '';
+    }
+  }
+
+  /**************************Methods**********************************/
+
+  /**
+   * This function toggles the component attribute visible
+   */
+  toggleVisible() {
+    if (this.visible === true) {
+      this.visible = false;
+    }
+
+    this.visible = false;
+  }
 
   like() {
     /***********************Pure Functions***********************/
@@ -134,6 +159,28 @@ class PwLikeButton extends HTMLButtonElement {
 
     IO.of(disliked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
   }
+
+  isLiked() {
+    /***********************Pure Functions***********************/
+
+    // isLiked :: HTMLElement -> String -> _
+    const isLiked = curry((obj, pId) => {
+      const evt = new CustomEvent('isLiked', {
+        detail: {
+          projectId: pId,
+        },
+        bubbles: false,
+        cancelable: true,
+      });
+      obj.dispatchEvent(evt);
+    });
+
+    /***********************Impure Functions********************/
+
+    IO.of(isLiked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
+  }
+
+  /*************************Html and CSS*******************************/
 
   /**
    * Return the component Html in string
@@ -197,6 +244,8 @@ class PwLikeButton extends HTMLButtonElement {
     </style>`;
   }
 
+  /*************************Getters and Setters*************************/
+
   /**
    * Return the active attribute
    */
@@ -208,6 +257,7 @@ class PwLikeButton extends HTMLButtonElement {
    * Set the active attribute
    */
   set isActive(active) {
+    this._isActive = active;
     this.setAttribute('isActive', active);
   }
 
@@ -222,6 +272,7 @@ class PwLikeButton extends HTMLButtonElement {
    * Set the propertyId attribute
    */
   set projectId(pId) {
+    this._projectId = pId;
     this.setAttribute('projectId', pId);
   }
 
@@ -236,6 +287,7 @@ class PwLikeButton extends HTMLButtonElement {
    * Set the liked attribute
    */
   set liked(isLiked) {
+    this._liked = isLiked;
     this.setAttribute('liked', isLiked);
   }
 
@@ -250,7 +302,23 @@ class PwLikeButton extends HTMLButtonElement {
    * Set the liked attribute
    */
   set numberOfLikes(n) {
+    this._numberOfLikes = n;
     this.setAttribute('numberOfLikes', n);
+  }
+
+  /**
+   * Return the visible attribute
+   */
+  get visible() {
+    return this._visible;
+  }
+
+  /**
+   * Set the visible attribute
+   */
+  set visible(visible) {
+    this._visible = visible;
+    this.setAttribute('visible', visible);
   }
 }
 

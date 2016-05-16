@@ -39,6 +39,63 @@ describe('pw-like-button => ', () => {
     it('Should have an attribute named numberOfLikes', () => {
       expect(pwLikeButton.numberOfLikes).to.be.equal(0);
     });
+
+    it('Should have an attribute named visible', () => {
+      expect(pwLikeButton.visible).to.be.equal(true);
+    });
+  });
+
+  describe('Method isLiked() => ', () => {
+    let component;
+    let pwLikeButton;
+
+    let pwProjectInfo;
+    let isLikedEvent;
+    let projectId;
+    let isListenning;
+
+    beforeEach(() => {
+      isListenning = false;
+      isLikedEvent = false;
+      projectId = '';
+
+      component = document.createElement('pw-like-button');
+      document.body.appendChild(component);
+      pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+
+      // Mocking the pw-project-info
+      pwProjectInfo = new Mock();
+      pwProjectInfo.addEventListener('isLiked', (evt) => {
+        isListenning = true;
+        isLikedEvent = true;
+        projectId = evt.detail.projectId;
+      });
+      document.body.appendChild(pwProjectInfo);
+    });
+
+    afterEach(() => {
+      document.body.removeChild(pwLikeButton);
+      document.body.removeChild(pwProjectInfo);
+    });
+
+    it('Should have an method called isLiked()', () => {
+      expect(pwLikeButton.isLiked.constructor.name).to.be.equal('Function');
+    });
+
+    it('Should emit an event when the isLiked method is called', ()  => {
+      pwLikeButton.isLiked();
+      expect(isLikedEvent).to.be.equal(true);
+    });
+
+    it('Should pass to the event the project ID when the isLiked method is called', () => {
+      pwLikeButton.isLiked();
+      expect(projectId).to.be.equal('VAITOMARNOCU');
+    });
+
+    it('Should the pw-project-info be listening for the emmited event', () => {
+      pwLikeButton.isLiked();
+      expect(isListenning).to.be.equal(true);
+    });
   });
 
   describe('Method dislike() => ', () => {
@@ -144,6 +201,27 @@ describe('pw-like-button => ', () => {
     it('Should the pw-project-info be listening for the emmited event', () => {
       pwLikeButton.like();
       expect(isListenning).to.be.equal(true);
+    });
+  });
+
+  describe('Method toggleVisible() => ', () => {
+    let component;
+    let pwLikeButton;
+
+    beforeEach(() => {
+      component = document.createElement('pw-like-button');
+      document.body.appendChild(component);
+      pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+    });
+
+    afterEach(() => {
+      document.body.removeChild(pwLikeButton);
+    });
+
+    it('Should toggle the attribute visible', () => {
+      expect(pwLikeButton.visible).to.be.equal(true);
+      pwLikeButton.toggleVisible();
+      expect(pwLikeButton.visible).to.be.equal(false);
     });
   });
 });
