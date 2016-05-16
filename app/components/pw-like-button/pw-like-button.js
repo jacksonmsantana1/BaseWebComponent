@@ -30,8 +30,13 @@ const setInnerHTML = HTMLFunctional.setInnerHTML,
   createShadowDom = HTMLFunctional.createShadowDom;
 
 // getProjectId :: HTMLElement -> IO(String)
-const getProjectId = compose(map(getAttr('projectId')),
+const getProjectId = compose(map((component) => component.projectId),
   IO.of);
+
+// getPwProjectInfo :: Document -> IO(HTMLElement)
+const getPwProjectInfo =
+  compose(map(getElementByTagName('pw-project-info')),
+    IO.of);
 
 class PwLikeButton extends HTMLButtonElement {
   /*
@@ -89,6 +94,46 @@ class PwLikeButton extends HTMLButtonElement {
    */
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {}
+
+  like() {
+    /***********************Pure Functions***********************/
+
+    // liked :: HTMLElement -> String -> _
+    const liked = curry((obj, pId) => {
+      const evt = new CustomEvent('like', {
+        detail: {
+          projectId: pId,
+        },
+        bubbles: false,
+        cancelable: true,
+      });
+      obj.dispatchEvent(evt);
+    });
+
+    /***********************Impure Functions********************/
+
+    IO.of(liked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
+  }
+
+  dislike() {
+    /***********************Pure Functions***********************/
+
+    // disliked :: HTMLElement -> String -> _
+    const disliked = curry((obj, pId) => {
+      const evt = new CustomEvent('dislike', {
+        detail: {
+          projectId: pId,
+        },
+        bubbles: false,
+        cancelable: true,
+      });
+      obj.dispatchEvent(evt);
+    });
+
+    /***********************Impure Functions********************/
+
+    IO.of(disliked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
+  }
 
   /**
    * Return the component Html in string
