@@ -47,19 +47,16 @@ class PwLikeButton extends HTMLButtonElement {
    */
   createdCallback() {
 
+    // Init attributes
+    this._projectId = 'VAITOMARNOCU';
+    this._liked = false;
+    this._numberOfLikes = 0;
+    this._visible = true;
+
     /*********************Pure Functions**********************/
 
     // likeButton :: PwPinButton
     const likeButton = this;
-
-    // set :: HTMLElement -> _
-    const set = setAttr(likeButton);
-
-    // setProjectId :: HTMLElement -> _
-    const setProjectId = compose(set('projectId'), getAttr('projectId'));
-
-    // setActive :: HTMLElement -> _
-    const setActive = compose(set('active'), getAttr('active'));
 
     // templateHtml :: String
     const templateHtml = this.getTemplateHtml();
@@ -74,8 +71,6 @@ class PwLikeButton extends HTMLButtonElement {
 
     const impure = compose(map(setInnerShadow(templateHtml, templateStyle)),
       map(createShadowDom),
-      map(tap(setActive)),
-      map(tap(setProjectId)),
       IO.of);
 
     impure(likeButton).runIO();
@@ -85,11 +80,28 @@ class PwLikeButton extends HTMLButtonElement {
    * Function called when the component is attached to the DOM
    */
   attachedCallback() {
-    this._projectId = 'VAITOMARNOCU';
-    this._isActive = true;
-    this._liked = false;
-    this._numberOfLikes = 0;
-    this._visible = true;
+    // likeButton :: PwPinButton
+    const likeButton = this;
+
+    // set :: HTMLElement -> _
+    const set = setAttr(likeButton);
+
+    // setProjectId :: HTMLElement -> _
+    const setProjectId = compose(set('projectId'), getAttr('projectId'));
+
+    // setLiked :: HTMLElement -> _
+    const setLiked = compose(set('liked'), getAttr('liked'));
+
+    // setNumberOfLikes :: HTMLElement -> _
+    const setNumberOfLikes = compose(set('numberOfLikes'), getAttr('numberOfLikes'));
+
+    // setVisible :: HTMLElement -> _
+    const setVisible = compose(set('visible'), getAttr('visible'));
+
+    setProjectId(likeButton);
+    setLiked(likeButton);
+    setNumberOfLikes(likeButton);
+    setVisible(likeButton);
   }
 
   /*
@@ -103,7 +115,7 @@ class PwLikeButton extends HTMLButtonElement {
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'visible') {
-      this.style.display = newValue ? 'none' : '';
+      this.style.display = (newValue === 'false') ? 'none' : '';
     }
   }
 
@@ -245,21 +257,6 @@ class PwLikeButton extends HTMLButtonElement {
   }
 
   /*************************Getters and Setters*************************/
-
-  /**
-   * Return the active attribute
-   */
-  get isActive() {
-    return this._isActive;
-  }
-
-  /**
-   * Set the active attribute
-   */
-  set isActive(active) {
-    this._isActive = active;
-    this.setAttribute('isActive', active);
-  }
 
   /**
    * Return the propertyId attribute
