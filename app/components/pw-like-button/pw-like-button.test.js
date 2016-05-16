@@ -28,10 +28,6 @@ describe('pw-like-button => ', () => {
       expect(pwLikeButton.projectId).to.be.equal('VAITOMARNOCU');
     });
 
-    it('Should have an attribute named active', () => {
-      expect(pwLikeButton.isActive).to.be.equal(true);
-    });
-
     it('Should have an attribute named liked', () => {
       expect(pwLikeButton.liked).to.be.equal(false);
     });
