@@ -47,7 +47,7 @@ class PwLikeButton extends HTMLButtonElement {
    */
   createdCallback() {
 
-    // Init attributes
+    // Init Attr
     this._projectId = 'VAITOMARNOCU';
     this._liked = false;
     this._numberOfLikes = 0;
@@ -98,6 +98,7 @@ class PwLikeButton extends HTMLButtonElement {
     // setVisible :: HTMLElement -> _
     const setVisible = compose(set('visible'), getAttr('visible'));
 
+    // Set Attr
     setProjectId(likeButton);
     setLiked(likeButton);
     setNumberOfLikes(likeButton);
@@ -132,6 +133,35 @@ class PwLikeButton extends HTMLButtonElement {
     this.visible = false;
   }
 
+  /**
+   * This function toggles the component attribute liked
+   */
+  toggleLiked() {
+    if (this.liked === true) {
+      this.liked = false;
+    }
+
+    this.liked = true;
+  }
+
+  /**
+   * Update the component attributes
+   * @param _projectId
+   * @param _numberOfLikes
+   * @param _visible
+   * @param _liked
+   */
+  update(_projectId, _numberOfLikes, _visible, _liked) {
+    this.projectId = _projectId;
+    this.numberOfLikes = _numberOfLikes;
+    this.visible = _visible;
+    this.liked = _liked;
+  }
+
+  /**
+   * This function 'warn' the others components that this component
+   * was 'liked'
+   */
   like() {
     /***********************Pure Functions***********************/
 
@@ -152,6 +182,10 @@ class PwLikeButton extends HTMLButtonElement {
     IO.of(liked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
   }
 
+  /**
+   * This function 'warn' the others components that this component
+   * was 'disliked'
+   */
   dislike() {
     /***********************Pure Functions***********************/
 
@@ -172,6 +206,9 @@ class PwLikeButton extends HTMLButtonElement {
     IO.of(disliked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
   }
 
+  /**
+   * This function checks with the backend if the component is already liked
+   */
   isLiked() {
     /***********************Pure Functions***********************/
 

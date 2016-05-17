@@ -220,5 +220,55 @@ describe('pw-like-button => ', () => {
       expect(pwLikeButton.visible).to.be.equal(false);
     });
   });
+
+  describe('Method toggleLiked() => ', () => {
+    let component;
+    let pwLikeButton;
+
+    beforeEach(() => {
+      component = document.createElement('pw-like-button');
+      document.body.appendChild(component);
+      pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+    });
+
+    afterEach(() => {
+      document.body.removeChild(pwLikeButton);
+    });
+
+    it('Should toggle the attribute liked', () => {
+      expect(pwLikeButton.liked).to.be.equal(false);
+      pwLikeButton.toggleLiked();
+      expect(pwLikeButton.liked).to.be.equal(true);
+    });
+  });
+
+  describe('Method update() => ', () => {
+    let component;
+    let pwLikeButton;
+
+    beforeEach(() => {
+      component = document.createElement('pw-like-button');
+      document.body.appendChild(component);
+      pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+    });
+
+    afterEach(() => {
+      document.body.removeChild(pwLikeButton);
+    });
+
+    it('Should update the component attributes', () => {
+      expect(pwLikeButton.visible).to.be.equal(true);
+      expect(pwLikeButton.liked).to.be.equal(false);
+      expect(pwLikeButton.numberOfLikes).to.be.equal(0);
+      expect(pwLikeButton.projectId).to.be.equal('VAITOMARNOCU');
+
+      pwLikeButton.update('VAITOMARNOANUS', 1, false, true);
+
+      expect(pwLikeButton.visible).to.be.equal(false);
+      expect(pwLikeButton.liked).to.be.equal(true);
+      expect(pwLikeButton.numberOfLikes).to.be.equal(1);
+      expect(pwLikeButton.projectId).to.be.equal('VAITOMARNOANUS');
+    });
+  });
 });
 
