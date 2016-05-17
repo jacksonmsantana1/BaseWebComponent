@@ -98,6 +98,22 @@ class PwLikeButton extends HTMLButtonElement {
     // setVisible :: HTMLElement -> _
     const setVisible = compose(set('visible'), getAttr('visible'));
 
+    // eventObs :: HTMLElement -> EventStream
+    const eventObs = event('click');
+
+    // checkElement :: HTMLElement -> IO(_)
+    const checkElement = (elem) => (IO.of(this.toggleLiked()));
+
+    const impure = eventObs(this)
+      .map(get('target'))
+      .map(get('childNodes'))
+      .map(nth(0))
+      .map(checkElement);
+
+    impure.subscribe((elem) => {
+      elem.runIO();
+    });
+
     // Set Attr
     setProjectId(likeButton);
     setLiked(likeButton);
@@ -117,6 +133,12 @@ class PwLikeButton extends HTMLButtonElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'visible') {
       this.style.display = (newValue === 'false') ? 'none' : '';
+    } else if (attrName === 'liked' && newValue === 'true') {
+      this.toggleActive();
+      this.like();
+    } else if (attrName === 'liked' && newValue === 'false') {
+      this.toggleActive();
+      this.dislike();
     }
   }
 
@@ -137,11 +159,57 @@ class PwLikeButton extends HTMLButtonElement {
    * This function toggles the component attribute liked
    */
   toggleLiked() {
-    if (this.liked === true) {
-      this.liked = false;
-    }
 
-    this.liked = true;
+    /********************Pure Functions************************/
+
+    const attrStatus = getAttr('liked');
+    const equalToTrue = equals('true');
+    const checkStatus = compose(equalToTrue, attrStatus);
+
+    /*********************Impure Function**********************/
+
+    const impure = (component) => {
+      (checkStatus(component) ?
+        setAttr(component, 'liked', 'false') :
+        setAttr(component, 'liked', 'true'));
+    };
+
+    impure(this);
+  }
+
+  /**
+   * This function toggles the component CSS class active
+   */
+  toggleActive() {
+
+    /**************************Pure Functions***********************/
+
+    // component :: HTMLElement
+    const component = this;
+
+    // getShadowRoot :: HTMLElement -> ShadowRoot
+    const getShadowRoot = get('shadowRoot');
+
+    // getDivLike :: ShadowRoot -> HTMLDivElement
+    const getDivLike = component.getDivLike;
+
+    // getDivStyleClass :: HTMLDivElement -> StyleClass
+    const getDivStyleClass = ClassList;
+
+    //toggleStyleClassProp :: String -> StyleClass -> _
+    const toggleStyleClassProp = R.curry((str, styleClass) => {
+      styleClass.toggle(str);
+    });
+
+    /**************************Impure Functions**********************/
+
+    const impure = R.compose(map(toggleStyleClassProp('active')),
+      map(getDivStyleClass),
+      map(getDivLike),
+      map(getShadowRoot),
+      IO.of);
+
+    impure(component).runIO();
   }
 
   /**
@@ -236,8 +304,7 @@ class PwLikeButton extends HTMLButtonElement {
    */
   getTemplateHtml() {
     return `<div class="like">
-              <button class="like-toggle basic">❤</button>
-              <span class="hidden">CU</span>
+              <button class="like-toggle active">❤</button>
             </div>`;
   }
 
@@ -248,12 +315,6 @@ class PwLikeButton extends HTMLButtonElement {
     return `<style>
       *{transition: all 0.3s linear;}
 
-      .hidden {
-        font-size: 0;
-        position: relative;
-        left: -40px;
-      }
-
       .like {
         font-family: 'Open Sans';
         display:inline-block;
@@ -263,34 +324,50 @@ class PwLikeButton extends HTMLButtonElement {
         outline:none;
         box-shadow:none;
         border: none;
-        width: 30px;
-        height: 30px;
-        font-size: 1.5em;
-        border-radius: 100px;
-      }
-
-      .like-toggle.basic {
-        border: none;
         width: 50px;
         height: 50px;
         font-size: 1.5em;
-        border-radius: 100px;
+        border-radius: 10px;
         background: #eee;
         color: #666;
       }
 
-      .like-active {
-        background: #438CCA;
+      .like-toggle:hover {
+        background: #ddd;
+      }
+
+      .active {
         width: 80px;
+        height: 50px;
         font-size: 1.7em;
+        background: #eee;
         color: #F26D7D;
+      }
+
+      .active:hover {
+        background: #ddd;
       }
 
       .like-toggle.basic:not(.like-active):hover {
         background: #ddd;
-        font-size: 0;
       }
     </style>`;
+  }
+
+  /**
+   * Return the div with class like that is in the ShadowRoot
+   */
+  getDivLike(shadowRoot) {
+
+    /**********************Pure Function**************************/
+
+    const pure = compose(nth(1),
+      get('childNodes'),
+      nth(0),
+      get('childNodes'));
+
+    console.log(pure(shadowRoot));
+    return pure(shadowRoot);
   }
 
   /*************************Getters and Setters*************************/

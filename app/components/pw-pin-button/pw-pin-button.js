@@ -79,7 +79,6 @@ class PwPinButton extends HTMLButtonElement {
    */
   attachedCallback() {
 
-
     /********************Pure Functions*********************/
 
     // pinButton :: PwPinButton
