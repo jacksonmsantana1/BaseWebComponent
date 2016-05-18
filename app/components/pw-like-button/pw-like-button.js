@@ -135,10 +135,10 @@ class PwLikeButton extends HTMLButtonElement {
       this.style.display = (newValue === 'false') ? 'none' : '';
     } else if (attrName === 'liked' && newValue === 'true') {
       this.toggleActive();
-      this.like();
+      //this.like();
     } else if (attrName === 'liked' && newValue === 'false') {
       this.toggleActive();
-      this.dislike();
+      //this.dislike();
     }
   }
 

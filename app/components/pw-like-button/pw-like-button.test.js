@@ -238,7 +238,7 @@ describe('pw-like-button => ', () => {
     it('Should toggle the attribute liked', () => {
       expect(pwLikeButton.liked).to.be.equal(false);
       pwLikeButton.toggleLiked();
-      expect(pwLikeButton.liked).to.be.equal(true);
+      expect(pwLikeButton.liked).to.be.equal('true');
     });
   });
 
