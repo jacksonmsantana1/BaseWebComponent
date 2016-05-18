@@ -4,7 +4,7 @@
 
 //import Request from '../../lib/Request/Request.js';
 //import Logger from '../../lib/Logger/Logger.js';
-import R from 'ramda';
+//import R from 'ramda';
 
 //const contain = R.indexOf;
 //const get = R.prop;
