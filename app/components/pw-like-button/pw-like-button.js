@@ -148,11 +148,22 @@ class PwLikeButton extends HTMLButtonElement {
    * This function toggles the component attribute visible
    */
   toggleVisible() {
-    if (this.visible === true) {
-      this.visible = false;
-    }
 
-    this.visible = false;
+    /********************Pure Functions************************/
+
+    const attrVisible = getAttr('visible');
+    const equalToTrue = equals('true');
+    const checkVisible = compose(equalToTrue, attrVisible);
+
+    /*********************Impure Function**********************/
+
+    const impure = (component) => {
+      (checkVisible(component) ?
+        setAttr(component, 'visble', 'false') :
+        setAttr(component, 'visible', 'true'));
+    };
+
+    impure(this);
   }
 
   /**

@@ -217,7 +217,7 @@ describe('pw-like-button => ', () => {
     it('Should toggle the attribute visible', () => {
       expect(pwLikeButton.visible).to.be.equal(true);
       pwLikeButton.toggleVisible();
-      expect(pwLikeButton.visible).to.be.equal(false);
+      expect(pwLikeButton.visible).to.be.equal('true');
     });
   });
 
