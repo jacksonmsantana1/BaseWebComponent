@@ -87,6 +87,7 @@
     "karma-webpack": "^1.7.0",
     "lolex": "^1.4.0",
     "mocha": "^2.3.3",
+    "mocha-loader": "^0.7.1",
     "node-libs-browser": "^0.5.3",
     "postcss-loader": "^0.6.0",
     "sinon": "^1.17.3",
