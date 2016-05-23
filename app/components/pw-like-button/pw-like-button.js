@@ -240,7 +240,9 @@ class PwLikeButton extends HTMLButtonElement {
    * This function 'warn' the pw-project-info component that this component
    * was 'liked'
    */
-  like(pwProjectInfo, _projectId) {
+  like(pwProjectInfo, pwUserInfo, _projectId) {
+    const events = [];
+
     if (isNil(pwProjectInfo)) {
       return new Error('pwProjectInfo argument is null');
     } else if (isEmpty(pwProjectInfo)) {
@@ -249,6 +251,13 @@ class PwLikeButton extends HTMLButtonElement {
       return new Error('pwProjectInfo argument is from an invalid class');
     }
 
+    if (isNil(pwUserInfo)) {
+      return new Error('pwUserInfo argument is null');
+    } else if (isEmpty(pwUserInfo)) {
+      return new Error('pwUserInfo argument is an empty object');
+    } else if (pwUserInfo.constructor.name !== 'pw-user-info') {
+      return new Error('pwUserInfo argument is from an invalid class');
+    }
 
     if (isNil(_projectId)) {
       return new Error('projectId argument is null');
@@ -258,17 +267,24 @@ class PwLikeButton extends HTMLButtonElement {
       return new Error('projectId argument is invalid');
     }
 
-    const fn = compose(emitCustomEvent(pwProjectInfo),
-      createCustomEvent('like', { projectId: _projectId }));
 
-    return IO.of(fn(false, true));
+    const evt1 = compose(IO.of, emitCustomEvent(pwProjectInfo),
+      createCustomEvent('like', { projectId: _projectId }));
+    events.push(evt1(false, true));
+
+    const evt2 = compose(IO.of, emitCustomEvent(pwUserInfo),
+      createCustomEvent('like', { projectId: _projectId }));
+    events.push(evt2(false, true));
+
+    return events;
   }
 
   /**
    * This function 'warn' the others components that this component
    * was 'disliked'
    */
-  dislike(pwProjectInfo, _projectId) {
+  dislike(pwProjectInfo, pwUserInfo, _projectId) {
+    const events = [];
     if (isNil(pwProjectInfo)) {
       return new Error('pwProjectInfo argument is null');
     } else if (isEmpty(pwProjectInfo)) {
@@ -277,6 +293,13 @@ class PwLikeButton extends HTMLButtonElement {
       return new Error('pwProjectInfo argument is from an invalid class');
     }
 
+    if (isNil(pwUserInfo)) {
+      return new Error('pwUserInfo argument is null');
+    } else if (isEmpty(pwUserInfo)) {
+      return new Error('pwUserInfo argument is an empty object');
+    } else if (pwUserInfo.constructor.name !== 'pw-user-info') {
+      return new Error('pwUserInfo argument is from an invalid class');
+    }
 
     if (isNil(_projectId)) {
       return new Error('projectId argument is null');
@@ -286,36 +309,47 @@ class PwLikeButton extends HTMLButtonElement {
       return new Error('projectId argument is invalid');
     }
 
-    const fn = compose(emitCustomEvent(pwProjectInfo),
+    const evt1 = compose(IO.of, emitCustomEvent(pwProjectInfo),
       createCustomEvent('dislike', { projectId: _projectId }));
+    events.push(evt1(false, true));
 
-    return IO.of(fn(false, true));
+    const evt2 = compose(IO.of, emitCustomEvent(pwUserInfo),
+      createCustomEvent('dislike', { projectId: _projectId }));
+    events.push(evt2(false, true));
+
+    return events;
   }
 
   /**
-   * Send an event to the pwProjectInfo component to it checks in the backend
+   * Checks with the pwUserInfo component to see
    * if the project is already liked by the user
    * @param pwProjectInfo
    * @param projectId
    */
-  isLiked(pwProjectInfo, projectId) {
-    /***********************Pure Functions***********************/
+  isLiked(pwUserInfo, projectId) {
+    return new Promise((resolve, reject) => {
+      if (isNil(pwUserInfo)) {
+        reject(new Error('pwUserInfo argument is null'));
+      } else if (isEmpty(pwUserInfo)) {
+        reject(new Error('pwUserInfo argument is an empty object'));
+      } else if (pwUserInfo.constructor.name !== 'pw-user-info') {
+        reject(new Error('pwUserInfo argument is from an invalid class'));
+      }
 
-    // isLiked :: HTMLElement -> String -> _
-    const isLiked = curry((obj, pId) => {
-      const evt = new CustomEvent('isLiked', {
-        detail: {
-          projectId: pId,
-        },
-        bubbles: false,
-        cancelable: true,
-      });
-      obj.dispatchEvent(evt);
+      if (isNil(projectId)) {
+        reject(new Error('projectId argument is null'));
+      } else if (isEmpty(projectId)) {
+        reject(new Error('projectId argument is an empty string'));
+      } else if (projectId !== this.projectId) {
+        reject(new Error('projectId argument is invalid'));
+      }
+      pwUserInfo.isLiked(projectId)
+        .then((ok) => {
+          resolve(ok);
+        }).catch((err) => {
+          reject(err);
+        });
     });
-
-    /***********************Impure Functions********************/
-
-    IO.of(isLiked).ap(pwProjectInfo).ap(projectId).runIO();
   }
 
   /*************************Html and CSS*******************************/
