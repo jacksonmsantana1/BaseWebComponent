@@ -10,13 +10,24 @@
 //const get = R.prop;
 
 class PwProjectInfo extends HTMLElement {
-  createdCallback() {}
+
+  /*******************Inherited Methods*********************/
+
+  createdCallback() {
+    this.addEventListener('like', this.liked);
+  }
 
   detachedCallback() {}
 
   attachedCallback() {}
 
   attributeChangedCallback() {}
+
+  /************************Methods***************************/
+
+  liked(evt) {
+    console.log(evt.target);
+  }
 }
 
 document.registerElement('pw-project-info', PwProjectInfo);

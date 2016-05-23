@@ -8,6 +8,7 @@ import IO from '../../lib/IO/IO.js';
 import Helpers from '../../lib/Helpers/Helpers.js';
 import ClassList from '../../lib/CSSClassList/CSSClassList.js';
 import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
+import Aux from './auxiliar.func';
 
 /**************************Helpers****************************/
 
@@ -18,7 +19,9 @@ const compose = R.compose,
   tap = R.tap,
   concat = R.concat,
   nth = R.nth,
-  equals = R.equals;
+  equals = R.equals,
+  isEmpty = R.isEmpty,
+  isNil = R.isNil;
 
 const map = Helpers.map,
   event = Helpers.event;
@@ -29,14 +32,10 @@ const setInnerHTML = HTMLFunctional.setInnerHTML,
   getElementByTagName = HTMLFunctional.getElementByTagName,
   createShadowDom = HTMLFunctional.createShadowDom;
 
-// getProjectId :: HTMLElement -> IO(String)
-const getProjectId = compose(map((component) => component.projectId),
-  IO.of);
-
-// getPwProjectInfo :: Document -> IO(HTMLElement)
-const getPwProjectInfo =
-  compose(map(getElementByTagName('pw-project-info')),
-    IO.of);
+const createCustomEvent = Aux.createCustomEvent;
+const emitCustomEvent = Aux.emitCustomEvent;
+const getPwProjectInfo = Aux.getPwProjectInfo;
+const getProjectId = Aux.getProjectId;
 
 class PwLikeButton extends HTMLButtonElement {
 
@@ -227,57 +226,68 @@ class PwLikeButton extends HTMLButtonElement {
   }
 
   /**
-   * This function 'warn' the others components that this component
+   * This function 'warn' the pw-project-info component that this component
    * was 'liked'
    */
-  like() {
-    /***********************Pure Functions***********************/
+  like(pwProjectInfo, _projectId) {
+    if (isNil(pwProjectInfo)) {
+      return new Error('pwProjectInfo argument is null');
+    } else if (isEmpty(pwProjectInfo)) {
+      return new Error('pwProjectInfo argument is an empty object');
+    } else if (pwProjectInfo.constructor.name !== 'pw-project-info') {
+      return new Error('pwProjectInfo argument is from an invalid class');
+    }
 
-    // liked :: HTMLElement -> String -> _
-    const liked = curry((obj, pId) => {
-      const evt = new CustomEvent('like', {
-        detail: {
-          projectId: pId,
-        },
-        bubbles: false,
-        cancelable: true,
-      });
-      obj.dispatchEvent(evt);
-    });
 
-    /***********************Impure Functions********************/
+    if (isNil(_projectId)) {
+      return new Error('projectId argument is null');
+    } else if (isEmpty(_projectId)) {
+      return new Error('projectId argument is an empty string');
+    } else if (_projectId !== this.projectId) {
+      return new Error('projectId argument is invalid');
+    }
 
-    IO.of(liked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
+    const fn = compose(emitCustomEvent(pwProjectInfo),
+      createCustomEvent('like', { projectId: _projectId }));
+
+    return IO.of(fn(false, true));
   }
 
   /**
    * This function 'warn' the others components that this component
    * was 'disliked'
    */
-  dislike() {
-    /***********************Pure Functions***********************/
+  dislike(pwProjectInfo, _projectId) {
+    if (isNil(pwProjectInfo)) {
+      return new Error('pwProjectInfo argument is null');
+    } else if (isEmpty(pwProjectInfo)) {
+      return new Error('pwProjectInfo argument is an empty object');
+    } else if (pwProjectInfo.constructor.name !== 'pw-project-info') {
+      return new Error('pwProjectInfo argument is from an invalid class');
+    }
 
-    // disliked :: HTMLElement -> String -> _
-    const disliked = curry((obj, pId) => {
-      const evt = new CustomEvent('dislike', {
-        detail: {
-          projectId: pId,
-        },
-        bubbles: false,
-        cancelable: true,
-      });
-      obj.dispatchEvent(evt);
-    });
 
-    /***********************Impure Functions********************/
+    if (isNil(_projectId)) {
+      return new Error('projectId argument is null');
+    } else if (isEmpty(_projectId)) {
+      return new Error('projectId argument is an empty string');
+    } else if (_projectId !== this.projectId) {
+      return new Error('projectId argument is invalid');
+    }
 
-    IO.of(disliked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
+    const fn = compose(emitCustomEvent(pwProjectInfo),
+      createCustomEvent('dislike', { projectId: _projectId }));
+
+    return IO.of(fn(false, true));
   }
 
   /**
-   * This function checks with the backend if the component is already liked
+   * Send an event to the pwProjectInfo component to it checks in the backend
+   * if the project is already liked by the user
+   * @param pwProjectInfo
+   * @param projectId
    */
-  isLiked() {
+  isLiked(pwProjectInfo, projectId) {
     /***********************Pure Functions***********************/
 
     // isLiked :: HTMLElement -> String -> _
@@ -294,7 +304,7 @@ class PwLikeButton extends HTMLButtonElement {
 
     /***********************Impure Functions********************/
 
-    IO.of(isLiked).ap(getPwProjectInfo(document)).ap(getProjectId(this)).runIO();
+    IO.of(isLiked).ap(pwProjectInfo).ap(projectId).runIO();
   }
 
   /*************************Html and CSS*******************************/
