@@ -65,9 +65,11 @@ let Mock;
   describe('Method like() => ', () => {
     let component;
     let component2;
+    let component3;
 
     let pwLikeButton;
     let pwProjectInfo;
+    let pwUserInfo;
 
     let createCustomEvent;
     let emitCustomEvent;
@@ -85,12 +87,17 @@ let Mock;
       component2 = document.createElement('pw-project-info');
       document.body.appendChild(component2);
       pwProjectInfo = document.body.getElementsByTagName('pw-project-info')[0];
+
+      component3 = document.createElement('pw-user-info');
+      document.body.appendChild(component3);
+      pwUserInfo = document.body.getElementsByTagName('pw-user-info')[0];
     });
 
     afterEach(() => {
       Sinon.restore();
       document.body.removeChild(pwLikeButton);
       document.body.removeChild(pwProjectInfo);
+      document.body.removeChild(pwUserInfo);
     });
 
     it('Should have an method called like()', () => {
@@ -98,21 +105,29 @@ let Mock;
     });
 
     it('Should receive as first parameter the pw-project-info component', () => {
-      expect(pwLikeButton.like(null, 1)).to.be.an(Error);
-      expect(pwLikeButton.like(null, 1).message).to.be.equal('pwProjectInfo argument is null');
-      expect(pwLikeButton.like({}, 1).message).to.be.equal('pwProjectInfo argument is an empty object');
-      expect(pwLikeButton.like({ anus: 'ANUS' }, 1).message).to.be.equal('pwProjectInfo argument is from an invalid class');
+      expect(pwLikeButton.like(null, pwUserInfo, 1)).to.be.an(Error);
+      expect(pwLikeButton.like(null, pwUserInfo, 1).message).to.be.equal('pwProjectInfo argument is null');
+      expect(pwLikeButton.like({}, pwUserInfo, 1).message).to.be.equal('pwProjectInfo argument is an empty object');
+      expect(pwLikeButton.like({ anus: 'ANUS' }, pwUserInfo, 1).message).to.be.equal('pwProjectInfo argument is from an invalid class');
     });
 
-    it('Should receive as second parameter the component project id', () => {
-      expect(pwLikeButton.like(pwProjectInfo, null)).to.be.an(Error);
-      expect(pwLikeButton.like(pwProjectInfo, null).message).to.be.equal('projectId argument is null');
-      expect(pwLikeButton.like(pwProjectInfo, '').message).to.be.equal('projectId argument is an empty string');
-      expect(pwLikeButton.like(pwProjectInfo, 'error').message).to.be.equal('projectId argument is invalid');
+    it('Should receive as second parameter the pw-user-info component', () => {
+      expect(pwLikeButton.like(pwProjectInfo, null, 1)).to.be.an(Error);
+      expect(pwLikeButton.like(pwProjectInfo, null, 1).message).to.be.equal('pwUserInfo argument is null');
+      expect(pwLikeButton.like(pwProjectInfo, {}, 1).message).to.be.equal('pwUserInfo argument is an empty object');
+      expect(pwLikeButton.like(pwProjectInfo, [1], 1).message).to.be.equal('pwUserInfo argument is from an invalid class');
     });
 
-    it('Should return an IO', () => {
-      expect(pwLikeButton.like(pwProjectInfo, 'VAITOMARNOCU').constructor.name).to.be.equal('IO');
+    it('Should receive as third parameter the component project id', () => {
+      expect(pwLikeButton.like(pwProjectInfo, pwUserInfo, null)).to.be.an(Error);
+      expect(pwLikeButton.like(pwProjectInfo, pwUserInfo, null).message).to.be.equal('projectId argument is null');
+      expect(pwLikeButton.like(pwProjectInfo, pwUserInfo, '').message).to.be.equal('projectId argument is an empty string');
+      expect(pwLikeButton.like(pwProjectInfo, pwUserInfo, 'error').message).to.be.equal('projectId argument is invalid');
+    });
+
+    it('Should return an Array of IO', () => {
+      expect(pwLikeButton.like(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').constructor.name).to.be.equal('Array');
+      expect(pwLikeButton.like(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').length).to.be.equal(2);
     });
 
     it('Should call the createCustomEvent auxiliar function', (done) => {
@@ -121,7 +136,9 @@ let Mock;
         createCustomEvent.should.have.not.been.called;
         done();
       });
-      pwLikeButton.like(pwProjectInfo, 'VAITOMARNOCU').runIO();
+      pwLikeButton.like(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').map((io) => {
+        io.runIO();
+      });
     });
 
     it('Should call the emitCustomEvent auxiliar function', (done) => {
@@ -130,7 +147,9 @@ let Mock;
         emitCustomEvent.should.have.not.been.called;
         done();
       });
-      pwLikeButton.like(pwProjectInfo, 'VAITOMARNOCU').runIO();
+      pwLikeButton.like(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').map((io) => {
+        io.runIO();
+      });
     });
 
     it('Should emit a CustomEvent to the pw-project-info components', (done) => {
@@ -142,16 +161,34 @@ let Mock;
         done();
       });
 
-      pwLikeButton.like(pwProjectInfo, 'VAITOMARNOCU').runIO();
+      pwLikeButton.like(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').map((io) => {
+        io.runIO();
+      });
+    });
+
+    it('Should emit a CustomEvent to the pw-user-info components', (done) => {
+      pwUserInfo.addEventListener('like', (evt) => {
+        expect(evt.type).to.be.equal('like');
+        expect(evt.cancelable).to.be.equal(true);
+        expect(evt.bubbles).to.be.equal(false);
+        expect(evt.detail.projectId).to.be.equal('VAITOMARNOCU');
+        done();
+      });
+
+      pwLikeButton.like(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').map((io) => {
+        io.runIO();
+      });
     });
   });
 
   describe('Method dislike() => ', () => {
     let component;
     let component2;
+    let component3;
 
     let pwLikeButton;
     let pwProjectInfo;
+    let pwUserInfo;
 
     let createCustomEvent;
     let emitCustomEvent;
@@ -169,6 +206,10 @@ let Mock;
       component2 = document.createElement('pw-project-info');
       document.body.appendChild(component2);
       pwProjectInfo = document.body.getElementsByTagName('pw-project-info')[0];
+
+      component3 = document.createElement('pw-user-info');
+      document.body.appendChild(component3);
+      pwUserInfo = document.body.getElementsByTagName('pw-user-info')[0];
     });
 
     afterEach(() => {
@@ -176,6 +217,7 @@ let Mock;
 
       document.body.removeChild(pwLikeButton);
       document.body.removeChild(pwProjectInfo);
+      document.body.removeChild(pwUserInfo);
     });
 
     it('Should have an method called dislike()', () => {
@@ -183,21 +225,29 @@ let Mock;
     });
 
     it('Should receive as first parameter the pw-project-info component', () => {
-      expect(pwLikeButton.dislike(null, 1)).to.be.an(Error);
-      expect(pwLikeButton.dislike(null, 1).message).to.be.equal('pwProjectInfo argument is null');
-      expect(pwLikeButton.dislike({}, 1).message).to.be.equal('pwProjectInfo argument is an empty object');
-      expect(pwLikeButton.dislike({ anus: 'ANUS' }, 1).message).to.be.equal('pwProjectInfo argument is from an invalid class');
+      expect(pwLikeButton.dislike(null, null, 1)).to.be.an(Error);
+      expect(pwLikeButton.dislike(null, null, 1).message).to.be.equal('pwProjectInfo argument is null');
+      expect(pwLikeButton.dislike({}, null, 1).message).to.be.equal('pwProjectInfo argument is an empty object');
+      expect(pwLikeButton.dislike({ anus: 'ANUS' }, null, 1).message).to.be.equal('pwProjectInfo argument is from an invalid class');
     });
 
-    it('Should receive as second parameter the component project id', () => {
-      expect(pwLikeButton.dislike(pwProjectInfo, null)).to.be.an(Error);
-      expect(pwLikeButton.dislike(pwProjectInfo, null).message).to.be.equal('projectId argument is null');
-      expect(pwLikeButton.dislike(pwProjectInfo, '').message).to.be.equal('projectId argument is an empty string');
-      expect(pwLikeButton.dislike(pwProjectInfo, 'error').message).to.be.equal('projectId argument is invalid');
+    it('Should receive as second parameter the pw-user-info component', () => {
+      expect(pwLikeButton.dislike(pwProjectInfo, null, 1)).to.be.an(Error);
+      expect(pwLikeButton.dislike(pwProjectInfo, null, 1).message).to.be.equal('pwUserInfo argument is null');
+      expect(pwLikeButton.dislike(pwProjectInfo, {}, 1).message).to.be.equal('pwUserInfo argument is an empty object');
+      expect(pwLikeButton.dislike(pwProjectInfo, { anus: 'ANUS' }, 1).message).to.be.equal('pwUserInfo argument is from an invalid class');
     });
 
-    it('Should return an IO', () => {
-      expect(pwLikeButton.dislike(pwProjectInfo, 'VAITOMARNOCU').constructor.name).to.be.equal('IO');
+    it('Should receive as third parameter the component project id', () => {
+      expect(pwLikeButton.dislike(pwProjectInfo, pwUserInfo, null)).to.be.an(Error);
+      expect(pwLikeButton.dislike(pwProjectInfo, pwUserInfo, null).message).to.be.equal('projectId argument is null');
+      expect(pwLikeButton.dislike(pwProjectInfo, pwUserInfo, '').message).to.be.equal('projectId argument is an empty string');
+      expect(pwLikeButton.dislike(pwProjectInfo, pwUserInfo, 'error').message).to.be.equal('projectId argument is invalid');
+    });
+
+    it('Should return an Array of IO', () => {
+      expect(pwLikeButton.dislike(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').constructor.name).to.be.equal('Array');
+      expect(pwLikeButton.dislike(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').length).to.be.equal(2);
     });
 
     it('Should call the createCustomEvent auxiliar function', (done) => {
@@ -206,7 +256,9 @@ let Mock;
         createCustomEvent.should.have.not.been.called;
         done();
       });
-      pwLikeButton.dislike(pwProjectInfo, 'VAITOMARNOCU');
+      pwLikeButton.dislike(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').map((io) => {
+        io.runIO();
+      });
     });
 
     it('Should call the emitCustomEvent auxiliar function', (done) => {
@@ -215,7 +267,9 @@ let Mock;
         emitCustomEvent.should.have.not.been.called;
         done();
       });
-      pwLikeButton.dislike(pwProjectInfo, 'VAITOMARNOCU').runIO();
+      pwLikeButton.dislike(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').map((io) => {
+        io.runIO();
+      });
     });
 
     it('Should emit a CustomEvent to the pw-project-info components', (done) => {
@@ -227,7 +281,23 @@ let Mock;
         done();
       });
 
-      pwLikeButton.dislike(pwProjectInfo, 'VAITOMARNOCU').runIO();
+      pwLikeButton.dislike(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').map((io) => {
+        io.runIO();
+      });
+    });
+
+    it('Should emit a CustomEvent to the pw-user-info components', (done) => {
+      pwUserInfo.addEventListener('dislike', (evt) => {
+        expect(evt.type).to.be.equal('dislike');
+        expect(evt.cancelable).to.be.equal(true);
+        expect(evt.bubbles).to.be.equal(false);
+        expect(evt.detail.projectId).to.be.equal('VAITOMARNOCU');
+        done();
+      });
+
+      pwLikeButton.dislike(pwProjectInfo, pwUserInfo, 'VAITOMARNOCU').map((io) => {
+        io.runIO();
+      });
     });
   });
 
@@ -237,9 +307,6 @@ let Mock;
 
     let pwLikeButton;
     let pwUserInfo;
-
-    let createCustomEvent;
-    let emitCustomEvent;
 
     beforeEach(() => {
       component = document.createElement('pw-like-button');
@@ -260,59 +327,68 @@ let Mock;
       expect(pwLikeButton.isLiked.constructor.name).to.be.equal('Function');
     });
 
-    it('Should return a promise', () => {
-      expect(pwLikeButton.isLiked(pwUserInfo, '1').constructor.name).to.be.equal('Promise')
+    it('Should return an Promise', () => {
+      expect(pwLikeButton.isLiked(pwUserInfo, '12345').constructor.name).to.be.equal('Promise');
     });
 
-    it('Should receive a not null pw-user-info component as first argument', (done) => {
+    it('Should receive as first argument a not null pwUserInfo', (done) => {
       pwLikeButton.isLiked(null, '12345').catch((err) => {
-        expect(err).to.be.an(Error);
         expect(err.message).to.be.equal('pwUserInfo argument is null');
         done();
       });
     });
 
-    it('Should receive a not empty pw-user-info component as first argument', (done) => {
+    it('Should receive as first argument a not empty pwUserInfo', (done) => {
       pwLikeButton.isLiked({}, '12345').catch((err) => {
-        expect(err).to.be.an(Error);
         expect(err.message).to.be.equal('pwUserInfo argument is an empty object');
         done();
       });
     });
 
-    it('Should receive a pw-user-info component as first argument', (done) => {
-      pwLikeButton.isLiked([1, 2, 4], '12345').catch((err) => {
-        console.log(err.message);
-        expect(err).to.be.an(Error);
+    it('Should receive as first argument a valid pwUserInfo', (done) => {
+      pwLikeButton.isLiked([1], '12345').catch((err) => {
         expect(err.message).to.be.equal('pwUserInfo argument is from an invalid class');
         done();
       });
     });
 
-    it('Should receive the projectId as the second argument', (done) => {
+    it('Should receive as second argument not null project id', (done) => {
+      pwLikeButton.isLiked(pwUserInfo, null).catch((err) => {
+        expect(err.message).to.be.equal('projectId argument is null');
+        done();
+      });
+    });
+
+    it('Should receive as second argument not empty project id', (done) => {
       pwLikeButton.isLiked(pwUserInfo, '').catch((err) => {
-        expect(err).to.be.an(Error);
-        expect(err.message).to.be.equal('Invalid argument:projectId');
+        expect(err.message).to.be.equal('projectId argument is an empty string');
+        done();
+      });
+    });
+
+    it('Should receive as second argument a valid project id', (done) => {
+      pwLikeButton.isLiked(pwUserInfo, 'notValid').catch((err) => {
+        expect(err.message).to.be.equal('projectId argument is invalid');
         done();
       });
     });
 
     it('Should return true if the user already liked the project', (done) => {
-      let stub = sinon.stub(pwUserInfo, 'isLiked').returns(true);
+      const stub = sinon.stub(pwUserInfo, 'isLiked').returns(true);
 
-      pwLikeButton.isLiked(pwUserInfo, '12345').then((res) => {
-        expect(res).to.be.equal(true);
-        pwUserInfo.isLiked.restore();
+      pwLikeButton.isLiked(pwUserInfo, 'VAITOMARNOCU').then((ok) => {
+        expect(ok).to.be.equal(true);
+        stub.restore();
         done();
       });
     });
 
-    it('Should return false if the user didn t like the project', (done) => {
-      let stub = sinon.stub(pwUserInfo, 'isLiked').returns(false);
+    it('Should return false if the user didnt like the project', (done) => {
+      const stub = sinon.stub(pwUserInfo, 'isLiked').returns(false);
 
-      pwLikeButton.isLiked(pwUserInfo, '12345').then((res) => {
-        expect(res).to.be.equal(false);
-        pwUserInfo.isLiked.restore();
+      pwLikeButton.isLiked(pwUserInfo, 'VAITOMARNOCU').then((ok) => {
+        expect(ok).to.be.equal(false);
+        stub.restore();
         done();
       });
     });
