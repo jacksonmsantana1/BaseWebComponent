@@ -293,29 +293,29 @@ class PwLikeButton extends HTMLButtonElement {
   }
 
   /**
-   * Send an event to the pwProjectInfo component to it checks in the backend
-   * if the project is already liked by the user
+   * Checks with the pwUserInfo component to 'see'
+   * if the project was already liked by the user
    * @param pwProjectInfo
    * @param projectId
    */
-  isLiked(pwProjectInfo, projectId) {
-    /***********************Pure Functions***********************/
+  // isLiked :: (PwUserInfo, String:projectId) -> Promise(Boolean)
+  isLiked(pwUserInfo, projectId) {
+    return new Promise((resolve, reject) => {
+      if (isNil(pwUserInfo)) {
+        reject(new Error('pwUserInfo argument is null'));
+      } else if (isEmpty(pwUserInfo)) {
+        reject(new Error('pwUserInfo argument is an empty object'));
+      } else if (pwUserInfo.constructor.name !== 'pw-user-info') {
+        reject(new Error('pwUserInfo argument is from an invalid class'));
+      }
 
-    // isLiked :: HTMLElement -> String -> _
-    const isLiked = curry((obj, pId) => {
-      const evt = new CustomEvent('isLiked', {
-        detail: {
-          projectId: pId,
-        },
-        bubbles: false,
-        cancelable: true,
-      });
-      obj.dispatchEvent(evt);
+      if (isEmpty(projectId) || projectId !== this.projectId) {
+        reject(new Error('Invalid argument:projectId'));
+      }
+
+      pwUserInfo.isLiked(projectId)
+        .then((res) => resolve(res));
     });
-
-    /***********************Impure Functions********************/
-
-    IO.of(isLiked).ap(pwProjectInfo).ap(projectId).runIO();
   }
 
   /*************************Html and CSS*******************************/
