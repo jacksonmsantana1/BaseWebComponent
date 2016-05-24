@@ -15,6 +15,8 @@ class PwInfoUser extends HTMLElement {
     this.addEventListener('despin', this.desPinned);
     this.addEventListener('pin', this.pinned);
     this.addEventListener('isPinned', this.isPinned);
+    this.addEventListener('like', this.liked);
+    this.addEventListener('dislike', this.disliked);
   }
 
   detachedCallback() {}
@@ -45,8 +47,6 @@ class PwInfoUser extends HTMLElement {
   getResponseToken(res) {
     return Promise.resolve(JSON.parse(res.body).token);
   }
-
-  /****************Custom Event*************************/
 
   /*****************Pin Event*****************************/
 
@@ -97,6 +97,54 @@ class PwInfoUser extends HTMLElement {
     return impure;
   }
 
+  /******************Like Event****************************/
+
+  // liked :: Event -> Promise(String, Error)
+  liked(evt) {
+    return Request.putJSON('/user/projects/liked', {
+      projectId: evt.detail.projectId,
+    }, Token.getUserToken()).catch(Logger.error('liked()', '/user/projects/liked'));
+  }
+
+  // disliked :: Event -> Promise(String, Error)
+  disliked(evt) {
+    evt.preventDefault();
+
+    return Request.putJSON('/user/projects/disliked', {
+      projectId: evt.detail.projectId,
+    }, Token.getUserToken()).catch(Logger.error('disliked()', '/user/projects/disliked'));
+  }
+
+  // isLiked :: (Token, String) -> Boolean
+  isLiked(_projectId) {
+
+    const token = Token.getUserToken();
+    const projectId = _projectId;
+
+    /************************Pure Functions**********************/
+
+    // getUserProjects :: Token -> Promise(Object, Error)
+    const getUserProjects = (tk) => Request.getJSON('/user/projects', tk);
+
+    // getPinnedProjects :: Object -> Promise(Array)
+    const getPinnedProjects = (obj) => Promise.resolve(get('liked', obj.body));
+
+    // containProject :: Array -> Promise(Number)
+    const containProject = R.curry((id, arr) => (Promise.resolve(contain(id, arr))));
+
+    // result :: Number -> Promise(Boolean)
+    const result = (n) => (Promise.resolve(n !== -1));
+
+    /************************Impure Functions*********************/
+
+    const impure = getUserProjects(token)
+      .then(getPinnedProjects)
+      .then(containProject(projectId))
+      .then(result)
+      .catch(Logger.error('isLiked()', '/user/projects'));
+
+    return impure;
+  }
 }
 
 document.registerElement('pw-user-info', PwInfoUser);
