@@ -15,6 +15,7 @@ class PwInfoUser extends HTMLElement {
     this.addEventListener('despin', this.desPinned);
     this.addEventListener('pin', this.pinned);
     this.addEventListener('isPinned', this.isPinned);
+    this.addEventListener('like', this.liked);
   }
 
   detachedCallback() {}
@@ -45,8 +46,6 @@ class PwInfoUser extends HTMLElement {
   getResponseToken(res) {
     return Promise.resolve(JSON.parse(res.body).token);
   }
-
-  /****************Custom Event*************************/
 
   /*****************Pin Event*****************************/
 
@@ -97,6 +96,14 @@ class PwInfoUser extends HTMLElement {
     return impure;
   }
 
+  /******************Like Event****************************/
+
+  // liked :: Event -> Promise(String, Error)
+  liked(evt) {
+    return Request.putJSON('/user/projects/liked', {
+      projectId: evt.detail.projectId,
+    }, Token.getUserToken()).catch(Logger.error('liked()', '/user/projects/liked'));
+  }
 }
 
 document.registerElement('pw-user-info', PwInfoUser);
