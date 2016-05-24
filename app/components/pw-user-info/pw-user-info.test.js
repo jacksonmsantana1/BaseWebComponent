@@ -286,5 +286,43 @@ describe('pw-user-info', () => {
 
       requests[0].respond(500);
     });
+
+    it('disliked() -> Oposite effect of the like() fn', (done) => {
+      const evt = new CustomEvent('deslike', {
+        detail: {
+          projectId: '1234097435',
+        },
+        bubbles: false,
+        cancelable: true,
+      });
+
+      pwUserInfo.disliked(evt).then((res) => {
+        expect(res.status).to.be.equal(200);
+        expect(JSON.parse(res.body).projectId).to.be.equal('1234097435');
+        done();
+      });
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/disliked');
+      expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
+      expect(requests[0].method).to.be.equal('PUT');
+      requests[0].respond(200, {}, '{"projectId": "1234097435"}');
+    });
+
+    it('disliked() -> Component should warn if any error occured', (done) => {
+      const evt = new CustomEvent('dislike', {
+        detail: {
+          projectId: '1234097435',
+        },
+        bubbles: false,
+        cancelable: true,
+      });
+
+      pwUserInfo.disliked(evt).catch((err) => {
+        expect(err.status).to.be.equal(500);
+        done();
+      });
+
+      requests[0].respond(500);
+    });
   });
 });

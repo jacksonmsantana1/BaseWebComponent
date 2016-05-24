@@ -16,6 +16,7 @@ class PwInfoUser extends HTMLElement {
     this.addEventListener('pin', this.pinned);
     this.addEventListener('isPinned', this.isPinned);
     this.addEventListener('like', this.liked);
+    this.addEventListener('dislike', this.disliked);
   }
 
   detachedCallback() {}
@@ -103,6 +104,15 @@ class PwInfoUser extends HTMLElement {
     return Request.putJSON('/user/projects/liked', {
       projectId: evt.detail.projectId,
     }, Token.getUserToken()).catch(Logger.error('liked()', '/user/projects/liked'));
+  }
+
+  // disliked :: Event -> Promise(String, Error)
+  disliked(evt) {
+    evt.preventDefault();
+
+    return Request.putJSON('/user/projects/disliked', {
+      projectId: evt.detail.projectId,
+    }, Token.getUserToken()).catch(Logger.error('disliked()', '/user/projects/disliked'));
   }
 }
 
