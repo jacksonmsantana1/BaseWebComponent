@@ -324,5 +324,28 @@ describe('pw-user-info', () => {
 
       requests[0].respond(500);
     });
+
+    it('isLiked() ->', (done) => {
+      pwUserInfo.isLiked('345').then((result) => {
+        expect(result).to.be.equal(true);
+        done();
+      }, (err) => {
+        done(err);
+      });
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects');
+      expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
+      expect(requests[0].method).to.be.equal('GET');
+      requests[0].respond(200, {}, '{"liked": ["1234097435", "345", "678"]}');
+    });
+
+    it('isLiked() -> Component should warn if any error occured', (done) => {
+      pwUserInfo.isLiked('1233546').catch((err) => {
+        expect(err.status).to.be.equal(500);
+        done();
+      });
+
+      requests[0].respond(500);
+    });
   });
 });

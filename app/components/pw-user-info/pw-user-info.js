@@ -114,6 +114,37 @@ class PwInfoUser extends HTMLElement {
       projectId: evt.detail.projectId,
     }, Token.getUserToken()).catch(Logger.error('disliked()', '/user/projects/disliked'));
   }
+
+  // isLiked :: (Token, String) -> Boolean
+  isLiked(_projectId) {
+
+    const token = Token.getUserToken();
+    const projectId = _projectId;
+
+    /************************Pure Functions**********************/
+
+    // getUserProjects :: Token -> Promise(Object, Error)
+    const getUserProjects = (tk) => Request.getJSON('/user/projects', tk);
+
+    // getPinnedProjects :: Object -> Promise(Array)
+    const getPinnedProjects = (obj) => Promise.resolve(get('liked', obj.body));
+
+    // containProject :: Array -> Promise(Number)
+    const containProject = R.curry((id, arr) => (Promise.resolve(contain(id, arr))));
+
+    // result :: Number -> Promise(Boolean)
+    const result = (n) => (Promise.resolve(n !== -1));
+
+    /************************Impure Functions*********************/
+
+    const impure = getUserProjects(token)
+      .then(getPinnedProjects)
+      .then(containProject(projectId))
+      .then(result)
+      .catch(Logger.error('isLiked()', '/user/projects'));
+
+    return impure;
+  }
 }
 
 document.registerElement('pw-user-info', PwInfoUser);
