@@ -350,6 +350,13 @@ class PwLikeButton extends HTMLButtonElement {
     });
   }
 
+  /**
+   * Checks with the pw-project-info component how many updated likes this
+   * project have.
+   */
+  getNumberOfLikes() {
+
+  }
   /*************************Html and CSS*******************************/
 
   /**

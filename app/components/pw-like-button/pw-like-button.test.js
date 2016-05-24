@@ -480,5 +480,23 @@ let Mock;
       expect(pwLikeButton.projectId).to.be.equal('VAITOMARNOANUS');
     });
   });
+
+  describe('Method getNumberOfLikes() => ', () => {
+    let component;
+    let pwLikeButton;
+
+    beforeEach(() => {
+      component = document.createElement('pw-like-button');
+      document.body.appendChild(component);
+      pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+    });
+
+    afterEach(() => {
+      document.body.removeChild(pwLikeButton);
+    });
+    it('Should have an method called getNumberOfLikes()', () => {
+      expect(pwLikeButton.getNumberOfLikes.constructor.name).to.be.equal('Function');
+    });
+  });
 });
 
