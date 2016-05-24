@@ -16,11 +16,13 @@ const isNil = R.isNil;
 const putJSON = (url, data) =>
   Request.putJSON(url, data, Token.getUserToken());
 
+const getJSON = (url) => Request.getJSON(url, Token.getUserToken());
+
 class PwProjectInfo extends HTMLElement {
 
-  constructor() {
+  constructor(id) {
     super();
-    this._project = {};
+    this._id = id || '';
   }
 
   /*******************Inherited Methods*********************/
@@ -47,7 +49,7 @@ class PwProjectInfo extends HTMLElement {
         reject(new Error('Invalid Event'));
       } else if (isNil(evt.detail)) {
         reject(new Error('Missing Event Detail'));
-      } else if (evt.detail.projectId !== this._project.id) {
+      } else if (evt.detail.projectId !== this.id) {
         reject(new Error('Invalid Event Detail'));
       }
 
@@ -55,8 +57,8 @@ class PwProjectInfo extends HTMLElement {
       data = { projectId: evt.detail.projectId }; //FIXME
 
       putJSON(url, data)
-        .then((res) => resolve(res))
-        .catch((err) => reject(err));
+        .then(resolve)
+        .catch(reject);
     });
   }
 
@@ -69,7 +71,7 @@ class PwProjectInfo extends HTMLElement {
         reject(new Error('Invalid Event'));
       } else if (isNil(evt.detail)) {
         reject(new Error('Missing Event Detail'));
-      } else if (evt.detail.projectId !== this._project.id) {
+      } else if (evt.detail.projectId !== this.id) {
         reject(new Error('Invalid Event Detail'));
       }
 
@@ -82,12 +84,22 @@ class PwProjectInfo extends HTMLElement {
     });
   }
 
-  get project() {
-    return this._project;
+  getProject() {
+    let url;
+    return new Promise((resolve, reject) => {
+      url = '/projects/' + this.id;
+      getJSON(url)
+        .then(resolve)
+        .catch(reject);
+    });
   }
 
-  set project(project) {
-    this._project = project;
+  get id() {
+    return this._id;
+  }
+
+  set id(id) {
+    this._id = id;
   }
 }
 

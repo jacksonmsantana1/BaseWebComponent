@@ -5,7 +5,7 @@ import Token from '../../lib/Token/Token';
 describe('pw-project-info', () => {
     let component;
     let pwProjectInfo;
-    let project;
+    let idProject;
     let xhr;
     let requests;
     let token;
@@ -13,16 +13,13 @@ describe('pw-project-info', () => {
     beforeEach(() => {
       xhr = sinon.useFakeXMLHttpRequest();
       requests = [];
-      project = {
-        id: '123456',
-        name: 'Project1',
-      };
+      idProject = '123456';
 
       component = document.createElement('pw-project-info');
       document.body.appendChild(component);
 
       pwProjectInfo = document.getElementsByTagName('pw-project-info')[0];
-      pwProjectInfo.project = project;
+      pwProjectInfo.id = idProject;
 
       token = 'TOKEN';
       Token.setUserToken(token);
@@ -36,9 +33,25 @@ describe('pw-project-info', () => {
       sinon.restore();
     });
 
-    describe('Attributes', () => {
-      it('Should contain the project attribute', () => {
-        expect(pwProjectInfo.project).to.be.equal(project);
+    describe('ID Attribute', () => {
+      it('Should contain the id attribute', () => {
+        expect(pwProjectInfo.id).to.be.equal(idProject);
+      });
+
+      it('Should get the project object by passing the ID', () => {
+        pwProjectInfo.getProject()
+          .then((p) => {
+            expect(JSON.parse(p.body).id).to.be.equal('123456');
+            expect(JSON.parse(p.body).name).to.be.equal('VAITOMARNOCU');
+            done();
+          });
+
+        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456');
+        expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
+        expect(requests[0].method).to.be.equal('GET');
+        expect(pwProjectInfo.id).to.be.equal('123456');
+
+        requests[0].respond(200, {}, '{ "id": "123456", "name": "VAITOMARNOCU" }');
       });
     });
 
