@@ -345,11 +345,8 @@ class PwLikeButton extends HTMLButtonElement {
       }
 
       pwUserInfo.isLiked(projectId)
-        .then((ok) => {
-          resolve(ok);
-        }).catch((err) => {
-          reject(err);
-        });
+        .then(resolve)
+        .catch(reject);
     });
   }
 
@@ -422,7 +419,6 @@ class PwLikeButton extends HTMLButtonElement {
       nth(0),
       get('childNodes'));
 
-    console.log(pure(shadowRoot));
     return pure(shadowRoot);
   }
 

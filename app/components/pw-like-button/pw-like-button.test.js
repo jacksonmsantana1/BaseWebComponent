@@ -308,7 +308,13 @@ let Mock;
     let pwLikeButton;
     let pwUserInfo;
 
+    let xhr;
+    let requests;
+
     beforeEach(() => {
+      xhr = sinon.useFakeXMLHttpRequest();
+      requests = [];
+
       component = document.createElement('pw-like-button');
       document.body.appendChild(component);
       pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
@@ -316,11 +322,17 @@ let Mock;
       component2 = document.createElement('pw-user-info');
       document.body.appendChild(component2);
       pwUserInfo = document.body.getElementsByTagName('pw-user-info')[0];
+
+      xhr.onCreate = (xhr) => {
+        requests.push(xhr);
+      };
     });
 
     afterEach(() => {
       document.body.removeChild(pwLikeButton);
       document.body.removeChild(pwUserInfo);
+
+      sinon.restore();
     });
 
     it('Should have an method called isLiked()', () => {
@@ -374,23 +386,27 @@ let Mock;
     });
 
     it('Should return true if the user already liked the project', (done) => {
-      const stub = sinon.stub(pwUserInfo, 'isLiked').returns(true);
-
       pwLikeButton.isLiked(pwUserInfo, 'VAITOMARNOCU').then((ok) => {
         expect(ok).to.be.equal(true);
-        stub.restore();
         done();
       });
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects');
+      expect(requests[0].method).to.be.equal('GET');
+
+      requests[0].respond(200, {}, '{"liked": ["VAITOMARNOCU", "345", "678"]}');
     });
 
     it('Should return false if the user didnt like the project', (done) => {
-      const stub = sinon.stub(pwUserInfo, 'isLiked').returns(false);
-
       pwLikeButton.isLiked(pwUserInfo, 'VAITOMARNOCU').then((ok) => {
         expect(ok).to.be.equal(false);
-        stub.restore();
         done();
       });
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects');
+      expect(requests[0].method).to.be.equal('GET');
+
+      requests[0].respond(200, {}, '{"liked": ["VAITOMARNOANUS", "345", "678"]}');
     });
   });
 
