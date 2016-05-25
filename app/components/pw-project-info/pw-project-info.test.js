@@ -166,4 +166,38 @@ describe('pw-project-info', () => {
         done();
       });
     });
+
+    describe('getProject() => ', () => {
+      it('Should have a method called getProject()', () => {
+        expect(pwProjectInfo.getProject.constructor.name).to.be.equal('Function');
+      });
+
+      it('Should return a promise', () => {
+        expect(pwProjectInfo.getProject().constructor.name).to.be.equal('Promise');
+      });
+
+      it('Should send a GET request to this endpoint /projects/{id}', (done) => {
+        pwProjectInfo.getProject().then((res) => {
+          expect(JSON.parse(res)).to.be.equal(true);
+          done();
+        });
+
+        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456');
+        expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
+        expect(requests[0].method).to.be.equal('GET');
+        requests[0].respond(200, {}, 'true');
+      });
+
+      it('Should return the entire project object', (done) => {
+        pwProjectInfo.getProject().then((res) => {
+          expect(res.project).to.be.equal('MOCK');
+          done();
+        });
+
+        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456');
+        expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
+        expect(requests[0].method).to.be.equal('GET');
+        requests[0].respond(200, {}, '{ "project": "MOCK" }');
+      });
+    });
 });

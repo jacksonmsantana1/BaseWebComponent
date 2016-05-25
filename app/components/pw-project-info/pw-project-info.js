@@ -2,14 +2,13 @@
  * Component that will be the interface between the front and the backend
  */
 
-//import Request from '../../lib/Request/Request.js';
 //import Logger from '../../lib/Logger/Logger.js';
 import R from 'ramda';
 import Request from './../../lib/Request/Request';
 import Token from './../../lib/Token/Token';
 
 //const contain = R.indexOf;
-//const get = R.prop;
+const get = R.prop;
 const isNil = R.isNil;
 
 //
@@ -89,6 +88,7 @@ class PwProjectInfo extends HTMLElement {
     return new Promise((resolve, reject) => {
       url = '/projects/' + this.id;
       getJSON(url)
+        .then(get('body'))
         .then(resolve)
         .catch(reject);
     });
