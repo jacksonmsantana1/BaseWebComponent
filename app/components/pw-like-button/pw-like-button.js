@@ -21,6 +21,7 @@ const compose = R.compose,
   nth = R.nth,
   equals = R.equals,
   isEmpty = R.isEmpty,
+  length = R.length,
   isNil = R.isNil;
 
 const map = Helpers.map,
@@ -334,8 +335,25 @@ class PwLikeButton extends HTMLButtonElement {
    * Checks with the pw-project-info component how many updated likes this
    * project have.
    */
-  getNumberOfLikes() {
+  getNumberOfLikes(pwProjectInfo) {
+    return new Promise((resolve, reject) => {
+      if (isNil(pwProjectInfo)) {
+        reject(new Error('pwProjectInfo argument is null'));
+      } else if (isEmpty(pwProjectInfo)) {
+        reject(new Error('pwProjectInfo argument is empty'));
+      } else if (pwProjectInfo.constructor.name !== 'pw-project-info') {
+        reject(new Error('pwProjectInfo argument is from an invalid class'));
+      } else if (pwProjectInfo.id !== this.projectId) {
+        reject(new Error('Invalid project id'));
+      }
 
+      pwProjectInfo.getProject()
+        .then(get('body'))  //FIXME remove after fixing the pw-project-info
+        .then(get('liked'))
+        .then(length)
+        .then(resolve)
+        .catch(reject);
+    });
   }
   /*************************Html and CSS*******************************/
 
