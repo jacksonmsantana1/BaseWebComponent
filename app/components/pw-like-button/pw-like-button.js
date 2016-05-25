@@ -332,6 +332,28 @@ class PwLikeButton extends HTMLButtonElement {
   }
 
   /**
+   * Returns the complete project objects
+   */
+  getProject(pwProjectInfo) {
+    return new Promise((resolve, reject) => {
+      if (isNil(pwProjectInfo)) {
+        reject(new Error('pwProjectInfo argument is null'));
+      } else if (isEmpty(pwProjectInfo)) {
+        reject(new Error('pwProjectInfo argument is empty'));
+      } else if (pwProjectInfo.constructor.name !== 'pw-project-info') {
+        reject(new Error('pwProjectInfo argument is from an invalid class'));
+      } else if (pwProjectInfo.id !== this.projectId) {
+        reject(new Error('Invalid project id'));
+      }
+
+      pwProjectInfo.getProject()
+        .then(get('body'))  //FIXME remove after fixing the pw-project-info
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+
+  /**
    * Checks with the pw-project-info component how many updated likes this
    * project have.
    */

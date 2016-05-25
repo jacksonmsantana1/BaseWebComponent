@@ -573,5 +573,113 @@ let Mock;
       requests[0].respond(200, {}, '{"liked": ["VAITOMARNOCU", "345", "678"]}');
     });
   });
+
+  describe('Method getProject() => ', () => {
+    let component;
+    let pwLikeButton;
+
+    let component1;
+    let pwProjectInfo;
+
+    let component2;
+    let pwProjectInfoWrong;
+
+    let xhr;
+    let requests;
+
+    beforeEach(() => {
+      xhr = sinon.useFakeXMLHttpRequest();
+      requests = [];
+
+      component = document.createElement('pw-like-button');
+      document.body.appendChild(component);
+      pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+
+      component1 = document.createElement('pw-project-info');
+      document.body.appendChild(component1);
+      pwProjectInfo = document.body.getElementsByTagName('pw-project-info')[0];
+      pwProjectInfo.id = 'VAITOMARNOCU';
+
+      component2 = document.createElement('pw-project-info');
+      document.body.appendChild(component2);
+      pwProjectInfoWrong = document.body.getElementsByTagName('pw-project-info')[1];
+      pwProjectInfoWrong.id = 'wrongID';
+
+      xhr.onCreate = (xhr) => {
+        requests.push(xhr);
+      };
+    });
+
+    afterEach(() => {
+      document.body.removeChild(pwLikeButton);
+      document.body.removeChild(pwProjectInfo);
+      document.body.removeChild(pwProjectInfoWrong);
+      sinon.restore();
+    });
+
+    it('Should have an method called getNumberOfLikes()', () => {
+      expect(pwLikeButton.getProject.constructor.name).to.be.equal('Function');
+    });
+
+    it('Should return an Promise', () => {
+      expect(pwLikeButton.getProject().constructor.name).to.be.equal('Promise');
+    });
+
+    it('Should receive a not null pw-project-info component as argument', (done) => {
+      pwLikeButton.getProject().catch((err) => {
+        expect(err.message).to.be.equal('pwProjectInfo argument is null');
+        done();
+      });
+    });
+
+    it('Should receive a not empty pw-project-info component as argument', (done) => {
+      pwLikeButton.getProject({}).catch((err) => {
+        expect(err.message).to.be.equal('pwProjectInfo argument is empty');
+        done();
+      });
+    });
+
+    it('Should receive a pw-project-info object as argument', (done) => {
+      pwLikeButton.getProject([1]).catch((err) => {
+        expect(err.message).to.be.equal('pwProjectInfo argument is from an invalid class');
+        done();
+      });
+    });
+
+    it('Should receive a valid pw-project-info component as argument', (done) => {
+      pwLikeButton.getProject(pwProjectInfoWrong).catch((err) => {
+        expect(err.message).to.be.equal('Invalid project id');
+        done();
+      });
+    });
+
+    it('Should call the getProject() method from the pw-project-info component', (done) => {
+      let spy = sinon.spy(pwProjectInfo, 'getProject');
+
+      pwLikeButton.getProject(pwProjectInfo).then((project) => {
+        expect(spy.called).to.be.equal(true);
+        done();
+      }).catch(done);
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/projects/VAITOMARNOCU');
+      expect(requests[0].method).to.be.equal('GET');
+
+      requests[0].respond(200, {}, '{}');
+    });
+
+    it('Should return the project object', (done) => {
+      pwLikeButton.getProject(pwProjectInfo)
+        .then((res) => {
+          expect(res.project).to.be.equal('MOCK');
+          done();
+        })
+        .catch(done);
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/projects/VAITOMARNOCU');
+      expect(requests[0].method).to.be.equal('GET');
+
+      requests[0].respond(200, {}, '{ "project": "MOCK" }');
+    });
+  });
 });
 
