@@ -347,7 +347,6 @@ class PwLikeButton extends HTMLButtonElement {
       }
 
       pwProjectInfo.getProject()
-        .then(get('body'))  //FIXME remove after fixing the pw-project-info
         .then(resolve)
         .catch(reject);
     });
@@ -370,7 +369,6 @@ class PwLikeButton extends HTMLButtonElement {
       }
 
       pwProjectInfo.getProject()
-        .then(get('body'))  //FIXME remove after fixing the pw-project-info
         .then(get('liked'))
         .then(length)
         .then(resolve)
