@@ -17,6 +17,7 @@ const compose = R.compose,
   curry = R.curry,
   get = R.prop,
   tap = R.tap,
+  indexOf = R.indexOf,
   concat = R.concat,
   nth = R.nth,
   equals = R.equals,
@@ -224,17 +225,34 @@ class PwLikeButton extends HTMLButtonElement {
   }
 
   /**
-   * Update the component attributes
-   * @param _projectId
-   * @param _numberOfLikes
-   * @param _visible
-   * @param _liked
+   * Update the component with backend info
    */
-  update(_projectId, _numberOfLikes, _visible, _liked) {
-    this.projectId = _projectId;
-    this.numberOfLikes = _numberOfLikes;
-    this.visible = _visible;
-    this.liked = _liked;
+  update(pwProjectInfo) {
+    return new Promise((resolve, reject) => {
+      if (isNil(pwProjectInfo)) {
+        reject(new Error('pwProjectInfo argument is null'));
+      } else if (isEmpty(pwProjectInfo)) {
+        reject(new Error('pwProjectInfo argument is empty'));
+      } else if (pwProjectInfo.constructor.name !== 'pw-project-info') {
+        reject(new Error('pwProjectInfo argument is from an invalid class'));
+      } else if (pwProjectInfo.id !== this.projectId) {
+        reject(new Error('Invalid project id'));
+      }
+
+      this.getProject(pwProjectInfo)
+        .then((project) => {
+          this.numberOfLikes = project.liked.length;
+          return project;
+        })
+        .then(get('liked'))
+        .then(indexOf(this.projectId))
+        .then(equals(-1))
+        .then((isLiked) => {
+          this.liked = !isLiked;
+          resolve(true);
+        })
+        .catch(reject);
+    });
   }
 
   /**

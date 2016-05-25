@@ -436,33 +436,128 @@ let Mock;
     });
   });
 
-  //FIXME
   describe('Method update() => ', () => {
     let component;
     let pwLikeButton;
 
+    let component1;
+    let pwProjectInfo;
+
+    let component2;
+    let pwProjectInfoWrong;
+
+    let xhr;
+    let requests;
+
     beforeEach(() => {
+      xhr = sinon.useFakeXMLHttpRequest();
+      requests = [];
+
       component = document.createElement('pw-like-button');
       document.body.appendChild(component);
       pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+
+      component1 = document.createElement('pw-project-info');
+      document.body.appendChild(component1);
+      pwProjectInfo = document.body.getElementsByTagName('pw-project-info')[0];
+      pwProjectInfo.id = 'VAITOMARNOCU';
+
+      component2 = document.createElement('pw-project-info');
+      document.body.appendChild(component2);
+      pwProjectInfoWrong = document.body.getElementsByTagName('pw-project-info')[1];
+
+      xhr.onCreate = (xhr) => {
+        requests.push(xhr);
+      };
     });
 
     afterEach(() => {
       document.body.removeChild(pwLikeButton);
+      document.body.removeChild(pwProjectInfo);
+      document.body.removeChild(pwProjectInfoWrong);
     });
 
-    it('Should update the component attributes', () => {
-      expect(pwLikeButton.visible).to.be.equal(true);
+    it('Should have an method called getNumberOfLikes()', () => {
+      expect(pwLikeButton.update.constructor.name).to.be.equal('Function');
+    });
+
+    it('Should return an Promise', () => {
+      expect(pwLikeButton.update().constructor.name).to.be.equal('Promise');
+    });
+
+    it('Initial Attributes', () => {
       expect(pwLikeButton.liked).to.be.equal(false);
       expect(pwLikeButton.numberOfLikes).to.be.equal(0);
-      expect(pwLikeButton.projectId).to.be.equal('VAITOMARNOCU');
+    });
 
-      pwLikeButton.update('VAITOMARNOANUS', 1, false, true);
+    it('Should receive a not null pw-project-info component as argument', (done) => {
+      pwLikeButton.update().catch((err) => {
+        expect(err.message).to.be.equal('pwProjectInfo argument is null');
+        done();
+      });
+    });
 
-      expect(pwLikeButton.visible).to.be.equal(false);
-      expect(pwLikeButton.liked).to.be.equal(true);
-      expect(pwLikeButton.numberOfLikes).to.be.equal(1);
-      expect(pwLikeButton.projectId).to.be.equal('VAITOMARNOANUS');
+    it('Should receive a not empty pw-project-info component as argument', (done) => {
+      pwLikeButton.update({}).catch((err) => {
+        expect(err.message).to.be.equal('pwProjectInfo argument is empty');
+        done();
+      });
+    });
+
+    it('Should receive a pw-project-info object as argument', (done) => {
+      pwLikeButton.update([1]).catch((err) => {
+        expect(err.message).to.be.equal('pwProjectInfo argument is from an invalid class');
+        done();
+      });
+    });
+
+    it('Should receive a valid pw-project-info component as argument', (done) => {
+      pwLikeButton.update(pwProjectInfoWrong).catch((err) => {
+        expect(err.message).to.be.equal('Invalid project id');
+        done();
+      });
+    });
+
+    it('Should call the getProject() method from the pw-project-info component', (done) => {
+      let spy = sinon.spy(pwProjectInfo, 'getProject');
+
+      pwLikeButton.getProject(pwProjectInfo).then((project) => {
+        expect(spy.called).to.be.equal(true);
+        done();
+      }).catch(done);
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/projects/VAITOMARNOCU');
+      expect(requests[0].method).to.be.equal('GET');
+
+      requests[0].respond(200, {}, '{}');
+    });
+
+    it('Should update the components attributes', (done) => {
+      pwLikeButton.update(pwProjectInfo).then((ok) => {
+        expect(ok).to.be.equal(true);
+        expect(pwLikeButton.liked).to.be.equal(true);
+        expect(pwLikeButton.numberOfLikes).to.be.equal(4);
+        done();
+      }).catch(done);
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/projects/VAITOMARNOCU');
+      expect(requests[0].method).to.be.equal('GET');
+
+      requests[0].respond(200, {}, '{ "liked": ["1", "2", "3", "VAITOMARNOCU"] }');
+    });
+
+    it('Should update the components attributes', (done) => {
+      pwLikeButton.update(pwProjectInfo).then((ok) => {
+        expect(ok).to.be.equal(true);
+        expect(pwLikeButton.liked).to.be.equal(false);
+        expect(pwLikeButton.numberOfLikes).to.be.equal(3);
+        done();
+      }).catch(done);
+
+      expect(requests[0].url).to.be.equal('http://localhost:3000/projects/VAITOMARNOCU');
+      expect(requests[0].method).to.be.equal('GET');
+
+      requests[0].respond(200, {}, '{ "liked": ["1", "2", "3"] }');
     });
   });
 
