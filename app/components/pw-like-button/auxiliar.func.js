@@ -5,17 +5,35 @@ import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional';
 const compose = R.compose;
 const curry = R.curry;
 const map = R.map;
+const filter = R.filter;
+const isNil = R.isNil;
+const isEmpty = R.isEmpty;
 
 const getElementByTagName = HTMLFunctional.getElementByTagName;
+const getElementsByTagName = HTMLFunctional.getElementsByTagName;
 
 // _getProjectId :: HTMLElement -> IO(String)
 const _getProjectId = compose(map((component) => component.projectId),
   IO.of);
 
 // _getPwProjectInfo :: Document -> IO(HTMLElement)
-const _getPwProjectInfo =
-  compose(map(getElementByTagName('pw-project-info')),
+const _getPwProjectInfo = (id) => {
+  if (isNil(id)) {
+    return new Error('Missing ID argument');
+  }
+
+  const compareId = curry((cId, component) => (component.id === cId));
+  const impure = compose(map(filter(compareId(id))),
+    map(getElementsByTagName('pw-project-info')),
     IO.of);
+  const result = impure(document).runIO();
+
+  if (isEmpty(result)) {
+    return new Error('pw-project-info not found');
+  }
+
+  return result[0];
+};
 
 // _getPwUserInfo :: Document -> IO(HTMLElement)
 const _getPwUserInfo =

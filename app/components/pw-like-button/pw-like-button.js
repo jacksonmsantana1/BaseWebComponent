@@ -23,6 +23,7 @@ const compose = R.compose,
   equals = R.equals,
   isEmpty = R.isEmpty,
   length = R.length,
+  is = R.is,
   isNil = R.isNil;
 
 const map = Helpers.map,
@@ -411,6 +412,21 @@ class PwLikeButton extends HTMLButtonElement {
 
       if (isNil(component)) {
         reject(new Error('pw-user-info component was not found'));
+      }
+
+      resolve(component);
+    });
+  }
+
+  /**
+   * Returns the pw-project-info component
+   */
+  getPwProjectInfo() {
+    return new Promise((resolve, reject) => {
+      const component = getPwProjectInfo(this.projectId);
+
+      if (is(Error, component)) {
+        reject(component);
       }
 
       resolve(component);

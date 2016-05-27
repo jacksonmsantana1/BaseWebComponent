@@ -58,4 +58,17 @@ describe('HTMLFunctional =>', () => {
       expect(fn('div', document)).to.be.equal(div);
     });
   });
+
+  describe('getElementsByTagName()', () => {
+    it('Should return the elements with the same tag given', () => {
+      let fn = HTMLFunctional.getElementsByTagName;
+      let div1 = document.createElement('div');
+      document.body.appendChild(div1);
+
+      let div2 = document.createElement('div');
+      document.body.appendChild(div2);
+
+      expect(fn('div', document).length).to.be.equal(3);
+    });
+  });
 });

@@ -38,6 +38,30 @@ let Mock;
       expect(Aux.getPwUserInfo(document).runIO()).to.be.equal(pwUserInfo);
       document.body.removeChild(pwUserInfo);
     });
+
+    it('getPwProjectInfo() => Should receive an ID as argument', () => {
+      expect(Aux.getPwProjectInfo().message).to.be.equal('Missing ID argument');
+    });
+
+    it('getPwProjectInfo() => Should return an error if none pw-project-info is found', () => {
+      const component = document.createElement('pw-project-info');
+      document.body.appendChild(component);
+      const pwProjectInfo = document.body.getElementsByTagName('pw-project-info')[0];
+      pwProjectInfo.id = 'VAITOMARNOCU';
+
+      expect(Aux.getPwProjectInfo('ERROR').message).to.be.equal('pw-project-info not found');
+      document.body.removeChild(pwProjectInfo);
+    });
+
+    it('getPwProjectInfo() => Should return the valid pw-project-info', () => {
+      const component = document.createElement('pw-project-info');
+      document.body.appendChild(component);
+      const pwProjectInfo = document.body.getElementsByTagName('pw-project-info')[0];
+      pwProjectInfo.id = 'a';
+
+      expect(Aux.getPwProjectInfo('a')).to.be.equal(pwProjectInfo);
+      document.body.removeChild(pwProjectInfo);
+    });
   });
 
   describe('Component Attributes => ', () => {
@@ -825,6 +849,58 @@ let Mock;
     it('Should return the pw-user-info component', (done) => {
       pwLikeButton.getPwUserInfo().then((comp) => {
         expect(comp).to.be.equal(pwUserInfo);
+        done();
+      });
+    });
+  });
+
+  describe('getPwProjectInfo() => ', () => {
+    let component;
+    let pwLikeButton;
+
+    let component1;
+    let pwProjectInfo;
+
+    beforeEach(() => {
+      component = document.createElement('pw-like-button');
+      document.body.appendChild(component);
+      pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+
+      component1 = document.createElement('pw-project-info');
+      document.body.appendChild(component1);
+      pwProjectInfo = document.body.getElementsByTagName('pw-project-info')[0];
+      pwProjectInfo.id = 'VAITOMARNOCU';
+    });
+
+    afterEach(() => {
+      document.body.removeChild(pwLikeButton);
+      document.body.removeChild(pwProjectInfo);
+    });
+
+    it('Should return a promise', () => {
+      expect(pwLikeButton.getPwProjectInfo().constructor.name).to.be.equal('Promise');
+    });
+
+    it('Should return an error if none pw-project-info was found', (done) => {
+      document.body.removeChild(pwProjectInfo);
+      pwLikeButton.getPwProjectInfo().catch((err) => {
+        expect(err.message).to.be.equal('pw-project-info not found');
+        document.body.appendChild(pwProjectInfo);
+        done();
+      });
+    });
+
+    it('Should return an error if the pw-project-info is invalid', (done) => {
+      pwProjectInfo.id = 'Wrong ID';
+      pwLikeButton.getPwProjectInfo().catch((err) => {
+        expect(err.message).to.be.equal('pw-project-info not found');
+        done();
+      });
+    });
+
+    it('Should return the pw-project-info component', (done) => {
+      pwLikeButton.getPwProjectInfo().then((comp) => {
+        expect(comp).to.be.equal(pwProjectInfo);
         done();
       });
     });
