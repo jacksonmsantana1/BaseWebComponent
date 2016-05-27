@@ -17,6 +17,11 @@ const _getPwProjectInfo =
   compose(map(getElementByTagName('pw-project-info')),
     IO.of);
 
+// _getPwUserInfo :: Document -> IO(HTMLElement)
+const _getPwUserInfo =
+  compose(map(getElementByTagName('pw-user-info')),
+    IO.of);
+
 // _createCustomEvent :: String -> Object -> Boolean -> Boolean -> CustomEvent
 const _createCustomEvent = curry((_name, _detail, _bubbles, _cancelable) =>
   new CustomEvent(_name, {
@@ -33,6 +38,7 @@ const _emitCustomEvent = curry((obj, evt) => {
 export default {
   getProjectId: _getProjectId,
   getPwProjectInfo: _getPwProjectInfo,
+  getPwUserInfo: _getPwUserInfo,
   createCustomEvent: _createCustomEvent,
   emitCustomEvent: _emitCustomEvent,
 };

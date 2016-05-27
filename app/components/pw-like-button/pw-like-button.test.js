@@ -29,6 +29,15 @@ let Mock;
       });
       Aux.emitCustomEvent(element)(evt);
     });
+
+    it('getPwUserInfo() => ', () => {
+      const component = document.createElement('pw-user-info');
+      document.body.appendChild(component);
+      const pwUserInfo = document.body.getElementsByTagName('pw-user-info')[0];
+
+      expect(Aux.getPwUserInfo(document).runIO()).to.be.equal(pwUserInfo);
+      document.body.removeChild(pwUserInfo);
+    });
   });
 
   describe('Component Attributes => ', () => {
@@ -774,6 +783,50 @@ let Mock;
       expect(requests[0].method).to.be.equal('GET');
 
       requests[0].respond(200, {}, '{ "project": "MOCK" }');
+    });
+  });
+
+  describe('getPwUserInfo() => ', () => {
+    let component;
+    let pwLikeButton;
+
+    let component1;
+    let pwUserInfo;
+
+    beforeEach(() => {
+      component = document.createElement('pw-like-button');
+      document.body.appendChild(component);
+      pwLikeButton = document.body.getElementsByTagName('pw-like-button')[0];
+
+      component1 = document.createElement('pw-user-info');
+      document.body.appendChild(component1);
+      pwUserInfo = document.body.getElementsByTagName('pw-user-info')[0];
+    });
+
+    afterEach(() => {
+      document.body.removeChild(pwLikeButton);
+      document.body.removeChild(pwUserInfo);
+      sinon.restore();
+    });
+
+    it('Should return a promise', () => {
+      expect(pwLikeButton.getPwUserInfo().constructor.name).to.be.equal('Promise');
+    });
+
+    it('Should return an error if none pw-user-info was found', (done) => {
+      document.body.removeChild(pwUserInfo);
+      pwLikeButton.getPwUserInfo().catch((err) => {
+        expect(err.message).to.be.equal('pw-user-info component was not found');
+        document.body.appendChild(component1);
+        done();
+      });
+    });
+
+    it('Should return the pw-user-info component', (done) => {
+      pwLikeButton.getPwUserInfo().then((comp) => {
+        expect(comp).to.be.equal(pwUserInfo);
+        done();
+      });
     });
   });
 });

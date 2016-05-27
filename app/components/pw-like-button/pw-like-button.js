@@ -37,6 +37,7 @@ const setInnerHTML = HTMLFunctional.setInnerHTML,
 const createCustomEvent = Aux.createCustomEvent;
 const emitCustomEvent = Aux.emitCustomEvent;
 const getPwProjectInfo = Aux.getPwProjectInfo;
+const getPwUserInfo = Aux.getPwUserInfo;
 const getProjectId = Aux.getProjectId;
 
 class PwLikeButton extends HTMLButtonElement {
@@ -74,6 +75,7 @@ class PwLikeButton extends HTMLButtonElement {
       map(createShadowDom),
       IO.of);
 
+    this.innerHTML = this._numberOfLikes;
     impure(likeButton).runIO();
   }
 
@@ -140,10 +142,12 @@ class PwLikeButton extends HTMLButtonElement {
     } else if (attrName === 'liked' && newValue === 'false') {
       this.toggleActive();
       //this.dislike();
+    } else if (attrName === 'numberOfLikes') {
+      this.innerHTML = newValue;
     }
   }
 
-  /**************************Methods**********************************/
+  /**************************Toggle Functions**********************************/
 
   /**
    * This function toggles the component attribute visible
@@ -223,6 +227,8 @@ class PwLikeButton extends HTMLButtonElement {
 
     impure(component).runIO();
   }
+
+  /**************************Main Functions*****************************/
 
   /**
    * Update the component with backend info
@@ -349,6 +355,8 @@ class PwLikeButton extends HTMLButtonElement {
     });
   }
 
+  /**************************Getters Functions***************************/
+
   /**
    * Returns the complete project objects
    */
@@ -393,6 +401,22 @@ class PwLikeButton extends HTMLButtonElement {
         .catch(reject);
     });
   }
+
+  /**
+   * Returns the pw-user-info component
+   */
+  getPwUserInfo() {
+    return new Promise((resolve, reject) => {
+      const component = getPwUserInfo(document).runIO();
+
+      if (isNil(component)) {
+        reject(new Error('pw-user-info component was not found'));
+      }
+
+      resolve(component);
+    });
+  }
+
   /*************************Html and CSS*******************************/
 
   /**
@@ -400,7 +424,7 @@ class PwLikeButton extends HTMLButtonElement {
    */
   getTemplateHtml() {
     return `<div class="like">
-              <button class="like-toggle active">❤</button>
+              <button class="like-toggle active">❤<content></content></button>
             </div>`;
   }
 
