@@ -25,9 +25,9 @@ appNode.id = 'app';
 
 log('adding app node to body');
 document.body.appendChild(appNode);
+document.body.appendChild(userInfo);
 document.body.appendChild(pinButton);
 document.body.appendChild(likeButton);
-document.body.appendChild(userInfo);
 
 log('mounting app');
 appNode.appendChild(helloComp);

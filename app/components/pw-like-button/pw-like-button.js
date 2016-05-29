@@ -108,6 +108,9 @@ class PwLikeButton extends HTMLButtonElement {
     // checkElement :: HTMLElement -> IO(_)
     const checkElement = (elem) => (IO.of(this.toggleLiked()));
 
+    /**************************Impure**************************/
+
+    // when component is cliked
     const impure = eventObs(this)
       .map(get('target'))
       .map(get('childNodes'))
@@ -115,8 +118,21 @@ class PwLikeButton extends HTMLButtonElement {
       .map(checkElement);
 
     impure.subscribe((elem) => {
+      //Emit Events
+      Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
+        .then((arr) => this.like(arr[0], arr[1]))
+        .then(map((io) => { io.runIO(); }))
+        .catch(console.log('onClickError'));
+
+      //Toggle Component attr
       elem.runIO();
     });
+
+    // Updates the liked attribute
+    this.getPwUserInfo()
+      .then(this.isLiked.bind(this))
+      .then(set('liked'))
+      .catch((err) => console.log(err));
 
     // Set Attr
     setProjectId(likeButton);
@@ -139,12 +155,15 @@ class PwLikeButton extends HTMLButtonElement {
       this.style.display = (newValue === 'false') ? 'none' : '';
     } else if (attrName === 'liked' && newValue === 'true') {
       this.toggleActive();
-      //this.like();
+      this.getPwProjectInfo()
+        .then(this.getNumberOfLikes)
+        .then((n) => {
+          this._numberOfLikes = n;
+          this.innerHTML = n;
+        });
     } else if (attrName === 'liked' && newValue === 'false') {
       this.toggleActive();
       //this.dislike();
-    } else if (attrName === 'numberOfLikes') {
-      this.innerHTML = newValue;
     }
   }
 
@@ -341,6 +360,7 @@ class PwLikeButton extends HTMLButtonElement {
    * @param projectId
    */
   isLiked(pwUserInfo) {
+    const pId = this.projectId;
     return new Promise((resolve, reject) => {
       if (isNil(pwUserInfo)) {
         reject(new Error('pwUserInfo argument is null'));
@@ -350,7 +370,7 @@ class PwLikeButton extends HTMLButtonElement {
         reject(new Error('pwUserInfo argument is from an invalid class'));
       }
 
-      pwUserInfo.isLiked(this.projectId)
+      pwUserInfo.isLiked(pId)
         .then(resolve)
         .catch(reject);
     });
