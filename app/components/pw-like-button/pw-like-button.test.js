@@ -1094,5 +1094,116 @@ let Mock;
       }, 200);
     });
   });
+
+  describe('When the component is disliked =>', () => {
+    let component;
+    let pwLikeButton;
+
+    let component1;
+    let pwProjectInfo;
+
+    let component2;
+    let pwUserInfo;
+
+    let xhr;
+    let requests;
+    let spy;
+    let event;
+
+    beforeEach(() => {
+      xhr = sinon.useFakeXMLHttpRequest();
+      requests = [];
+      Token.setUserToken('TOKEN');
+
+      component1 = document.createElement('pw-project-info');
+      component2 = document.createElement('pw-user-info');
+      component = document.createElement('pw-like-button');
+
+      component1.id = 'VAITOMARNOCU';
+      xhr.onCreate = (xhr) => {
+        requests.push(xhr);
+      };
+    });
+
+    afterEach(() => {
+      document.body.removeChild(component);
+      document.body.removeChild(component1);
+      document.body.removeChild(component2);
+      Token.setUserToken(null);
+      sinon.restore();
+    });
+
+    it('Should call the getPwUserInfo() method', (done) => {
+      spy = sinon.spy(component, 'getPwUserInfo');
+      event = new MouseEvent('click');
+
+      document.body.appendChild(component1);
+      document.body.appendChild(component2);
+      document.body.appendChild(component);
+
+      component.toggleLiked();
+      component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+      setTimeout(() => {
+        expect(spy.called).to.be.equal(true);
+        done();
+      }, 200);
+    });
+
+    it('Should call the getPwProjectInfo() method', (done) => {
+      spy = sinon.spy(component, 'getPwProjectInfo');
+      event = new MouseEvent('click');
+
+      document.body.appendChild(component1);
+      document.body.appendChild(component2);
+      document.body.appendChild(component);
+
+      component.toggleLiked();
+      component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+      setTimeout(() => {
+        expect(spy.called).to.be.equal(true);
+        done();
+      }, 200);
+    });
+
+    it('Should call the dislike() method', (done) => {
+      spy = sinon.spy(component, 'dislike');
+      event = new MouseEvent('click');
+
+      document.body.appendChild(component1);
+      document.body.appendChild(component2);
+      document.body.appendChild(component);
+
+      component.toggleLiked();
+      component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+      setTimeout(() => {
+        expect(spy.called).to.be.equal(true);
+        expect(spy.args[0][0]).to.be.equal(component1);
+        expect(spy.args[0][1]).to.be.equal(component2);
+        done();
+      }, 200);
+    });
+
+    it('Should updated the numberOfLikes property', (done) => {
+      spy = sinon.stub(component, 'getNumberOfLikes').returns(Promise.resolve(123));
+      event = new MouseEvent('click');
+
+      document.body.appendChild(component1);
+      document.body.appendChild(component2);
+      document.body.appendChild(component);
+
+      component.toggleLiked();
+      component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+      setTimeout(() => {
+        expect(component.numberOfLikes).to.be.equal(123);
+        expect(component.innerHTML).to.be.equal('');
+        spy.restore();
+        done();
+      }, 200);
+    });
+  });
 });
 

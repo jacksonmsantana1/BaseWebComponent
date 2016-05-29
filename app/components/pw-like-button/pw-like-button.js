@@ -119,10 +119,17 @@ class PwLikeButton extends HTMLButtonElement {
 
     impure.subscribe((elem) => {
       //Emit Events
-      Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
-        .then((arr) => this.like(arr[0], arr[1]))
-        .then(map((io) => { io.runIO(); }))
-        .catch(console.log('onClickError'));
+      if (likeButton.liked === 'true') {
+        Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
+          .then((arr) => this.like(arr[0], arr[1]))
+          .then(map((io) => { io.runIO(); }))
+          .catch(console.log('onClickError'));
+      } else {
+        Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
+          .then((arr) => this.dislike(arr[0], arr[1]))
+          .then(map((io) => { io.runIO(); }))
+          .catch(console.log('onClickError'));
+      }
 
       //Toggle Component attr
       elem.runIO();
@@ -158,12 +165,17 @@ class PwLikeButton extends HTMLButtonElement {
       this.getPwProjectInfo()
         .then(this.getNumberOfLikes)
         .then((n) => {
-          this._numberOfLikes = n;
+          this.numberOfLikes = n;
           this.innerHTML = n;
         });
     } else if (attrName === 'liked' && newValue === 'false') {
       this.toggleActive();
-      //this.dislike();
+      this.getPwProjectInfo()
+        .then(this.getNumberOfLikes)
+        .then((n) => {
+          this.numberOfLikes = n;
+          this.innerHTML = '';
+        });
     }
   }
 
