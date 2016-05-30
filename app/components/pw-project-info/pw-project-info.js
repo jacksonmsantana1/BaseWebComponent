@@ -31,6 +31,7 @@ class PwProjectInfo extends HTMLElement {
     this.addEventListener('like', this.liked);
     this.addEventListener('dislike', this.disliked);
     this.addEventListener('pin', this.pinned);
+    this.addEventListener('despin', this.despinned);
   }
 
   detachedCallback() {}
@@ -104,6 +105,28 @@ class PwProjectInfo extends HTMLElement {
       putJSON(url, data)
         .then((res) => resolve(res))
         .catch(Logger.error('pinned()', '/projects/{id}/pinned'));
+    });
+  }
+
+  despinned(evt) {
+    let url;
+    let data;
+
+    return new Promise((resolve, reject) => {
+      if (!evt || evt.type !== 'despin') {
+        reject(new Error('Invalid Event'));
+      } else if (isNil(evt.detail)) {
+        reject(new Error('Missing Event Detail'));
+      } else if (evt.detail.projectId !== this.id) {
+        reject(new Error('Invalid Event Detail'));
+      }
+
+      url = '/projects/' + evt.detail.projectId + '/despinned';
+      data = { projectId: evt.detail.projectId }; //FIXME - Dont need the data object
+
+      putJSON(url, data)
+        .then((res) => resolve(res))
+        .catch(Logger.error('pinned()', '/projects/{id}/despinned'));
     });
   }
 

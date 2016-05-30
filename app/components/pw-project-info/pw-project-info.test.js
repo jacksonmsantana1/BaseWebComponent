@@ -104,11 +104,6 @@ describe('pw-project-info', () => {
         expect(requests[0].method).to.be.equal('PUT');
         requests[0].respond(200, {}, 'true');
       });
-
-      it('Should send a PUT request to the endpoint /users/{id}/liked', (done) => {
-        //TODO Wait to make the User Service endpoint /users/{id}/liked
-        done();
-      });
     });
 
     describe('disliked() => ', () => {
@@ -212,6 +207,57 @@ describe('pw-project-info', () => {
           });
 
         expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456/pinned');
+        expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
+        expect(requests[0].method).to.be.equal('PUT');
+        requests[0].respond(200, {}, 'true');
+      });
+    });
+
+    describe('despinned() => ', () => {
+      it('Should return an promise', () => {
+        expect(pwProjectInfo.despinned('').constructor.name).to.be.equal('Promise');
+      });
+
+      it('Should receive an Event as argument', (done) => {
+        const evt = new CustomEvent('not-pinned-event');
+
+        pwProjectInfo.despinned(evt).catch((err) => {
+          expect(err.message).to.be.equal('Invalid Event');
+          done();
+        });
+      });
+
+      it('Should the event received to contain the project id despinned', (done) => {
+        const evt = new CustomEvent('despin');
+
+        pwProjectInfo.despinned(evt).catch((err) => {
+          expect(err.message).to.be.equal('Missing Event Detail');
+          done();
+        });
+      });
+
+      it('Should return an error if the event gives a different project id', (done) => {
+        const evt = new CustomEvent('despin', { detail: { projectId: 'ANUS' } });
+
+        pwProjectInfo.despinned(evt).catch((err) => {
+          expect(err.message).to.be.equal('Invalid Event Detail');
+          done();
+        });
+      });
+
+      it('Should send a PUT request to the endpoint /projects/{id}/despinned', (done) => {
+        const evt = new CustomEvent('despin', { detail: { projectId: '123456' } });
+
+        pwProjectInfo.despinned(evt)
+          .then((res) => {
+            expect(JSON.parse(res.body)).to.be.equal(true);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+
+        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456/despinned');
         expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
         expect(requests[0].method).to.be.equal('PUT');
         requests[0].respond(200, {}, 'true');
