@@ -112,6 +112,11 @@ class PwPinButton extends HTMLButtonElement {
           .then((arr) => this.pin(arr[0], arr[1]))
           .then(map((io) => { io.runIO(); }))
           .catch(console.log);
+      } else {
+        Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
+          .then((arr) => this.despin(arr[0], arr[1]))
+          .then(map((io) => { io.runIO(); }))
+          .catch(console.log);
       }
 
       elem.runIO();
@@ -312,25 +317,36 @@ class PwPinButton extends HTMLButtonElement {
   /**
    * Warn the others components when it's 'des' pin
    */
-  despin() {
+  despin(pwProjectInfo, pwUserInfo) {
+    const events = [];
 
-    /***********************Pure Functions***********************/
+    if (isNil(pwProjectInfo)) {
+      return new Error('pwProjectInfo argument is null');
+    } else if (isEmpty(pwProjectInfo)) {
+      return new Error('pwProjectInfo argument is an empty object');
+    } else if (pwProjectInfo.constructor.name !== 'pw-project-info') {
+      return new Error('pwProjectInfo argument is from an invalid class');
+    } else if (pwProjectInfo.id !== this.projectId) {
+      return new Error('Invalid project id');
+    }
 
-    // desPinned :: HTMLElement -> String -> _
-    const desPinned = curry((obj, pId) => {
-      const evt = new CustomEvent('despin', {
-        detail: {
-          projectId: pId,
-        },
-        bubbles: false,
-        cancelable: true,
-      });
-      obj.dispatchEvent(evt);
-    });
+    if (isNil(pwUserInfo)) {
+      return new Error('pwUserInfo argument is null');
+    } else if (isEmpty(pwUserInfo)) {
+      return new Error('pwUserInfo argument is an empty object');
+    } else if (pwUserInfo.constructor.name !== 'pw-user-info') {
+      return new Error('pwUserInfo argument is from an invalid class');
+    }
 
-    /***********************Impure Functions********************/
+    const evt1 = compose(IO.of, emitCustomEvent(pwProjectInfo),
+      createCustomEvent('despin', { projectId: this.projectId }));
+    events.push(evt1(false, true));
 
-    IO.of(desPinned).ap(getPwUserInfo(document)).ap(getProjectId(this)).runIO();
+    const evt2 = compose(IO.of, emitCustomEvent(pwUserInfo),
+      createCustomEvent('despin', { projectId: this.projectId }));
+    events.push(evt2(false, true));
+
+    return events;
   }
 
   /**

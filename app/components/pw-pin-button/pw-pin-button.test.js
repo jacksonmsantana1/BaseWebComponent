@@ -139,7 +139,7 @@ describe('When the component is liked it ', () => {
   });
 
   it('Should call the pin() method', (done) => {
-    spy = sinon.spy(component, 'getPwUserInfo');
+    spy = sinon.spy(component, 'pin');
     event = new MouseEvent('click');
 
     document.body.appendChild(component1);
@@ -149,6 +149,9 @@ describe('When the component is liked it ', () => {
 
     setTimeout(() => {
       expect(spy.called).to.be.equal(true);
+      // FIXME
+      expect(spy.args[1][0]).to.be.equal(component1);
+      expect(spy.args[1][1]).to.be.equal(component2);
       done();
     }, 200);
   });
@@ -245,6 +248,184 @@ describe('When the component is liked it ', () => {
 
     component2.addEventListener('pin', (evt) => {
       expect(evt.type).to.be.equal('pin');
+      expect(evt.detail.projectId).to.be.equal('VAITOMARNOCU');
+      done();
+    });
+  });
+});
+
+describe('When the component is disliked ', () => {
+  let component;
+  let component1;
+  let component2;
+
+  let spy;
+  let event;
+
+  beforeEach(() => {
+    component1 = document.createElement('pw-project-info');
+    component2 = document.createElement('pw-user-info');
+    component = document.createElement('pw-pin-button');
+
+    component1.status = 'not-checked';
+    component1.id = 'VAITOMARNOCU';
+  });
+
+  afterEach(() => {
+    document.body.removeChild(component);
+    document.body.removeChild(component1);
+    document.body.removeChild(component2);
+
+    sinon.restore();
+  });
+
+  it('Should call the getPwProjectInfo() method', (done) => {
+    spy = sinon.spy(component, 'getPwProjectInfo');
+    event = new MouseEvent('click');
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    component.toggleStatus();
+    component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+    setTimeout(() => {
+      expect(spy.called).to.be.equal(true);
+      done();
+    }, 200);
+  });
+
+  it('Should call the getPwUserInfo() method', (done) => {
+    spy = sinon.spy(component, 'getPwUserInfo');
+    event = new MouseEvent('click');
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    component.toggleStatus();
+    component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+    setTimeout(() => {
+      expect(spy.called).to.be.equal(true);
+      done();
+    }, 200);
+  });
+
+  it('Should call the despin() method', (done) => {
+    spy = sinon.spy(component, 'despin');
+    event = new MouseEvent('click');
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    component.toggleStatus();
+    component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+    setTimeout(() => {
+      expect(spy.called).to.be.equal(true);
+      done();
+    }, 200);
+  });
+
+  it('Should the despin() method receive a not null pw-project-info component', () => {
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    expect(component.despin(null, null).message).to.be.equal('pwProjectInfo argument is null');
+  });
+
+  it('Should the despin() method receive a not empty pw-project-info component', () => {
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    expect(component.despin({}, {}).message).to.be.equal('pwProjectInfo argument is an empty object');
+  });
+
+  it('Should the despin() method receive a valid pw-project-info object', () => {
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    expect(component.despin(component2, component1).message).to.be.equal('pwProjectInfo argument is from an invalid class');
+  });
+
+  it('Should the despin() method receive a valid pw-project-info component', () => {
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+    component1.id = 'WRONG';
+
+    expect(component.despin(component1, component2).message).to.be.equal('Invalid project id');
+  });
+
+  it('Should the despin() method receive a not null pw-user-info component', () => {
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    expect(component.despin(component1, null).message).to.be.equal('pwUserInfo argument is null');
+  });
+
+  it('Should the despin() method receive a not empty pw-user-info component', () => {
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    expect(component.despin(component1, {}).message).to.be.equal('pwUserInfo argument is an empty object');
+  });
+
+  it('Should the despin() method receive a valid pw-user-info object', () => {
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    expect(component.despin(component1, component).message).to.be.equal('pwUserInfo argument is from an invalid class');
+  });
+
+  it('Should the despin() method return an Array of IOs', () => {
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    expect(component.despin(component1, component2).constructor.name).to.be.equal('Array');
+    expect(component.despin(component1, component2)[0].constructor.name).to.be.equal('IO');
+    expect(component.despin(component1, component2)[1].constructor.name).to.be.equal('IO');
+  });
+
+  it('Should after emit a CustomEvent to the pw-project-info', (done) => {
+    event = new MouseEvent('click');
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    component.toggleStatus();
+    component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+    component1.addEventListener('despin', (evt) => {
+      expect(evt.type).to.be.equal('despin');
+      expect(evt.detail.projectId).to.be.equal('VAITOMARNOCU');
+      done();
+    });
+  });
+
+  it('Should after emit a CustomEvent to the pw-user-info', (done) => {
+    event = new MouseEvent('click');
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component2);
+    document.body.appendChild(component);
+
+    component.toggleStatus();
+    component.getDivLike(component.shadowRoot).dispatchEvent(event);
+
+    component2.addEventListener('despin', (evt) => {
+      expect(evt.type).to.be.equal('despin');
       expect(evt.detail.projectId).to.be.equal('VAITOMARNOCU');
       done();
     });
