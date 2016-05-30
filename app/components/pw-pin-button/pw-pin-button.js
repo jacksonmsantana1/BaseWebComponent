@@ -122,6 +122,14 @@ class PwPinButton extends HTMLButtonElement {
       elem.runIO();
     });
 
+    // Updates the liked attribute
+    this.getPwUserInfo()
+      .then(this.isPinned.bind(this))
+      .then((isPinned) => ((isPinned) ?
+          set('status', 'checked') :
+          set('status', 'not-checked')))
+      .catch(console.log);
+
     // Setting attributes
     setProjectId(pinButton);
     setVisible(pinButton);
@@ -352,26 +360,21 @@ class PwPinButton extends HTMLButtonElement {
   /**
    * Check the component status
    */
-  isPinned() {
+  isPinned(pwUserInfo) {
+    const pId = this.projectId;
+    return new Promise((resolve, reject) => {
+      if (isNil(pwUserInfo)) {
+        reject(new Error('pwUserInfo argument is null'));
+      } else if (isEmpty(pwUserInfo)) {
+        reject(new Error('pwUserInfo argument is an empty object'));
+      } else if (pwUserInfo.constructor.name !== 'pw-user-info') {
+        reject(new Error('pwUserInfo argument is from an invalid class'));
+      }
 
-    /***********************Pure Functions***********************/
-
-    // desPinned :: HTMLElement -> String -> _
-    const isPinned = curry((obj, pId) => {
-      const evt = new CustomEvent('isPin', {
-        detail: {
-          projectId: pId,
-        },
-        bubbles: false,
-        cancelable: true,
-      });
-
-      obj.dispatchEvent(evt);
+      pwUserInfo.isPinned(pId)
+        .then(resolve)
+        .catch(reject);
     });
-
-    /***********************Impure Functions********************/
-
-    IO.of(isPinned).ap(getPwUserInfo(document)).ap(getProjectId(this)).runIO();
   }
 
   /*************************Html and CSS*************************/

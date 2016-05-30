@@ -254,7 +254,7 @@ describe('When the component is liked it ', () => {
   });
 });
 
-describe('When the component is disliked ', () => {
+describe('When the component is disliked it ', () => {
   let component;
   let component1;
   let component2;
@@ -429,5 +429,83 @@ describe('When the component is disliked ', () => {
       expect(evt.detail.projectId).to.be.equal('VAITOMARNOCU');
       done();
     });
+  });
+});
+
+describe('When the component is initialized it', () => {
+  let component;
+  let component1;
+
+  let spy;
+
+  beforeEach(() => {
+    component1 = document.createElement('pw-user-info');
+    component = document.createElement('pw-pin-button');
+  });
+
+  afterEach(() => {
+    document.body.removeChild(component);
+    document.body.removeChild(component1);
+
+    sinon.restore();
+  });
+
+  it('Should call the getPwUserInfo() method', () => {
+    spy = sinon.spy(component, 'getPwUserInfo');
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component);
+
+    expect(spy.called).to.be.equal(true);
+  });
+
+  it('Should call the isPinned() method', (done) => {
+    spy = sinon.spy(component, 'isPinned');
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component);
+
+    setTimeout(() => {
+      expect(spy.called).to.be.equal(true);
+      done();
+    }, 200);
+  });
+
+  it('Should call the pw-user-info isPinned() method', (done) => {
+    spy = sinon.spy(component1, 'isPinned');
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component);
+
+    setTimeout(() => {
+      expect(spy.called).to.be.equal(true);
+      done();
+    }, 200);
+  });
+
+  it('Should set the status attribute:checked', (done) => {
+    let stub = sinon.stub(component1, 'isPinned').returns(Promise.resolve(true));
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component);
+
+    window.setTimeout(() => {
+      expect(component.status).to.be.equal('checked');
+      stub.restore();
+      done();
+    }, 200);
+  });
+
+  it('Should set the status attribute:not-checked', (done) => {
+    let stub = sinon.stub(component1, 'isPinned').returns(Promise.resolve(false));
+
+    document.body.appendChild(component1);
+    document.body.appendChild(component);
+
+    window.setTimeout(() => {
+      expect(component.status).to.be.equal('not-checked');
+      stub.restore();
+      done();
+    }, 200);
   });
 });
