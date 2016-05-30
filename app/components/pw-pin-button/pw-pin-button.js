@@ -12,31 +12,31 @@ import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
 /**************************Helpers****************************/
 
 // jscs:disable
-const compose = R.compose,
-  curry = R.curry,
-  get = R.prop,
-  tap = R.tap,
-  concat = R.concat,
-  nth = R.nth,
-  equals = R.equals;
+const compose = R.compose;
+const curry = R.curry;
+const get = R.prop;
+const tap = R.tap;
+const concat = R.concat;
+const nth = R.nth;
+const equals = R.equals;
+const isNil = R.isNil;
+const isEmpty = R.isEmpty;
+const is = R.is;
 
-const map = Helpers.map,
-  event = Helpers.event;
+const map = Helpers.map;
+const event = Helpers.event;
 
-const setInnerHTML = HTMLFunctional.setInnerHTML,
-  setAttr = HTMLFunctional.setAttr,
-  getAttr = HTMLFunctional.getAttr,
-  getElementByTagName = HTMLFunctional.getElementByTagName,
-  createShadowDom = HTMLFunctional.createShadowDom;
+const setInnerHTML = HTMLFunctional.setInnerHTML;
+const setAttr = HTMLFunctional.setAttr;
+const getAttr = HTMLFunctional.getAttr;
+const getElementByTagName = HTMLFunctional.getElementByTagName;
+const createShadowDom = HTMLFunctional.createShadowDom;
 
-// getProjectId :: HTMLElement -> IO(String)
-const getProjectId = compose(map(getAttr('projectId')),
-  IO.of);
-
-// getPwUserInfo :: Document -> IO(HTMLElement)
-const getPwUserInfo =
-  compose(map(getElementByTagName('pw-user-info')),
-    IO.of);
+const getProjectId = compose(map(getAttr('projectId')), IO.of);
+const getPwUserInfo = Helpers.getPwUserInfo;
+const getPwProjectInfo = Helpers.getPwProjectInfo;
+const emitCustomEvent = Helpers.emitCustomEvent;
+const createCustomEvent = Helpers.createCustomEvent;
 
 class PwPinButton extends HTMLButtonElement {
 
@@ -72,6 +72,7 @@ class PwPinButton extends HTMLButtonElement {
     // Attributes declaration
     this._projectId = 'VAITOMARNOCU';
     this._visible = true;
+    this._status = 'not-checked';
   }
 
   /*
@@ -106,6 +107,13 @@ class PwPinButton extends HTMLButtonElement {
       .map(checkElement);
 
     impure.subscribe((elem) => {
+      if (this.status === 'checked') {
+        Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
+          .then((arr) => this.pin(arr[0], arr[1]))
+          .then(map((io) => { io.runIO(); }))
+          .catch(console.log);
+      }
+
       elem.runIO();
     });
 
@@ -137,7 +145,7 @@ class PwPinButton extends HTMLButtonElement {
     }
   }
 
-  /*****************************Methods*******************************/
+  /*****************************Toggles*******************************/
 
   /**
    * This function toggles the component attribute visible
@@ -217,6 +225,8 @@ class PwPinButton extends HTMLButtonElement {
     impure(component).runIO();
   }
 
+  /****************************Getters*********************************/
+
   /**
    * Return the div with class like that is in the ShadowRoot
    */
@@ -233,27 +243,70 @@ class PwPinButton extends HTMLButtonElement {
   }
 
   /**
+   * Return the pw-project-info component with the same id with this component
+   */
+  getPwProjectInfo() {
+    return new Promise((resolve, reject) => {
+      const component = getPwProjectInfo(this.projectId);
+
+      if (is(Error, component)) {
+        reject(component);
+      }
+
+      resolve(component);
+    });
+  }
+
+  /**
+   * Return the pw-user-info component
+   */
+  getPwUserInfo() {
+    return new Promise((resolve, reject) => {
+      const component = getPwUserInfo(document).runIO();
+
+      if (isNil(component)) {
+        reject(new Error('pw-user-info component was not found'));
+      }
+
+      resolve(component);
+    });
+  }
+
+  /*****************************Main Methods***************************/
+
+  /**
    * Warn the other components when it's 'pin' (clicked)
    */
-  pin() {
+  pin(pwProjectInfo, pwUserInfo) {
+    const events = [];
 
-    /***********************Pure Functions***********************/
+    if (isNil(pwProjectInfo)) {
+      return new Error('pwProjectInfo argument is null');
+    } else if (isEmpty(pwProjectInfo)) {
+      return new Error('pwProjectInfo argument is an empty object');
+    } else if (pwProjectInfo.constructor.name !== 'pw-project-info') {
+      return new Error('pwProjectInfo argument is from an invalid class');
+    } else if (pwProjectInfo.id !== this.projectId) {
+      return new Error('Invalid project id');
+    }
 
-    // pinned :: HTMLElement -> String -> _
-    const pinned = curry((obj, pId) => {
-      const evt = new CustomEvent('pin', {
-        detail: {
-          projectId: pId,
-        },
-        bubbles: false,
-        cancelable: true,
-      });
-      obj.dispatchEvent(evt);
-    });
+    if (isNil(pwUserInfo)) {
+      return new Error('pwUserInfo argument is null');
+    } else if (isEmpty(pwUserInfo)) {
+      return new Error('pwUserInfo argument is an empty object');
+    } else if (pwUserInfo.constructor.name !== 'pw-user-info') {
+      return new Error('pwUserInfo argument is from an invalid class');
+    }
 
-    /***********************Impure Functions********************/
+    const evt1 = compose(IO.of, emitCustomEvent(pwProjectInfo),
+      createCustomEvent('pin', { projectId: this.projectId }));
+    events.push(evt1(false, true));
 
-    IO.of(pinned).ap(getPwUserInfo(document)).ap(getProjectId(this)).runIO();
+    const evt2 = compose(IO.of, emitCustomEvent(pwUserInfo),
+      createCustomEvent('pin', { projectId: this.projectId }));
+    events.push(evt2(false, true));
+
+    return events;
   }
 
   /**

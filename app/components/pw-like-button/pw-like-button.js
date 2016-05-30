@@ -8,38 +8,37 @@ import IO from '../../lib/IO/IO.js';
 import Helpers from '../../lib/Helpers/Helpers.js';
 import ClassList from '../../lib/CSSClassList/CSSClassList.js';
 import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
-import Aux from './auxiliar.func';
 
 /**************************Helpers****************************/
 
 // jscs:disable
-const compose = R.compose,
-  curry = R.curry,
-  get = R.prop,
-  tap = R.tap,
-  indexOf = R.indexOf,
-  concat = R.concat,
-  nth = R.nth,
-  equals = R.equals,
-  isEmpty = R.isEmpty,
-  length = R.length,
-  is = R.is,
-  isNil = R.isNil;
+const compose = R.compose;
+const curry = R.curry;
+const get = R.prop;
+const tap = R.tap;
+const indexOf = R.indexOf;
+const concat = R.concat;
+const nth = R.nth;
+const equals = R.equals;
+const isEmpty = R.isEmpty;
+const length = R.length;
+const is = R.is;
+const isNil = R.isNil;
 
-const map = Helpers.map,
-  event = Helpers.event;
 
-const setInnerHTML = HTMLFunctional.setInnerHTML,
-  setAttr = HTMLFunctional.setAttr,
-  getAttr = HTMLFunctional.getAttr,
-  getElementByTagName = HTMLFunctional.getElementByTagName,
-  createShadowDom = HTMLFunctional.createShadowDom;
+const setInnerHTML = HTMLFunctional.setInnerHTML;
+const setAttr = HTMLFunctional.setAttr;
+const getAttr = HTMLFunctional.getAttr;
+const getElementByTagName = HTMLFunctional.getElementByTagName;
+const createShadowDom = HTMLFunctional.createShadowDom;
 
-const createCustomEvent = Aux.createCustomEvent;
-const emitCustomEvent = Aux.emitCustomEvent;
-const getPwProjectInfo = Aux.getPwProjectInfo;
-const getPwUserInfo = Aux.getPwUserInfo;
-const getProjectId = Aux.getProjectId;
+const map = Helpers.map;
+const event = Helpers.event;
+const createCustomEvent = Helpers.createCustomEvent;
+const emitCustomEvent = Helpers.emitCustomEvent;
+const getPwProjectInfo = Helpers.getPwProjectInfo;
+const getPwUserInfo = Helpers.getPwUserInfo;
+const getProjectId = Helpers.getProjectId;
 
 class PwLikeButton extends HTMLButtonElement {
 
