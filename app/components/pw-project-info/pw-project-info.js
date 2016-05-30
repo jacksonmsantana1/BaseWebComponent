@@ -5,6 +5,7 @@
 //import Logger from '../../lib/Logger/Logger.js';
 import R from 'ramda';
 import Request from './../../lib/Request/Request';
+import Logger from '../../lib/Logger/Logger';
 import Token from './../../lib/Token/Token';
 
 //const contain = R.indexOf;
@@ -29,6 +30,7 @@ class PwProjectInfo extends HTMLElement {
   createdCallback() {
     this.addEventListener('like', this.liked);
     this.addEventListener('dislike', this.disliked);
+    this.addEventListener('pin', this.pinned);
   }
 
   detachedCallback() {}
@@ -37,7 +39,7 @@ class PwProjectInfo extends HTMLElement {
 
   attributeChangedCallback() {}
 
-  /************************Methods***************************/
+  /************************Main Methods***************************/
 
   liked(evt) {
     let url;
@@ -53,11 +55,11 @@ class PwProjectInfo extends HTMLElement {
       }
 
       url = '/projects/' + evt.detail.projectId + '/liked';
-      data = { projectId: evt.detail.projectId }; //FIXME
+      data = { projectId: evt.detail.projectId }; //FIXME - Dont need the data object
 
       putJSON(url, data)
         .then(resolve)
-        .catch(reject);
+        .catch(Logger.error('liked()', '/projects/{id}/liked'));
     });
   }
 
@@ -75,13 +77,37 @@ class PwProjectInfo extends HTMLElement {
       }
 
       url = '/projects/' + evt.detail.projectId + '/disliked';
-      data = { projectId: evt.detail.projectId }; //FIXME
+      data = { projectId: evt.detail.projectId }; //FIXME - Dont need the data object
 
       putJSON(url, data)
         .then((res) => resolve(res))
-        .catch((err) => reject(err));
+        .catch(Logger.error('liked()', '/projects/{id}/disliked'));
     });
   }
+
+  pinned(evt) {
+    let url;
+    let data;
+
+    return new Promise((resolve, reject) => {
+      if (!evt || evt.type !== 'pin') {
+        reject(new Error('Invalid Event'));
+      } else if (isNil(evt.detail)) {
+        reject(new Error('Missing Event Detail'));
+      } else if (evt.detail.projectId !== this.id) {
+        reject(new Error('Invalid Event Detail'));
+      }
+
+      url = '/projects/' + evt.detail.projectId + '/pinned';
+      data = { projectId: evt.detail.projectId }; //FIXME - Dont need the data object
+
+      putJSON(url, data)
+        .then((res) => resolve(res))
+        .catch(Logger.error('pinned()', '/projects/{id}/pinned'));
+    });
+  }
+
+  /*****************************Getters*******************************/
 
   getProject() {
     let url;
@@ -93,6 +119,8 @@ class PwProjectInfo extends HTMLElement {
         .catch(reject);
     });
   }
+
+  /***************************Getters and Setters*********************/
 
   get id() {
     return this._id;

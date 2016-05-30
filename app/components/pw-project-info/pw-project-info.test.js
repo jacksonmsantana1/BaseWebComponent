@@ -167,6 +167,57 @@ describe('pw-project-info', () => {
       });
     });
 
+    describe('pinned() => ', () => {
+      it('Should return an promise', () => {
+        expect(pwProjectInfo.pinned('').constructor.name).to.be.equal('Promise');
+      });
+
+      it('Should receive an Event as argument', (done) => {
+        const evt = new CustomEvent('not-pinned-event');
+
+        pwProjectInfo.pinned(evt).catch((err) => {
+          expect(err.message).to.be.equal('Invalid Event');
+          done();
+        });
+      });
+
+      it('Should the event received to contain the project id pinned', (done) => {
+        const evt = new CustomEvent('pin');
+
+        pwProjectInfo.pinned(evt).catch((err) => {
+          expect(err.message).to.be.equal('Missing Event Detail');
+          done();
+        });
+      });
+
+      it('Should return an error if the event gives a different project id', (done) => {
+        const evt = new CustomEvent('pin', { detail: { projectId: 'ANUS' } });
+
+        pwProjectInfo.pinned(evt).catch((err) => {
+          expect(err.message).to.be.equal('Invalid Event Detail');
+          done();
+        });
+      });
+
+      it('Should send a PUT request to the endpoint /projects/{id}/pinned', (done) => {
+        const evt = new CustomEvent('pin', { detail: { projectId: '123456' } });
+
+        pwProjectInfo.pinned(evt)
+          .then((res) => {
+            expect(JSON.parse(res.body)).to.be.equal(true);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+
+        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456/pinned');
+        expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
+        expect(requests[0].method).to.be.equal('PUT');
+        requests[0].respond(200, {}, 'true');
+      });
+    });
+
     describe('getProject() => ', () => {
       it('Should have a method called getProject()', () => {
         expect(pwProjectInfo.getProject.constructor.name).to.be.equal('Function');
