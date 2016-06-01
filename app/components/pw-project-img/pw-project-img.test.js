@@ -20,7 +20,11 @@ describe('pw-project-img => ', () => {
   });
 
   describe('When initialized component', () => {
-    it('Should ...', () => {});
+    it('Should called the pw-project-info component', () => {});
+
+    it('Should pw-project-info component returns the image path', () => {});
+
+    it('Should set the component attribute path', () => {});
   });
 
   describe('When is clicked component', () => {
