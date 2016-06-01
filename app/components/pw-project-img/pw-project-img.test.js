@@ -13,5 +13,19 @@ describe('pw-project-img => ', () => {
     document.body.removeChild(component);
   });
 
-  it('Component ...', () => {});
+  describe('Component ', () => {
+    it('Should contain a property called projectId', () => {});
+
+    it('Should contain a property called path', () => {});
+  });
+
+  describe('When initialized component', () => {
+    it('Should ...', () => {});
+  });
+
+  describe('When is clicked component', () => {
+    it('Should call the father component', () => {});
+
+    it('Should the father component call the showPanel() method', () => {});
+  });
 });
