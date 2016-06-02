@@ -47,7 +47,8 @@ class PwProjectImg extends HTMLElement {
 
     // Attributes declaration
     this._projectId = 'VAITOMARNOCU';
-    this._path = '';
+    this._path = 'http://img.elo7.com.br/product/main/' +
+      '3EF2D7/bolsa-de-patchwork-com-bolso-frontal.jpg';
   }
 
   /*
@@ -77,7 +78,10 @@ class PwProjectImg extends HTMLElement {
       .then(getProject)
       .then(get('path'))
       .then(setPath)
-      .catch(console.log);
+      .catch((err) => {
+        console.log(err.message);
+        setPath(this._path);
+      });
   }
 
   /*
