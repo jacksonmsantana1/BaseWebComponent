@@ -7,6 +7,7 @@ const compose = R.compose;
 const concat = R.concat;
 const get = R.prop;
 const is = R.is;
+const nth = R.nth;
 
 const map = Helpers.map;
 const getPwProjectInfo = Helpers.getPwProjectInfo;
@@ -68,7 +69,10 @@ class PwProjectImg extends HTMLElement {
     // getProject :: PwProjectInfo -> Promise(Error, Project)
     const getProject = (comp) => comp.getProject();
 
-    // impure
+    // Initial projectId value
+    setProjectId(this);
+
+    // Initial path value
     this.getPwProjectInfo()
       .then(getProject)
       .then(get('path'))
@@ -85,7 +89,11 @@ class PwProjectImg extends HTMLElement {
    * Function called when some attribute from the component is changed
    */
   /*eslint no-unused-vars: 0*/
-  attributeChangedCallback(attrName, oldValue, newValue) {}
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'path') {
+      this.getImg(this.shadowRoot).src = newValue;
+    }
+  }
 
   /***************************Methods****************************/
 
@@ -106,6 +114,18 @@ class PwProjectImg extends HTMLElement {
   }
 
   /**
+   * Return the img component that is in the ShadowRoot
+   */
+  getImg(shadowRoot) {
+
+    /**********************Pure Function**************************/
+
+    const pure = compose(nth(0), get('childNodes'));
+
+    return pure(shadowRoot);
+  }
+
+  /**
    * Will emit an 'showDialog' event to its father component
    */
   showDialog() {
@@ -119,7 +139,7 @@ class PwProjectImg extends HTMLElement {
    */
   getTemplateHtml() {
     /*eslint quotes:0*/
-    return ``;
+    return `<img src="" class="" width="200" height="200">`;
   }
 
   /**

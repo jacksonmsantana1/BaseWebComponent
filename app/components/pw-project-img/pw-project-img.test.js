@@ -59,7 +59,7 @@ describe('pw-project-img => ', () => {
     });
 
     it('Should the pwProjectInfo call the getProject() method', (done) => {
-      spy = sinon.stub(component1, 'getProject');
+      spy = sinon.spy(component1, 'getProject');
 
       document.body.appendChild(component1);
       document.body.appendChild(component);
@@ -79,6 +79,35 @@ describe('pw-project-img => ', () => {
       setTimeout(() => {
         expect(component.path).to.be.equal('/anus');
         stub.restore();
+        done();
+      }, 200);
+    });
+  });
+
+  describe('When the path attribute is changed', () => {
+    it('Should call the getImg() method', (done) => {
+      spy = sinon.spy(component, 'getImg');
+
+      document.body.appendChild(component1);
+      document.body.appendChild(component);
+      component.path = 'newPath';
+
+      setTimeout(() => {
+        expect(spy.called).to.be.equal(true);
+        expect(spy.args[0][0]).to.be.equal(component.shadowRoot);
+        done();
+      }, 200);
+    });
+
+    it('Should set the inner img.src attribute with the new value', (done) => {
+      spy = sinon.spy(component, 'getImg');
+
+      document.body.appendChild(component1);
+      document.body.appendChild(component);
+      component.path = '/newPath';
+
+      setTimeout(() => {
+        expect(component.getImg(component.shadowRoot).src).to.be.equal('http://localhost:9876/newPath');
         done();
       }, 200);
     });
