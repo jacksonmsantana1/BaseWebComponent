@@ -5,8 +5,11 @@ import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
 
 const compose = R.compose;
 const concat = R.concat;
+const get = R.prop;
+const is = R.is;
 
 const map = Helpers.map;
+const getPwProjectInfo = Helpers.getPwProjectInfo;
 
 const setInnerHTML = HTMLFunctional.setInnerHTML;
 const setAttr = HTMLFunctional.setAttr;
@@ -59,8 +62,18 @@ class PwProjectImg extends HTMLElement {
     // setProjectId :: HTMLElement -> _
     const setProjectId = compose(set('projectId'), getAttr('projectId'));
 
-    // setPath :: HTMLElement -> _
-    const setPath = compose(set('path'), getAttr('path'));
+    // setPath :: String:path -> _
+    const setPath = set('path');
+
+    // getProject :: PwProjectInfo -> Promise(Error, Project)
+    const getProject = (comp) => comp.getProject();
+
+    // impure
+    this.getPwProjectInfo()
+      .then(getProject)
+      .then(get('path'))
+      .then(setPath)
+      .catch(console.log);
   }
 
   /*
@@ -73,6 +86,31 @@ class PwProjectImg extends HTMLElement {
    */
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {}
+
+  /***************************Methods****************************/
+
+  /**
+   * Return the valid pw-project-info component
+   * @returns {Promise|Promise<T>}
+   */
+  getPwProjectInfo() {
+    return new Promise((resolve, reject) => {
+      const component = getPwProjectInfo(this.projectId);
+
+      if (is(Error, component)) {
+        reject(component);
+      }
+
+      resolve(component);
+    });
+  }
+
+  /**
+   * Will emit an 'showDialog' event to its father component
+   */
+  showDialog() {
+    //TODO
+  }
 
   /*************************Html and CSS*************************/
 
@@ -113,7 +151,7 @@ class PwProjectImg extends HTMLElement {
    * Return the path attribute
    */
   get path() {
-    return this._projectId;
+    return this._path;
   }
 
   /**
