@@ -2,29 +2,42 @@ import expect from 'expect.js';
 import PwProjectItem from './pw-project-item';
 
 describe('pw-project-item', () => {
-  let component;
-  let xhr;
-  let requests;
+  describe('Component should contain the ', () => {
+    let pwProjectItem;
 
-  beforeEach(() => {
-    xhr = sinon.useFakeXMLHttpRequest();
-    requests = [];
+    beforeEach(() => {
+      pwProjectItem = document.createElement('pw-project-item');
+      pwProjectItem.id = 'VAITOMARNOCU';
+      document.body.appendChild(pwProjectItem);
+    });
 
-    component = document.createElement('pw-project-item');
-    document.body.appendChild(component);
+    afterEach(() => {
+      sinon.restore();
+    });
 
-    xhr.onCreate = (xhr) => {
-      requests.push(xhr);
-    };
+    it('id attribute', () => {
+      expect(pwProjectItem.id).to.be.equal('VAITOMARNOCU');
+      pwProjectItem.id = 'VAITOMARNOANUS';
+      expect(pwProjectItem.id).to.be.equal('VAITOMARNOANUS');
+    });
   });
 
-  afterEach(() => {
-    sinon.restore();
-  });
+  describe('Component should contain the inner', () => {
+    let pwProjectItem;
 
-  describe('Component ', () => {
-    it('Should ...', () => {
-      expect(true).to.be.equal(true);
+    beforeEach(() => {
+      pwProjectItem = document.createElement('pw-project-item');
+      pwProjectItem.id = 'VAITOMARNOCU';
+      document.body.appendChild(pwProjectItem);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('pw-project-info component', () => {
+      expect(pwProjectItem.getPwProjectInfo().constructor.name).to.be.equal('pw-project-info');
+      expect(pwProjectItem.getPwProjectInfo().id).to.be.equal('VAITOMARNOCU');
     });
   });
 });

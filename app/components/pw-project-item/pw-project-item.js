@@ -3,22 +3,53 @@
  * informations
  */
 
-//import Request from '../../lib/Request/Request.js';
-//import Logger from '../../lib/Logger/Logger.js';
-//import R from 'ramda';
-//import Token from '../../lib/Token/Token.js';
+import R from 'ramda';
+import Helpers from '../../lib/Helpers/Helpers';
 
 //const contain = R.indexOf;
 //const get = R.prop;
+const is = R.is;
 
-class PwProjectItem extends HTMLElement {
-  createdCallback() {}
+const getPwProjectInfo = Helpers.getPwProjectInfo;
+
+class PwProjectItem extends HTMLDivElement {
+
+  /******************Inherited Methods*************/
+
+  createdCallback() {
+    this._id = 'VAITOMARNOCU';
+
+    this._pwProjectInfo = document.createElement('pw-project-info');
+    this.appendChild(this._pwProjectInfo);
+  }
 
   detachedCallback() {}
 
-  attachedCallback() {}
+  attachedCallback() {
+    this._pwProjectInfo.id = this.id;
+  }
 
-  attributeChangedCallback() {}
+  /*eslint no-unused-vars:1*/
+  attributeChangedCallback(attrName, newValue, oldValue) {}
+
+  /********************Getters***********************/
+
+  /**
+   * Returns the pw-project-info component
+   */
+  getPwProjectInfo() {
+    return this._pwProjectInfo;
+  }
+
+  /******************Getters and setters*************/
+
+  get id() {
+    return this._id;
+  }
+
+  set id(_id) {
+    this._id = _id;
+  }
 }
 
 document.registerElement('pw-project-item', PwProjectItem);
