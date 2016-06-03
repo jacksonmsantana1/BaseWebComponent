@@ -383,8 +383,8 @@ class PwPinButton extends HTMLButtonElement {
    * Return the component Html in string
    */
   getTemplateHtml() {
-    return `<div class='like' >
-              <button class='like-toggle three'>❤</button>
+    return `<div class="like">
+              <button class="like-toggle">❤</button>
             </div>`;
   }
 
@@ -393,71 +393,45 @@ class PwPinButton extends HTMLButtonElement {
    */
   getTemplateStyle() {
     return `<style>
+      *{transition: all 0.3s linear;}
+
       .like {
-        display: inline-block;
+        font-family: 'Open Sans';
+        display:inline-block;
       }
+
       .like-toggle {
+        outline:none;
+        box-shadow:none;
         border: none;
-        outline: none;
+        width: 70px;
+        height: 50px;
+        font-size: 1.5em;
+        border-radius: 10px;
+        background: #eee;
+        color: #666;
       }
 
-    .meta {
-      color: white;
-      font-family: 'Open Sans', sans-serif;
-      font-size: 24px;
-      margin: 0;
-    }
+      .like-toggle:hover {
+        background: #ddd;
+      }
 
-    .meta.hidden {
-      margin-bottom: 28px;
-    }
+      .active {
+        width: 95px;
+        height: 50px;
+        font-size: 1.7em;
+        background: #eee;
+        color: #F26D7D;
+      }
 
-    .hidden {
-      font-size: 0;
-    }
+      .active:hover {
+        background: #ddd;
+      }
 
-    .three {
-      width: 50px;
-      height: 50px;
-      border-radius: 100px;
-      background: #eee;
-      color: #666;
-      font-size: 25px;
-    }
-
-    .three.active {
-      width: 80px;
-      color: #F26D7D;
-      font-size: 30px;
-      animation: expand 0.7s ease;
-      -webkit-animation: expand 0.7s ease;
-    }
-
-    @keyframes beat {
-      0% {font-size: 25px;}
-        25% {font-size: 1px;}
-        50% {font-size: 25px;}
-      75% {font-size: 1px;}
-      100% {font-size: 25px;}
-    }
-
-    @-webkit-keyframes beat {
-      0% {font-size: 25px;}
-        25% {font-size: 1px;}
-        50% {font-size: 25px;}
-      75% {font-size: 1px;}
-      100% {font-size: 25px;}
-    }
-
-    @keyframes expand {
-      0% {width: 50px;}
-      100% {width: 80px;}
-    }
-
-    .like-toggle:hover {
-      background: #ddd;
-    }
-    `;
+      .like-toggle.basic:not(.like-active):hover {
+        background: #ddd;
+      }
+    </style>`;
   }
 
   /*************************Getters and Setters*************************/

@@ -491,7 +491,7 @@ class PwLikeButton extends HTMLButtonElement {
         outline:none;
         box-shadow:none;
         border: none;
-        width: 50px;
+        width: 70px;
         height: 50px;
         font-size: 1.5em;
         border-radius: 10px;
@@ -504,7 +504,7 @@ class PwLikeButton extends HTMLButtonElement {
       }
 
       .active {
-        width: 80px;
+        width: 95px;
         height: 50px;
         font-size: 1.7em;
         background: #eee;

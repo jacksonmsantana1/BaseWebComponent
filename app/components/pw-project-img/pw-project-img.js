@@ -143,7 +143,7 @@ class PwProjectImg extends HTMLElement {
    */
   getTemplateHtml() {
     /*eslint quotes:0*/
-    return `<img src="" class="" width="200" height="200">`;
+    return `<img src="">`;
   }
 
   /**
@@ -151,7 +151,13 @@ class PwProjectImg extends HTMLElement {
    */
   getTemplateStyle() {
     /*eslint quotes:0*/
-    return `<style></style>`;
+    return `
+    <style>
+      img {
+        width: 100%;
+        height:100%;
+      }
+    </style>`;
   }
 
   /*************************Getters and Setters*************************/

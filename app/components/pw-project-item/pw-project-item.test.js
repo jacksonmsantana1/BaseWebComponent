@@ -4,6 +4,7 @@ import PwProjectItem from './pw-project-item';
 describe('pw-project-item', () => {
   describe('Component should contain the ', () => {
     let pwProjectItem;
+    let stub;
 
     beforeEach(() => {
       pwProjectItem = document.createElement('pw-project-item');
