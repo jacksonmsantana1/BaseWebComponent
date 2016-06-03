@@ -53,4 +53,44 @@ describe('pw-project-item', () => {
       expect(pwProjectItem.getPwProjectImg().constructor.name).to.be.equal('pw-project-img');
     });
   });
+
+  describe('When event ', () => {
+    let pwProjectItem;
+
+    beforeEach(() => {
+      pwProjectItem = document.createElement('pw-project-item');
+      pwProjectItem.id = 'VAITOMARNOCU';
+      document.body.appendChild(pwProjectItem);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('showDialog is called, it must show the pw-project-panel', () => {
+      //TODO
+    });
+  });
+
+  describe('When the mouse is over the component it', () => {
+    let pwProjectItem;
+
+    beforeEach(() => {
+      pwProjectItem = document.createElement('pw-project-item');
+      pwProjectItem.id = 'VAITOMARNOCU';
+      document.body.appendChild(pwProjectItem);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('Should show the buttons', () => {
+      //TODO
+    });
+
+    it('Should hide the pw-project-label', () => {
+      //TODO
+    });
+  });
 });
