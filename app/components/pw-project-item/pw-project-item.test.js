@@ -40,5 +40,17 @@ describe('pw-project-item', () => {
       expect(pwProjectItem.getPwProjectInfo().constructor.name).to.be.equal('pw-project-info');
       expect(pwProjectItem.getPwProjectInfo().id).to.be.equal('VAITOMARNOCU');
     });
+
+    it('pw-pin-button component', () => {
+      expect(pwProjectItem.getPwPinButton().constructor.name).to.be.equal('pw-pin-button');
+    });
+
+    it('pw-like-button component', () => {
+      expect(pwProjectItem.getPwLikeButton().constructor.name).to.be.equal('pw-like-button');
+    });
+
+    it('pw-project-id component', () => {
+      expect(pwProjectItem.getPwProjectImg().constructor.name).to.be.equal('pw-project-img');
+    });
   });
 });

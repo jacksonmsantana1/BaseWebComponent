@@ -75,6 +75,27 @@ class PwProjectItem extends HTMLDivElement {
   }
 
   /**
+   * Returns the pw-pin-button
+   */
+  getPwPinButton() {
+    return this._pwPinButton;
+  }
+
+  /**
+   * Returns the pw-like-button
+   */
+  getPwLikeButton() {
+    return this._pwLikeButton;
+  }
+
+  /**
+   * Returns the pw-project-img
+   */
+  getPwProjectImg() {
+    return this._pwProjectImg;
+  }
+
+  /**
    * Return the component Html in string
    */
   getTemplateHtml() {
@@ -127,6 +148,7 @@ class PwProjectItem extends HTMLDivElement {
       }
       </style>`;
   }
+
   /******************Getters and setters*************/
 
   get id() {
