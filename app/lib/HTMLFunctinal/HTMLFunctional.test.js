@@ -4,6 +4,10 @@ import HTMLFunctional from './HTMLFunctional.js';
 import MockHtmlElement from './MockHtmlElement';
 
 describe('HTMLFunctional =>', () => {
+  before(() => {
+    document.body.innerHTML = '';
+  });
+
   describe('setInnerHtml() ->', () => {
     it('Should return the modified element', () => {
       let fn = HTMLFunctional.setInnerHTML;

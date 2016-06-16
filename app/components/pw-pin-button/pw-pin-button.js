@@ -405,8 +405,8 @@ class PwPinButton extends HTMLButtonElement {
         box-shadow:none;
         border: none;
         width: 70px;
-        height: 50px;
-        font-size: 1.5em;
+        height: 100%;
+        font-size: 1.3em;
         border-radius: 10px;
         background: #eee;
         color: #666;
@@ -418,8 +418,6 @@ class PwPinButton extends HTMLButtonElement {
 
       .active {
         width: 95px;
-        height: 50px;
-        font-size: 1.7em;
         background: #eee;
         color: #F26D7D;
       }

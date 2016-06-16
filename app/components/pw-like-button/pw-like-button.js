@@ -73,9 +73,9 @@ class PwLikeButton extends HTMLButtonElement {
 
     const impure = compose(map(setInnerShadow(templateHtml, templateStyle)),
       map(createShadowDom),
+      map(setInnerHTML(this.getInnerHtml())),
       IO.of);
 
-    this.innerHTML = this._numberOfLikes;
     impure(likeButton).runIO();
   }
 
@@ -367,8 +367,6 @@ class PwLikeButton extends HTMLButtonElement {
   /**
    * Checks with the pwUserInfo component to 'see'
    * if the project was already liked by the user
-   * @param pwProjectInfo
-   * @param projectId
    */
   isLiked(pwUserInfo) {
     const pId = this.projectId;
@@ -467,11 +465,19 @@ class PwLikeButton extends HTMLButtonElement {
   /*************************Html and CSS*******************************/
 
   /**
+   * Return the component inner html
+   */
+  getInnerHtml() {
+    /*eslint quotes:1*/
+    return `<span id="numberLikes">0</span>`;
+  }
+
+  /**
    * Return the component Html in string
    */
   getTemplateHtml() {
     return `<div class="like">
-              <button class="like-toggle active">❤<content></content></button>
+              <button class="like-toggle active">❤<content select="#numberLikes"></content></button>
             </div>`;
   }
 
@@ -484,16 +490,16 @@ class PwLikeButton extends HTMLButtonElement {
 
       .like {
         font-family: 'Open Sans';
-        display:inline-block;
+        display: inline-block;
       }
 
       .like-toggle {
-        outline:none;
-        box-shadow:none;
+        outline: none;
+        box-shadow: none;
         border: none;
         width: 70px;
-        height: 50px;
-        font-size: 1.5em;
+        height: 100%;
+        font-size: 1.3em;
         border-radius: 10px;
         background: #eee;
         color: #666;
@@ -505,8 +511,6 @@ class PwLikeButton extends HTMLButtonElement {
 
       .active {
         width: 95px;
-        height: 50px;
-        font-size: 1.7em;
         background: #eee;
         color: #F26D7D;
       }

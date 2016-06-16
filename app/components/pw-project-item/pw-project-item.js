@@ -26,11 +26,11 @@ class PwProjectItem extends HTMLDivElement {
 
   createdCallback() {
     this._id = '';
-    this._project = {};
     this._pwProjectInfo = document.createElement('pw-project-info');
     this._pwProjectImg = document.createElement('pw-project-img');
     this._pwLikeButton = document.createElement('pw-like-button');
     this._pwPinButton = document.createElement('pw-pin-button');
+    this._pwProjectLabel = document.createElement('pw-project-label');
 
     /*********************Pure Functions**********************/
 
@@ -58,6 +58,7 @@ class PwProjectItem extends HTMLDivElement {
     this._pwProjectInfo.id = this.id;
     this.appendChild(this._pwProjectInfo);
     this.shadowRoot.childNodes[0].childNodes[1].appendChild(this._pwProjectImg);
+    this.shadowRoot.childNodes[0].childNodes[5].appendChild(this._pwProjectLabel);
     this.shadowRoot.childNodes[0].childNodes[3].childNodes[3].appendChild(this._pwPinButton);
     this.shadowRoot.childNodes[0].childNodes[3].childNodes[1].appendChild(this._pwLikeButton);
   }
@@ -96,6 +97,13 @@ class PwProjectItem extends HTMLDivElement {
   }
 
   /**
+   * Returns the pw-project-label
+   */
+  getPwProjectLabel() {
+    return this._pwProjectLabel;
+  }
+
+  /**
    * Return the component Html in string
    */
   getTemplateHtml() {
@@ -106,6 +114,7 @@ class PwProjectItem extends HTMLDivElement {
                 <div class="like-button"></div>
                 <div class="pin-button"></div>
               </div>
+              <div class="item-label"></div>
             </div>`;
   }
 
@@ -126,15 +135,20 @@ class PwProjectItem extends HTMLDivElement {
 
       .item-img {
         width: 100%;
-        height: 79%;
+        height: 69%;
         display:inline-block;
+      }
+
+      .item-label {
+        width: 100%;
+        height: 18%;
+        background-color: #528CE0;
       }
 
       .item-buttons {
         background-color: #0b97c4;
-        display:inline-block;
         width: 100%;
-        height: 20%;
+        height: 12%;
       }
 
       .like-button {

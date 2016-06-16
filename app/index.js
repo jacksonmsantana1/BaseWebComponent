@@ -19,6 +19,8 @@ import PwProjectInfo from './components/pw-project-info/pw-project-info.js';
 import PwProjectItem from './components/pw-project-item/pw-project-item.js';
 /*eslint no-unused-vars:1*/
 import PwProjectImg from './components/pw-project-img/pw-project-img.js';
+/*eslint no-unused-vars:1*/
+import PwProjectLabel from './components/pw-project-label/pw-project-label.js';
 
 const log = debug('app:bootstrap');
 const appNode = document.createElement('div');

@@ -24,7 +24,6 @@ class PwProjectLabel extends HTMLElement {
 
     this._name = '';
     this._type = '';
-    this._onfocus = '';
 
     /*********************Pure Functions**********************/
 
@@ -41,6 +40,7 @@ class PwProjectLabel extends HTMLElement {
 
     const impure = compose(map(setInnerShadow(templateHtml, templateStyle)),
       map(createShadowDom),
+      map(setInnerHTML(this.getInnerHtml())),
       IO.of);
 
     impure(this).runIO();
@@ -62,13 +62,9 @@ class PwProjectLabel extends HTMLElement {
     // setType :: String:type -> _
     const setType = set('type');
 
-    // setOnfocus :: String:onfocus-> _
-    const setOnfocus = set('onfocus');
-
     // Initial projectId value
     setName(this.name);
     setType(this.type);
-    setOnfocus(this.onfocus);
   }
 
   /*
@@ -86,11 +82,19 @@ class PwProjectLabel extends HTMLElement {
   /*************************Html and CSS*************************/
 
   /**
+   * Return the component inner html
+   */
+  getInnerHtml() {
+    return `<div id="name">ANUS</div><div id="type">CU</div>`;
+  }
+
+  /**
    * Return the component Html in string
    */
   getTemplateHtml() {
     /*eslint quotes:0*/
-    return ``;
+    return `<div class="name"><content select="#name"></content></div>
+            <div class="type"><content select="#type"></content></div>`;
   }
 
   /**
@@ -98,7 +102,21 @@ class PwProjectLabel extends HTMLElement {
    */
   getTemplateStyle() {
     /*eslint quotes:0*/
-    return `<style></style>`;
+    return `<style>
+      * {
+        margin: 0;
+      }
+      .name {
+        display: inline-block;
+        font-size: 2em;
+        padding-right: 20%;
+        height: 100%;
+      }
+      .type {
+        display: inline-block;
+        font-size: 1.5em;
+      }
+    </style>`;
   }
 
   /*************************Getters and Setters*************************/
@@ -131,21 +149,6 @@ class PwProjectLabel extends HTMLElement {
   set type(pId) {
     this._type = pId;
     this.setAttribute('type', pId);
-  }
-
-  /**
-   * Return the onfocus attribute
-   */
-  get onfocus() {
-    return this._onfocus;
-  }
-
-  /**
-   * Set the onfocus attribute
-   */
-  set onfocus(pId) {
-    this._onfocus = pId;
-    this.setAttribute('onfocus', pId);
   }
 }
 
