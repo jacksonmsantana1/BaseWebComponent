@@ -4,6 +4,7 @@ import HTMLFunctional from './HTMLFunctional.js';
 import MockHtmlElement from './MockHtmlElement';
 
 describe('HTMLFunctional =>', () => {
+  //TODO - For every class tests put this code below
   before(() => {
     document.body.innerHTML = '';
   });
