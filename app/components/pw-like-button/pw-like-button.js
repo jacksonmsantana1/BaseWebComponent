@@ -499,7 +499,7 @@ class PwLikeButton extends HTMLButtonElement {
         border: none;
         width: 70px;
         height: 100%;
-        font-size: 1.3em;
+        font-size: 1em;
         border-radius: 10px;
         background: #eee;
         color: #666;

@@ -52,6 +52,13 @@ describe('pw-project-item', () => {
     it('pw-project-id component', () => {
       expect(pwProjectItem.getPwProjectImg().constructor.name).to.be.equal('pw-project-img');
     });
+
+    it('pw-panel-button component', () => {
+      expect(pwProjectItem.getPwPanelButton().constructor.name).to.be.equal('pw-panel-button');
+    });
+    it('pw-project-label component', () => {
+      expect(pwProjectItem.getPwProjectLabel().constructor.name).to.be.equal('pw-project-label');
+    });
   });
 
   describe('When event ', () => {
@@ -72,7 +79,7 @@ describe('pw-project-item', () => {
     });
   });
 
-  describe('When the mouse is over the component it', () => {
+  describe('When the mouse is out the component it', () => {
     let pwProjectItem;
 
     beforeEach(() => {
@@ -85,11 +92,43 @@ describe('pw-project-item', () => {
       sinon.restore();
     });
 
-    it('Should show the buttons', () => {
+    it('Should hide the pw-panel-button', () => {
       //TODO
     });
+  });
 
-    it('Should hide the pw-project-label', () => {
+  describe('When the image is clicked, it', () => {
+    let pwProjectItem;
+
+    beforeEach(() => {
+      pwProjectItem = document.createElement('pw-project-item');
+      pwProjectItem.id = 'VAITOMARNOCU';
+      document.body.appendChild(pwProjectItem);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('Should show the pw-project-panel', () => {
+      //TODO
+    });
+  });
+
+  describe('When the pw-panel-button is clicked, it', () => {
+    let pwProjectItem;
+
+    beforeEach(() => {
+      pwProjectItem = document.createElement('pw-project-item');
+      pwProjectItem.id = 'VAITOMARNOCU';
+      document.body.appendChild(pwProjectItem);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('Should show the pw-project-panel', () => {
       //TODO
     });
   });
