@@ -4,7 +4,6 @@ import pwProjectImg from './pw-project-img';
 describe('pw-project-img => ', () => {
   let component;
   let component1;
-  let component2;
   let project;
 
   let spy;
@@ -18,8 +17,6 @@ describe('pw-project-img => ', () => {
 
     component1 = document.createElement('pw-project-info');
     component1.id = 'VAITOMARNOANUS';
-
-    component2 = document.createElement('div');
 
     project = {
       path: '/anus',
@@ -114,21 +111,18 @@ describe('pw-project-img => ', () => {
   });
 
   describe('When is clicked component', () => {
-    //TODO Wait to finish the pw-project-item component
-    it('Should emit an event to its father component', () => {
+    it('Should emit an event to its father component', (done) => {
       event = new MouseEvent('click');
-      component2.addEventListener('showDialog', (evt) => {
-        //expect(evt.type).to.be.equal('showDialog');
-        //expect(evt.detail.projectId).to.be.equal('VAITOMARNOANUS');
-        //done();
+      document.body.addEventListener('showPanel', (evt) => {
+        expect(evt.type).to.be.equal('showPanel');
+        expect(evt.detail.projectId).to.be.equal('VAITOMARNOANUS');
+        done();
       });
 
-      document.body.appendChild(component2);
       document.body.appendChild(component1);
       document.body.appendChild(component);
 
-      component.dispatchEvent(event);
-      document.body.removeChild(component2);
+      component.getImg(component.shadowRoot).dispatchEvent(event);
     });
   });
 });

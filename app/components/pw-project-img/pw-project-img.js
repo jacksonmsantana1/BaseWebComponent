@@ -1,5 +1,6 @@
 import R from 'ramda';
 import IO from '../../lib/IO/IO.js';
+import Maybe from 'data.maybe';
 import Helpers from '../../lib/Helpers/Helpers.js';
 import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
 
@@ -11,6 +12,9 @@ const nth = R.nth;
 
 const map = Helpers.map;
 const getPwProjectInfo = Helpers.getPwProjectInfo;
+const emitCustomEvent = Helpers.emitCustomEvent;
+const createCustomEvent = Helpers.createCustomEvent;
+const event = Helpers.event;
 
 const setInnerHTML = HTMLFunctional.setInnerHTML;
 const setAttr = HTMLFunctional.setAttr;
@@ -55,6 +59,25 @@ class PwProjectImg extends HTMLElement {
    * Function called when the component is attached to the DOM
    */
   attachedCallback() {
+
+    // clickStream :: HTMLElement -> EventStream(HTMLElement)
+    const clickStream = compose(map(R.prop('target')), event('click'));
+
+    //onClick :: HTMLElement -> Maybe(EventStream(HTMLElement))
+    const onClick = compose(map(clickStream), Maybe.fromNullable);
+
+    // img :: _ -> HTMLELement
+    const img = this.getImg(this.shadowRoot);
+
+    // pwProjectItem :: _ -> Maybe(HTMLElement)
+    const pwProjectItem = Maybe.fromNullable(this.getPwProjectItem());
+
+    // showPanel :: _ -> IO(Maybe(HTMLElement))
+    const showPanel = IO.of(pwProjectItem).map(map(this.emitEvent.bind(this)));
+
+    onClick(img).get().subscribe((elem) => {
+      showPanel.runIO();
+    });
 
     /********************Pure Functions*********************/
 
@@ -129,13 +152,6 @@ class PwProjectImg extends HTMLElement {
     return pure(shadowRoot);
   }
 
-  /**
-   * Will emit an 'showDialog' event to its father component
-   */
-  showDialog() {
-    //TODO
-  }
-
   /*************************Html and CSS*************************/
 
   /**
@@ -160,6 +176,15 @@ class PwProjectImg extends HTMLElement {
     </style>`;
   }
 
+  getPwProjectItem() {
+    return this.parentNode;
+  }
+
+  emitEvent(pwProjectItem) {
+    const evt = compose(emitCustomEvent(pwProjectItem),
+      createCustomEvent);
+    return evt('showPanel', { projectId: this.projectId }, false, false);
+  }
   /*************************Getters and Setters*************************/
 
   /**
