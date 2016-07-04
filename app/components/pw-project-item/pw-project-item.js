@@ -31,6 +31,7 @@ class PwProjectItem extends HTMLDivElement {
     this._pwLikeButton = document.createElement('pw-like-button');
     this._pwPinButton = document.createElement('pw-pin-button');
     this._pwProjectLabel = document.createElement('pw-project-label');
+    this._pwPanelButton = document.createElement('pw-panel-button');
 
     /*********************Pure Functions**********************/
 
@@ -59,12 +60,21 @@ class PwProjectItem extends HTMLDivElement {
     this.appendChild(this._pwProjectInfo);
     this.shadowRoot.childNodes[0].childNodes[1].appendChild(this._pwProjectImg);
     this.shadowRoot.childNodes[0].childNodes[5].appendChild(this._pwProjectLabel);
+    this.shadowRoot.childNodes[0].childNodes[7].appendChild(this._pwPanelButton);
     this.shadowRoot.childNodes[0].childNodes[3].childNodes[3].appendChild(this._pwPinButton);
     this.shadowRoot.childNodes[0].childNodes[3].childNodes[1].appendChild(this._pwLikeButton);
+
+    this.addEventListener('showPanel', this.showPanel);
   }
 
   /*eslint no-unused-vars:1*/
   attributeChangedCallback(attrName, newValue, oldValue) {}
+
+  /********************Methods***********************/
+
+  showPanel(evt) {
+
+  }
 
   /********************Getters***********************/
 
@@ -104,6 +114,13 @@ class PwProjectItem extends HTMLDivElement {
   }
 
   /**
+   * Returns the pw-project-label
+   */
+  getPwPanelButton() {
+    return this._pwPanelButton;
+  }
+
+  /**
    * Return the component Html in string
    */
   getTemplateHtml() {
@@ -115,6 +132,7 @@ class PwProjectItem extends HTMLDivElement {
                 <div class="pin-button"></div>
               </div>
               <div class="item-label"></div>
+              <div class="item-view-button"></div>
             </div>`;
   }
 
@@ -127,10 +145,11 @@ class PwProjectItem extends HTMLDivElement {
 
       .item {
         width: 200px;
-        height: 250px;
+        height: 350px;
         border-radius: 12%;
         padding:0.8%;
         background-color: #006666;
+        display: inline-block;
       }
 
       .item-img {
@@ -141,11 +160,17 @@ class PwProjectItem extends HTMLDivElement {
 
       .item-label {
         width: 100%;
-        height: 18%;
+        height: 12%;
         background-color: #528CE0;
       }
 
       .item-buttons {
+        background-color: #0b97c4;
+        width: 100%;
+        height: 6%;
+      }
+
+      .item-view-button {
         background-color: #0b97c4;
         width: 100%;
         height: 12%;
