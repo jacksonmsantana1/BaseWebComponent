@@ -23,6 +23,8 @@ import PwProjectImg from './components/pw-project-img/pw-project-img.js';
 import PwProjectLabel from './components/pw-project-label/pw-project-label.js';
 /*eslint no-unused-vars:1*/
 import PwPanelButton from './components/pw-panel-button/pw-panel-button.js';
+/*eslint no-unused-vars:1*/
+import PwProjectPanel from './components/pw-project-panel/pw-project-panel.js';
 
 const log = debug('app:bootstrap');
 const appNode = document.createElement('div');
@@ -33,6 +35,7 @@ const likeButton = document.createElement('pw-like-button');
 const userInfo = document.createElement('pw-user-info');
 const panelButton = document.createElement('pw-panel-button');
 const item = document.createElement('pw-project-item');
+const panel = document.createElement('pw-project-panel');
 item.id = 'VAITOMARNOCU';
 
 log('creating app node');
@@ -45,6 +48,7 @@ document.body.appendChild(pinButton);
 document.body.appendChild(likeButton);
 document.body.appendChild(panelButton);
 document.body.appendChild(item);
+document.body.appendChild(panel);
 
 log('mounting app');
 appNode.appendChild(helloComp);
