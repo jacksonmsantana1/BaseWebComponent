@@ -1,19 +1,19 @@
 // jscs:disable disallowMixedSpacesAndTabs
 import R from 'ramda';
 import IO from '../../lib/IO/IO.js';
+import Maybe from 'data.maybe';
 import Helpers from '../../lib/Helpers/Helpers.js';
 import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional.js';
 
 const compose = R.compose;
 const concat = R.concat;
+const get = R.prop;
+const nth = R.nth;
 
 const map = Helpers.map;
 
 const setInnerHTML = HTMLFunctional.setInnerHTML;
 const createShadowDom = HTMLFunctional.createShadowDom;
-
-const setAttr = HTMLFunctional.setAttr;
-const getAttr = HTMLFunctional.getAttr;
 
 class PwProjectPanel extends HTMLElement {
 
@@ -37,26 +37,15 @@ class PwProjectPanel extends HTMLElement {
       IO.of);
 
     impure(this).runIO();
-
-    this._visible = false;
   }
 
-  attachedCallback() {
-    // set :: HTMLElement -> _
-    const set = setAttr(this);
-
-    // setVisible :: HTMLElement -> _
-    const setVisible = compose(set('visible'), getAttr('visible'));
-
-    setVisible(this);
-  }
+  attachedCallback() {}
 
   detachedCallback() {}
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === 'visible' && newValue === 'true') {
-      this.toggleVisible();
-    }
+    //TODO
+    return void newValue;
   }
 
   /***********************Methods**************************/
@@ -177,23 +166,25 @@ class PwProjectPanel extends HTMLElement {
   }
 
   toggleVisible() {
-    this.activeButton().checked = !this.activeButton.checked;
+    const fn = IO.of(this.activeButton()).map(map((input) => {
+      /*eslint no-param-reassign:1*/
+      input.checked = true;
+    }));
+
+    fn.runIO();
   }
 
   activeButton() {
-    return this.shadowRoot.childNodes[0].childNodes[1];
+    const fn = compose(Maybe.of,
+      nth(1), get('childNodes'),
+      nth(0), get('childNodes'),
+      get('shadowRoot'));
+
+    return fn(this);
   }
 
   /*******************Getters/Setters**********************/
 
-  get visible() {
-    return this._visible;
-  }
-
-  set visible(v) {
-    this._visible = v;
-    this.setAttribute('visible', v);
-  }
 }
 
 document.registerElement('pw-project-panel', PwProjectPanel);
