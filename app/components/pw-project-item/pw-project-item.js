@@ -6,6 +6,7 @@
 import R from 'ramda';
 import Helpers from '../../lib/Helpers/Helpers';
 import IO from '../../lib/IO/IO';
+import Maybe from 'data.maybe';
 import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional';
 
 //const contain = R.indexOf;
@@ -13,6 +14,8 @@ import HTMLFunctional from '../../lib/HTMLFunctinal/HTMLFunctional';
 const is = R.is;
 const compose = R.compose;
 const concat = R.concat;
+const get = R.prop;
+const nth = R.nth;
 
 const getPwProjectInfo = Helpers.getPwProjectInfo;
 const map = Helpers.map;
@@ -56,6 +59,7 @@ class PwProjectItem extends HTMLDivElement {
   detachedCallback() {}
 
   attachedCallback() {
+    //Inner components
     this._pwProjectInfo.id = this.id;
     this.appendChild(this._pwProjectInfo);
     this.shadowRoot.childNodes[0].childNodes[1].appendChild(this._pwProjectImg);
@@ -64,7 +68,14 @@ class PwProjectItem extends HTMLDivElement {
     this.shadowRoot.childNodes[0].childNodes[3].childNodes[3].appendChild(this._pwPinButton);
     this.shadowRoot.childNodes[0].childNodes[3].childNodes[1].appendChild(this._pwLikeButton);
 
+    //Events
     this.addEventListener('showPanel', this.showPanel);
+    this.getInnerComponent().get().addEventListener('mouseover', this.showButton.bind(this));
+    this.getInnerComponent().get().addEventListener('mouseout', this.hideButton.bind(this));
+
+    //Init Components
+    this._pwPanelButton.visible = false;
+
   }
 
   /*eslint no-unused-vars:1*/
@@ -73,10 +84,33 @@ class PwProjectItem extends HTMLDivElement {
   /********************Methods***********************/
 
   showPanel(evt) {
+    this.getPwProjectPanel().map((input) => {
+      input.toggleVisible();
+      return evt;
+    });
+  }
 
+  showButton(evt) {
+    if (evt.type === 'mouseover') {
+      this.getPwPanelButton().visible = true;
+    }
+  }
+
+  hideButton(evt) {
+    if (evt.type === 'mouseout') {
+      this.getPwPanelButton().visible = false;
+    }
   }
 
   /********************Getters***********************/
+
+  /**
+   * Returns the component visible by the brownser
+   */
+  getInnerComponent() {
+    const fn = compose(Maybe.of, nth(0), get('childNodes'), get('shadowRoot'));
+    return fn(this);
+  }
 
   /**
    * Returns the pw-project-info component
@@ -121,6 +155,13 @@ class PwProjectItem extends HTMLDivElement {
   }
 
   /**
+   * Returns the pw-project-panel
+   */
+  getPwProjectPanel() {
+    return Maybe.of(document.body.getElementsByTagName('pw-project-panel')[0]);
+  }
+
+  /**
    * Return the component Html in string
    */
   getTemplateHtml() {
@@ -145,7 +186,6 @@ class PwProjectItem extends HTMLDivElement {
 
       .item {
         width: 200px;
-        height: 350px;
         border-radius: 12%;
         padding:0.8%;
         background-color: #006666;

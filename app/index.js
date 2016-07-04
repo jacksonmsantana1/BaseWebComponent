@@ -6,8 +6,6 @@ import 'normalize.css';
 import debug from 'debug';
 
 /*eslint no-unused-vars:1*/
-import Base from './components/Base/Base.js';
-/*eslint no-unused-vars:1*/
 import PwPinButton from './components/pw-pin-button/pw-pin-button.js';
 /*eslint no-unused-vars:1*/
 import PwLikeButton from './components/pw-like-button/pw-like-button.js';
@@ -27,28 +25,17 @@ import PwPanelButton from './components/pw-panel-button/pw-panel-button.js';
 import PwProjectPanel from './components/pw-project-panel/pw-project-panel.js';
 
 const log = debug('app:bootstrap');
-const appNode = document.createElement('div');
-const helloComp = document.createElement('pw-base');
-const img = document.createElement('pw-project-img');
-const pinButton = document.createElement('pw-pin-button');
-const likeButton = document.createElement('pw-like-button');
+
 const userInfo = document.createElement('pw-user-info');
-const panelButton = document.createElement('pw-panel-button');
 const item = document.createElement('pw-project-item');
 const panel = document.createElement('pw-project-panel');
 item.id = 'VAITOMARNOCU';
 
 log('creating app node');
-appNode.id = 'app';
 
 log('adding app node to body');
-document.body.appendChild(appNode);
 document.body.appendChild(userInfo);
-document.body.appendChild(pinButton);
-document.body.appendChild(likeButton);
-document.body.appendChild(panelButton);
-document.body.appendChild(item);
 document.body.appendChild(panel);
+document.body.appendChild(item);
 
 log('mounting app');
-appNode.appendChild(helloComp);

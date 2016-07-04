@@ -29,6 +29,15 @@ describe('pw-project-panel', () => {
       expect(actual).to.be.equal(expected);
     });
 
+    it('isActive() method ', () => {
+      pwProjectPanel.toggleVisible();
+
+      const actual = pwProjectPanel.isActive().get();
+      const expected = true;
+
+      expect(actual).to.be.equal(expected);
+    });
+
     it('toggleVisible() method, which checks the returned input by the activeButton() fn', () => {
       pwProjectPanel.toggleVisible();
 

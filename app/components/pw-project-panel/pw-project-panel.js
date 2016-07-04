@@ -183,6 +183,10 @@ class PwProjectPanel extends HTMLElement {
     return fn(this);
   }
 
+  isActive() {
+    return this.activeButton().map(get('checked'));
+  }
+
   /*******************Getters/Setters**********************/
 
 }
