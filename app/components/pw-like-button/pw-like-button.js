@@ -162,7 +162,7 @@ class PwLikeButton extends HTMLButtonElement {
     } else if (attrName === 'liked' && newValue === 'true') {
       this.toggleActive();
       this.getPwProjectInfo()
-        .then(this.getNumberOfLikes)
+        .then(this.getNumberOfLikes.bind(this))
         .then((n) => {
           this.numberOfLikes = n;
           this.innerHTML = n;
@@ -170,7 +170,7 @@ class PwLikeButton extends HTMLButtonElement {
     } else if (attrName === 'liked' && newValue === 'false') {
       this.toggleActive();
       this.getPwProjectInfo()
-        .then(this.getNumberOfLikes)
+        .then(this.getNumberOfLikes.bind(this))
         .then((n) => {
           this.numberOfLikes = n;
           this.innerHTML = '';
@@ -413,6 +413,7 @@ class PwLikeButton extends HTMLButtonElement {
    * project have.
    */
   getNumberOfLikes(pwProjectInfo) {
+    const _this = this;
     return new Promise((resolve, reject) => {
       if (isNil(pwProjectInfo)) {
         reject(new Error('pwProjectInfo argument is null'));
@@ -420,7 +421,7 @@ class PwLikeButton extends HTMLButtonElement {
         reject(new Error('pwProjectInfo argument is empty'));
       } else if (pwProjectInfo.constructor.name !== 'pw-project-info') {
         reject(new Error('pwProjectInfo argument is from an invalid class'));
-      } else if (pwProjectInfo.id !== this.projectId) {
+      } else if (pwProjectInfo.id !== _this.projectId) {
         reject(new Error('Invalid project id'));
       }
 

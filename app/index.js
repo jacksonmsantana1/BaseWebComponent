@@ -29,7 +29,7 @@ const log = debug('app:bootstrap');
 const userInfo = document.createElement('pw-user-info');
 const item = document.createElement('pw-project-item');
 const panel = document.createElement('pw-project-panel');
-item.id = 'VAITOMARNOCU';
+item.id = '1';
 
 log('creating app node');
 

@@ -59,6 +59,12 @@ class PwProjectItem extends HTMLDivElement {
   detachedCallback() {}
 
   attachedCallback() {
+    //Init Components
+    this._pwPanelButton.visible = false;
+    this._pwPinButton.projectId = this.id;
+    this._pwLikeButton.projectId = this.id;
+    this._pwProjectImg.projectId = this.id;
+
     //Inner components
     this._pwProjectInfo.id = this.id;
     this.appendChild(this._pwProjectInfo);
@@ -72,10 +78,6 @@ class PwProjectItem extends HTMLDivElement {
     this.addEventListener('showPanel', this.showPanel);
     this.getInnerComponent().get().addEventListener('mouseover', this.showButton.bind(this));
     this.getInnerComponent().get().addEventListener('mouseout', this.hideButton.bind(this));
-
-    //Init Components
-    this._pwPanelButton.visible = false;
-
   }
 
   /*eslint no-unused-vars:1*/

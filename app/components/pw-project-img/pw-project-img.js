@@ -30,6 +30,11 @@ class PwProjectImg extends HTMLElement {
    */
   createdCallback() {
 
+    // Attributes declaration
+    this._projectId = 'VAITOMARNOCU';
+    this._path = 'http://img.elo7.com.br/product/main/' +
+      '3EF2D7/bolsa-de-patchwork-com-bolso-frontal.jpg';
+
     /*********************Pure Functions**********************/
 
     // templateHtml :: String
@@ -48,11 +53,6 @@ class PwProjectImg extends HTMLElement {
       IO.of);
 
     impure(this).runIO();
-
-    // Attributes declaration
-    this._projectId = 'VAITOMARNOCU';
-    this._path = 'http://img.elo7.com.br/product/main/' +
-      '3EF2D7/bolsa-de-patchwork-com-bolso-frontal.jpg';
   }
 
   /*
@@ -93,9 +93,6 @@ class PwProjectImg extends HTMLElement {
     // getProject :: PwProjectInfo -> Promise(Error, Project)
     const getProject = (comp) => comp.getProject();
 
-    // Initial projectId value
-    setProjectId(this);
-
     // Initial path value
     this.getPwProjectInfo()
       .then(getProject)
@@ -129,8 +126,9 @@ class PwProjectImg extends HTMLElement {
    * @returns {Promise|Promise<T>}
    */
   getPwProjectInfo() {
+    const _this = this;
     return new Promise((resolve, reject) => {
-      const component = getPwProjectInfo(this.projectId);
+      const component = getPwProjectInfo(_this.projectId);
 
       if (is(Error, component)) {
         reject(component);
