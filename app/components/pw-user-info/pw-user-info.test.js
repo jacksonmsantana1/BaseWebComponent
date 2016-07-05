@@ -65,7 +65,7 @@ describe('pw-user-info', () => {
       };
 
       component.validateUser(user);
-      expect(requests[0].url).to.be.equal('http://localhost:3000/validation');
+      expect(requests[0].url).to.be.equal('/validation');
       expect(requests[0].method).to.be.equal('POST');
     });
 
@@ -148,7 +148,7 @@ describe('pw-user-info', () => {
         done();
       });
 
-      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/pinned');
+      expect(requests[0].url).to.be.equal('/user/projects/pinned');
       expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       expect(requests[0].method).to.be.equal('PUT');
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');
@@ -186,7 +186,7 @@ describe('pw-user-info', () => {
         done();
       });
 
-      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/desPinned');
+      expect(requests[0].url).to.be.equal('/user/projects/desPinned');
       expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       expect(requests[0].method).to.be.equal('PUT');
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');
@@ -225,7 +225,7 @@ describe('pw-user-info', () => {
         done(err);
       });
 
-      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects');
+      expect(requests[0].url).to.be.equal('/user/projects');
       expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       expect(requests[0].method).to.be.equal('GET');
       requests[0].respond(200, {}, '{"pinned": ["1234097435", "345", "678"]}');
@@ -264,7 +264,7 @@ describe('pw-user-info', () => {
         done();
       });
 
-      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/liked');
+      expect(requests[0].url).to.be.equal('/user/projects/liked');
       expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       expect(requests[0].method).to.be.equal('PUT');
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');
@@ -302,7 +302,7 @@ describe('pw-user-info', () => {
         done();
       });
 
-      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/disliked');
+      expect(requests[0].url).to.be.equal('/user/projects/disliked');
       expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       expect(requests[0].method).to.be.equal('PUT');
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');
@@ -333,7 +333,7 @@ describe('pw-user-info', () => {
         done(err);
       });
 
-      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects');
+      expect(requests[0].url).to.be.equal('/user/projects');
       expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       expect(requests[0].method).to.be.equal('GET');
       requests[0].respond(200, {}, '{"liked": ["1234097435", "345", "678"]}');
