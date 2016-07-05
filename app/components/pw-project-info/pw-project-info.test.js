@@ -46,7 +46,7 @@ describe('pw-project-info', () => {
             done();
           });
 
-        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456');
+        expect(requests[0].url).to.be.equal('/projects/123456');
         expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
         expect(requests[0].method).to.be.equal('GET');
         expect(pwProjectInfo.id).to.be.equal('123456');
@@ -99,7 +99,7 @@ describe('pw-project-info', () => {
             done(err);
           });
 
-        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456/liked');
+        expect(requests[0].url).to.be.equal('/projects/123456/liked');
         expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
         expect(requests[0].method).to.be.equal('PUT');
         requests[0].respond(200, {}, 'true');
@@ -150,7 +150,7 @@ describe('pw-project-info', () => {
             done(err);
           });
 
-        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456/disliked');
+        expect(requests[0].url).to.be.equal('/projects/123456/disliked');
         expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
         expect(requests[0].method).to.be.equal('PUT');
         requests[0].respond(200, {}, 'true');
@@ -206,7 +206,7 @@ describe('pw-project-info', () => {
             done(err);
           });
 
-        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456/pinned');
+        expect(requests[0].url).to.be.equal('/projects/123456/pinned');
         expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
         expect(requests[0].method).to.be.equal('PUT');
         requests[0].respond(200, {}, 'true');
@@ -257,7 +257,7 @@ describe('pw-project-info', () => {
             done(err);
           });
 
-        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456/despinned');
+        expect(requests[0].url).to.be.equal('/projects/123456/despinned');
         expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
         expect(requests[0].method).to.be.equal('PUT');
         requests[0].respond(200, {}, 'true');
@@ -279,7 +279,7 @@ describe('pw-project-info', () => {
           done();
         });
 
-        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456');
+        expect(requests[0].url).to.be.equal('/projects/123456');
         expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
         expect(requests[0].method).to.be.equal('GET');
         requests[0].respond(200, {}, 'true');
@@ -291,7 +291,7 @@ describe('pw-project-info', () => {
           done();
         });
 
-        expect(requests[0].url).to.be.equal('http://localhost:3000/projects/123456');
+        expect(requests[0].url).to.be.equal('/projects/123456');
         expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
         expect(requests[0].method).to.be.equal('GET');
         requests[0].respond(200, {}, '{ "project": "MOCK" }');
