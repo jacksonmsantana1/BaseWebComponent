@@ -10,6 +10,8 @@ import Token from '../../lib/Token/Token.js';
 const contain = R.indexOf;
 const get = R.prop;
 
+const base = 'http://localhost:3000';
+
 class PwInfoUser extends HTMLElement {
   createdCallback() {
     this.addEventListener('despin', this.desPinned);
@@ -41,7 +43,7 @@ class PwInfoUser extends HTMLElement {
       return Promise.reject(new Error('Only the password is given'));
     }
 
-    return Request.sendJSON('/validation', user);
+    return Request.sendJSON(base + '/validation', user);
   }
 
   getResponseToken(res) {
@@ -52,7 +54,7 @@ class PwInfoUser extends HTMLElement {
 
   // pinned :: Event -> Promise(String, Error)
   pinned(evt) {
-    return Request.putJSON('/user/projects/pinned', {
+    return Request.putJSON(base + '/user/projects/pinned', {
       projectId: evt.detail.projectId,
     }, Token.getUserToken()).catch(Logger.error('pinned()', '/user/projects/pinned'));
   }
@@ -61,7 +63,7 @@ class PwInfoUser extends HTMLElement {
   desPinned(evt) {
     evt.preventDefault();
 
-    return Request.putJSON('/user/projects/desPinned', {
+    return Request.putJSON(base + '/user/projects/desPinned', {
       projectId: evt.detail.projectId,
     }, Token.getUserToken()).catch(Logger.error('desPinned()', '/user/projects/desPinned'));
   }
@@ -75,7 +77,7 @@ class PwInfoUser extends HTMLElement {
     /************************Pure Functions**********************/
 
     // getUserProjects :: Token -> Promise(Object, Error)
-    const getUserProjects = (tk) => Request.getJSON('/user/projects', tk);
+    const getUserProjects = (tk) => Request.getJSON(base + '/user/projects', tk);
 
     // getPinnedProjects :: Object -> Promise(Array)
     const getPinnedProjects = (obj) => Promise.resolve(get('pinned', obj.body));
@@ -101,7 +103,7 @@ class PwInfoUser extends HTMLElement {
 
   // liked :: Event -> Promise(String, Error)
   liked(evt) {
-    return Request.putJSON('/user/projects/liked', {
+    return Request.putJSON(base + '/user/projects/liked', {
       projectId: evt.detail.projectId,
     }, Token.getUserToken()).catch(Logger.error('liked()', '/user/projects/liked'));
   }
@@ -110,7 +112,7 @@ class PwInfoUser extends HTMLElement {
   disliked(evt) {
     evt.preventDefault();
 
-    return Request.putJSON('/user/projects/disliked', {
+    return Request.putJSON(base + '/user/projects/disliked', {
       projectId: evt.detail.projectId,
     }, Token.getUserToken()).catch(Logger.error('disliked()', '/user/projects/disliked'));
   }
@@ -124,7 +126,7 @@ class PwInfoUser extends HTMLElement {
     /************************Pure Functions**********************/
 
     // getUserProjects :: Token -> Promise(Object, Error)
-    const getUserProjects = (tk) => Request.getJSON('/user/projects', tk);
+    const getUserProjects = (tk) => Request.getJSON(base + '/user/projects', tk);
 
     // getPinnedProjects :: Object -> Promise(Array)
     const getPinnedProjects = (obj) => Promise.resolve(get('liked', obj.body));

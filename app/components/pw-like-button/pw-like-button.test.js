@@ -351,7 +351,7 @@ let Mock;
         done();
       });
 
-      expect(requests[0].url).to.be.equal('/user/projects');
+      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects');
       expect(requests[0].method).to.be.equal('GET');
 
       requests[0].respond(200, {}, '{"liked": ["VAITOMARNOCU", "345", "678"]}');
@@ -363,7 +363,7 @@ let Mock;
         done();
       });
 
-      expect(requests[0].url).to.be.equal('/user/projects');
+      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects');
       expect(requests[0].method).to.be.equal('GET');
 
       requests[0].respond(200, {}, '{"liked": ["VAITOMARNOANUS", "345", "678"]}');
