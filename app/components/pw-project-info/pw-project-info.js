@@ -18,6 +18,8 @@ const putJSON = (url, data) =>
 
 const getJSON = (url) => Request.getJSON(url, Token.getUserToken());
 
+const base = 'http://localhost:8000';
+
 class PwProjectInfo extends HTMLElement {
 
   constructor(id) {
@@ -55,7 +57,7 @@ class PwProjectInfo extends HTMLElement {
         reject(new Error('Invalid Event Detail'));
       }
 
-      url = '/projects/' + evt.detail.projectId + '/liked';
+      url = base + '/projects/' + evt.detail.projectId + '/liked';
       data = { projectId: evt.detail.projectId }; //FIXME - Dont need the data object
 
       putJSON(url, data)
@@ -77,7 +79,7 @@ class PwProjectInfo extends HTMLElement {
         reject(new Error('Invalid Event Detail'));
       }
 
-      url = '/projects/' + evt.detail.projectId + '/disliked';
+      url = base + '/projects/' + evt.detail.projectId + '/disliked';
       data = { projectId: evt.detail.projectId }; //FIXME - Dont need the data object
 
       putJSON(url, data)
@@ -99,7 +101,7 @@ class PwProjectInfo extends HTMLElement {
         reject(new Error('Invalid Event Detail'));
       }
 
-      url = '/projects/' + evt.detail.projectId + '/pinned';
+      url = base + '/projects/' + evt.detail.projectId + '/pinned';
       data = { projectId: evt.detail.projectId }; //FIXME - Dont need the data object
 
       putJSON(url, data)
@@ -121,7 +123,7 @@ class PwProjectInfo extends HTMLElement {
         reject(new Error('Invalid Event Detail'));
       }
 
-      url = '/projects/' + evt.detail.projectId + '/despinned';
+      url = base + '/projects/' + evt.detail.projectId + '/despinned';
       data = { projectId: evt.detail.projectId }; //FIXME - Dont need the data object
 
       putJSON(url, data)
@@ -135,7 +137,7 @@ class PwProjectInfo extends HTMLElement {
   getProject() {
     let url;
     return new Promise((resolve, reject) => {
-      url = '/projects/' + this.id;
+      url = base + '/projects/' + this.id;
       getJSON(url)
         .then(get('body'))
         .then(resolve)
