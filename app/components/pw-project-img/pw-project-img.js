@@ -96,7 +96,9 @@ class PwProjectImg extends HTMLElement {
     // Initial path value
     this.getPwProjectInfo()
       .then(getProject)
-      .then(get('path'))
+      .then(get('images'))
+      .then(get('doneByAuthor'))
+      .then(nth(0))
       .then(setPath)
       .catch((err) => {
         console.log(err.message);

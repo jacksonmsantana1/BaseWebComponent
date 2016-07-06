@@ -26,7 +26,7 @@ let Mock;
     });
 
     it('Should have an attribute named liked', () => {
-      expect(pwLikeButton.liked).to.be.equal(false);
+      expect(pwLikeButton.liked).to.be.equal('no');
     });
 
     it('Should have an attribute named numberOfLikes', () => {
@@ -34,7 +34,7 @@ let Mock;
     });
 
     it('Should have an attribute named visible', () => {
-      expect(pwLikeButton.visible).to.be.equal(true);
+      expect(pwLikeButton.visible).to.be.equal('true');
     });
   });
 
@@ -385,9 +385,9 @@ let Mock;
     });
 
     it('Should toggle the attribute visible', () => {
-      expect(pwLikeButton.visible).to.be.equal(true);
-      pwLikeButton.toggleVisible();
       expect(pwLikeButton.visible).to.be.equal('true');
+      pwLikeButton.toggleVisible();
+      expect(pwLikeButton.visible).to.be.equal('false');
     });
   });
 
@@ -406,9 +406,9 @@ let Mock;
     });
 
     it('Should toggle the attribute liked', () => {
-      expect(pwLikeButton.liked).to.be.equal(false);
+      expect(pwLikeButton.liked).to.be.equal('no');
       pwLikeButton.toggleLiked();
-      expect(pwLikeButton.liked).to.be.equal('true');
+      expect(pwLikeButton.liked).to.be.equal('yes');
     });
   });
 
@@ -462,7 +462,7 @@ let Mock;
     });
 
     it('Initial Attributes', () => {
-      expect(pwLikeButton.liked).to.be.equal(false);
+      expect(pwLikeButton.liked).to.be.equal('no');
       expect(pwLikeButton.numberOfLikes).to.be.equal(0);
     });
 
@@ -923,7 +923,7 @@ let Mock;
       document.body.appendChild(component);
 
       window.setTimeout(() => {
-        expect(component.liked).to.be.equal(true);
+        expect(component.liked).to.be.equal('yes');
         stub.restore();
         done();
       }, 200);
@@ -1029,8 +1029,8 @@ let Mock;
       component.getDivLike(component.shadowRoot).dispatchEvent(event);
 
       setTimeout(() => {
+        expect(component.shadowRoot.querySelector('.numberLikes').textContent).to.be.equal('123');
         expect(component.numberOfLikes).to.be.equal(123);
-        expect(component.innerHTML).to.be.equal('123');
         spy.restore();
         done();
       }, 200);
@@ -1128,8 +1128,7 @@ let Mock;
       }, 200);
     });
 
-    it('Should updated the numberOfLikes property', (done) => {
-      spy = sinon.stub(component, 'getNumberOfLikes').returns(Promise.resolve(123));
+    it('Should clean the numberOfLikes label', (done) => {
       event = new MouseEvent('click');
 
       document.body.appendChild(component1);
@@ -1140,8 +1139,7 @@ let Mock;
       component.getDivLike(component.shadowRoot).dispatchEvent(event);
 
       setTimeout(() => {
-        expect(component.numberOfLikes).to.be.equal(123);
-        expect(component.innerHTML).to.be.equal('');
+        expect(component.shadowRoot.querySelector('.numberLikes').textContent).to.be.equal('');
         spy.restore();
         done();
       }, 200);

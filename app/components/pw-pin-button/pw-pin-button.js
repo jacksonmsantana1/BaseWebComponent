@@ -47,6 +47,11 @@ class PwPinButton extends HTMLButtonElement {
    */
   createdCallback() {
 
+    // Attributes declaration
+    this._projectId = 'VAITOMARNOCU';
+    this._visible = true;
+    this._status = 'not-checked';
+
     /*********************Pure Functions**********************/
 
     // pinButton :: PwPinButton
@@ -68,11 +73,6 @@ class PwPinButton extends HTMLButtonElement {
       IO.of);
 
     impure(pinButton).runIO();
-
-    // Attributes declaration
-    this._projectId = 'VAITOMARNOCU';
-    this._visible = true;
-    this._status = 'not-checked';
   }
 
   /*
@@ -94,6 +94,9 @@ class PwPinButton extends HTMLButtonElement {
     // setVisible :: HTMLElement -> _
     const setVisible = compose(set('visible'), getAttr('visible'));
 
+    // setStatus :: HTMLElement -> _
+    const setStatus = compose(set('status'), getAttr('status'));
+
     // eventObs :: HTMLElement -> EventStream
     const eventObs = event('click');
 
@@ -106,29 +109,31 @@ class PwPinButton extends HTMLButtonElement {
       .map(get('target'))
       .map(checkElement);
 
+    // Updates the liked attribute
+    this.getPwUserInfo()
+      .then(pinButton.isPinned.bind(pinButton))
+      .then((isPin) => {
+        if (isPin) {
+          pinButton.status = 'checked';
+        }
+      })
+      .catch(console.log);
+
     impure.subscribe((elem) => {
-      if (this.status === 'checked') {
-        Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
-          .then((arr) => this.pin(arr[0], arr[1]))
+      if (pinButton.status === 'checked') {
+        Promise.all([pinButton.getPwProjectInfo(), pinButton.getPwUserInfo()])
+          .then((arr) => pinButton.pin(arr[0], arr[1]))
           .then(map((io) => { io.runIO(); }))
           .catch(console.log);
       } else {
-        Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
-          .then((arr) => this.despin(arr[0], arr[1]))
+        Promise.all([pinButton.getPwProjectInfo(), pinButton.getPwUserInfo()])
+          .then((arr) => pinButton.despin(arr[0], arr[1]))
           .then(map((io) => { io.runIO(); }))
           .catch(console.log);
       }
 
       elem.runIO();
     });
-
-    // Updates the liked attribute
-    this.getPwUserInfo()
-      .then(this.isPinned.bind(this))
-      .then((isPinned) => ((isPinned) ?
-          set('status', 'checked') :
-          set('status', 'not-checked')))
-      .catch(console.log);
 
     // Setting attributes
     setProjectId(pinButton);
@@ -145,12 +150,8 @@ class PwPinButton extends HTMLButtonElement {
    */
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === 'status' && newValue === 'not-checked') {
+    if (attrName === 'status') {
       this.toggleActive();
-      this.despin();
-    } else if (attrName === 'status' && newValue === 'checked') {
-      this.toggleActive();
-      this.pin();
     } else if (attrName === 'visible') {
       this.style.display = (newValue === 'false') ? 'none' : '';
     } else if (attrName === 'projectId') {

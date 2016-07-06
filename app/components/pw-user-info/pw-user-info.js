@@ -69,10 +69,9 @@ class PwInfoUser extends HTMLElement {
   }
 
   // isPinned :: (Token, String) -> Boolean
-  isPinned(evt) {
+  isPinned(projectId) {
 
     const token = Token.getUserToken();
-    const projectId = evt.detail.projectId;
 
     /************************Pure Functions**********************/
 
@@ -112,9 +111,9 @@ class PwInfoUser extends HTMLElement {
   disliked(evt) {
     evt.preventDefault();
 
-    return Request.putJSON(base + '/user/projects/disliked', {
+    return Request.putJSON(base + '/user/projects/disLiked', {
       projectId: evt.detail.projectId,
-    }, Token.getUserToken()).catch(Logger.error('disliked()', '/user/projects/disliked'));
+    }, Token.getUserToken()).catch(Logger.error('disliked()', '/user/projects/disLiked'));
   }
 
   // isLiked :: (Token, String) -> Boolean

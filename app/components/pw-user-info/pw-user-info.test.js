@@ -210,15 +210,9 @@ describe('pw-user-info', () => {
     });
 
     it('isPinned() ->', (done) => {
-      const evt = new CustomEvent('isPinned', {
-        detail: {
-          projectId: '345',
-        },
-        bubbles: false,
-        cancelable: true,
-      });
+      const projectId = '345';
 
-      pwUserInfo.isPinned(evt).then((result) => {
+      pwUserInfo.isPinned(projectId).then((result) => {
         expect(result).to.be.equal(true);
         done();
       }, (err) => {
@@ -302,7 +296,7 @@ describe('pw-user-info', () => {
         done();
       });
 
-      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/disliked');
+      expect(requests[0].url).to.be.equal('http://localhost:3000/user/projects/disLiked');
       expect(requests[0].requestHeaders.authorization).to.be.equal('TOKEN');
       expect(requests[0].method).to.be.equal('PUT');
       requests[0].respond(200, {}, '{"projectId": "1234097435"}');

@@ -51,9 +51,9 @@ class PwLikeButton extends HTMLButtonElement {
 
     // Init Attr
     this._projectId = 'VAITOMARNOCU';
-    this._liked = false;
+    this._liked = 'no';
     this._numberOfLikes = 0;
-    this._visible = true;
+    this._visible = 'true';
 
     /*********************Pure Functions**********************/
 
@@ -116,15 +116,22 @@ class PwLikeButton extends HTMLButtonElement {
       .map(nth(0))
       .map(checkElement);
 
+    // Updates the liked attribute
+    this.getPwUserInfo()
+      .then(this.isLiked.bind(this))
+      .then((liked) => (liked ? 'yes' : 'no'))
+      .then(set('liked'))
+      .catch(console.log);
+
     impure.subscribe((elem) => {
       //Emit Events
-      if (likeButton.liked === 'true') {
-        Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
+      if (likeButton.liked === 'yes') {
+        Promise.all([likeButton.getPwProjectInfo(), likeButton.getPwUserInfo()])
           .then((arr) => this.like(arr[0], arr[1]))
           .then(map((io) => { io.runIO(); }))
           .catch(console.log('onClickError'));
       } else {
-        Promise.all([this.getPwProjectInfo(), this.getPwUserInfo()])
+        Promise.all([likeButton.getPwProjectInfo(), likeButton.getPwUserInfo()])
           .then((arr) => this.dislike(arr[0], arr[1]))
           .then(map((io) => { io.runIO(); }))
           .catch(console.log('onClickError'));
@@ -134,17 +141,14 @@ class PwLikeButton extends HTMLButtonElement {
       elem.runIO();
     });
 
-    // Updates the liked attribute
-    this.getPwUserInfo()
-      .then(this.isLiked.bind(this))
-      .then(set('liked'))
-      .catch((err) => console.log(err));
-
     // Set Attr
     setProjectId(likeButton);
     setLiked(likeButton);
     setNumberOfLikes(likeButton);
     setVisible(likeButton);
+
+    //FIXME
+    this.shadowRoot.querySelector('.numberLikes').textContent = '';
   }
 
   /*
@@ -157,24 +161,26 @@ class PwLikeButton extends HTMLButtonElement {
    */
   /*eslint no-unused-vars: 0*/
   attributeChangedCallback(attrName, oldValue, newValue) {
+    const _this = this;
+
     if (attrName === 'visible') {
       this.style.display = (newValue === 'false') ? 'none' : '';
-    } else if (attrName === 'liked' && newValue === 'true') {
+    } else if (attrName === 'liked' && newValue === 'yes') {
       this.toggleActive();
       this.getPwProjectInfo()
         .then(this.getNumberOfLikes.bind(this))
         .then((n) => {
-          this.numberOfLikes = n;
-          this.innerHTML = n;
+          if (n === _this.numberOfLikes) {
+            this.shadowRoot.querySelector('.numberLikes').textContent = n;
+          }
+
+          _this.numberOfLikes = n;
         });
-    } else if (attrName === 'liked' && newValue === 'false') {
+    } else if (attrName === 'liked' && newValue === 'no') {
       this.toggleActive();
-      this.getPwProjectInfo()
-        .then(this.getNumberOfLikes.bind(this))
-        .then((n) => {
-          this.numberOfLikes = n;
-          this.innerHTML = '';
-        });
+      this.shadowRoot.querySelector('.numberLikes').textContent = '';
+    } else if (attrName === 'numberoflikes') {
+      this.shadowRoot.querySelector('.numberLikes').textContent = newValue;
     }
   }
 
@@ -195,7 +201,7 @@ class PwLikeButton extends HTMLButtonElement {
 
     const impure = (component) => {
       (checkVisible(component) ?
-        setAttr(component, 'visble', 'false') :
+        setAttr(component, 'visible', 'false') :
         setAttr(component, 'visible', 'true'));
     };
 
@@ -210,15 +216,15 @@ class PwLikeButton extends HTMLButtonElement {
     /********************Pure Functions************************/
 
     const attrStatus = getAttr('liked');
-    const equalToTrue = equals('true');
+    const equalToTrue = equals('yes');
     const checkStatus = compose(equalToTrue, attrStatus);
 
     /*********************Impure Function**********************/
 
     const impure = (component) => {
       (checkStatus(component) ?
-        setAttr(component, 'liked', 'false') :
-        setAttr(component, 'liked', 'true'));
+        setAttr(component, 'liked', 'no') :
+        setAttr(component, 'liked', 'yes'));
     };
 
     impure(this);
@@ -478,7 +484,7 @@ class PwLikeButton extends HTMLButtonElement {
    */
   getTemplateHtml() {
     return `<div class="like">
-              <button class="like-toggle active">❤<content select="#numberLikes"></content></button>
+              <button class="like-toggle active">❤<span class="numberLikes"></span></button>
             </div>`;
   }
 

@@ -19,7 +19,9 @@ describe('pw-project-img => ', () => {
     component1.id = 'VAITOMARNOANUS';
 
     project = {
-      path: '/anus',
+      images: {
+        doneByAuthor: ['/anus'],
+      },
     };
   });
 
