@@ -1,4 +1,4 @@
-import checkType from '../Type/Type.js';
+import { typeOf } from '../TypeSafety/TypeSafety.js';
 
 const Tuple = function (...firstArgs) {
   const typeInfo = Array.prototype.slice.call(firstArgs);
@@ -15,7 +15,7 @@ const Tuple = function (...firstArgs) {
     }
 
     values.map(function (val, index) {
-      this[`_${index + 1}`] = checkType(typeInfo[index])(val);
+      this[`_${index + 1}`] = typeOf(typeInfo[index])(val);
       return val;
     }, this);
 

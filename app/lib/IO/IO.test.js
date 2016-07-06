@@ -54,7 +54,7 @@ describe('IO => ', () => {
   });
 
   it('map() -> 2', () => {
-    let Name = new Tuple(String, Array);
+    let Name = new Tuple('string', 'object');
 
     // completeName :: String
     let completeName = 'Jackson Martorano Santana';
